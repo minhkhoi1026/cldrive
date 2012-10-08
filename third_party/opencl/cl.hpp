@@ -2795,15 +2795,28 @@ __declspec(selectany) volatile int Context::default_initialized_ = __DEFAULT_NOT
 #endif // !CL_HPP_CPP11_ATOMICS_SUPPORTED
 __declspec(selectany) Context Context::default_;
 __declspec(selectany) volatile cl_int Context::default_error_ = CL_SUCCESS;
+<<<<<<< HEAD:third_party/opencl/cl.hpp
 #else // !_WIN32
 #ifdef CL_HPP_CPP11_ATOMICS_SUPPORTED
 __attribute__((weak)) std::atomic<int> Context::default_initialized_;
 #else // !CL_HPP_CPP11_ATOMICS_SUPPORTED
+=======
+#else
+
+#if !defined(__PGI) || defined(SHOC_DEFINE_CLHPP_WEAKS)
+>>>>>>> 7edd023da... Added support for building SHOC with PGI compiler on x86_64.:src/opencl/common/cl.hpp
 __attribute__((weak)) volatile int Context::default_initialized_ = __DEFAULT_NOT_INITIALIZED;
 #endif // !CL_HPP_CPP11_ATOMICS_SUPPORTED
 __attribute__((weak)) Context Context::default_;
 __attribute__((weak)) volatile cl_int Context::default_error_ = CL_SUCCESS;
+<<<<<<< HEAD:third_party/opencl/cl.hpp
 #endif // !_WIN32
+=======
+#endif // !defined(__PGI) || define(SHOC_DEFINE_CLHPP_WEAKS)
+#endif
+
+__GET_INFO_HELPER_WITH_RETAIN(cl::Context)
+>>>>>>> 7edd023da... Added support for building SHOC with PGI compiler on x86_64.:src/opencl/common/cl.hpp
 
 /*! \brief Class interface for cl_event.
  *
@@ -6567,14 +6580,21 @@ __declspec(selectany) volatile int CommandQueue::default_initialized_ = __DEFAUL
 #endif // !CL_HPP_CPP11_ATOMICS_SUPPORTED
 __declspec(selectany) CommandQueue CommandQueue::default_;
 __declspec(selectany) volatile cl_int CommandQueue::default_error_ = CL_SUCCESS;
+<<<<<<< HEAD:third_party/opencl/cl.hpp
 #else // !_WIN32
 #ifdef CL_HPP_CPP11_ATOMICS_SUPPORTED
 __attribute__((weak)) std::atomic<int> CommandQueue::default_initialized_;
 #else // !CL_HPP_CPP11_ATOMICS_SUPPORTED
+=======
+#else
+
+#if !defined(__PGI) || defined(SHOC_DEFINE_CLHPP_WEAKS)
+>>>>>>> 7edd023da... Added support for building SHOC with PGI compiler on x86_64.:src/opencl/common/cl.hpp
 __attribute__((weak)) volatile int CommandQueue::default_initialized_ = __DEFAULT_NOT_INITIALIZED;
 #endif // !CL_HPP_CPP11_ATOMICS_SUPPORTED
 __attribute__((weak)) CommandQueue CommandQueue::default_;
 __attribute__((weak)) volatile cl_int CommandQueue::default_error_ = CL_SUCCESS;
+<<<<<<< HEAD:third_party/opencl/cl.hpp
 #endif // !_WIN32
 
 template< typename IteratorType >
@@ -6675,6 +6695,10 @@ Buffer::Buffer(
         }
     }
 }
+=======
+#endif // !defined(__PGI) || defined(SHOC_DEFINE_CLHPP_WEAKS)
+#endif
+>>>>>>> 7edd023da... Added support for building SHOC with PGI compiler on x86_64.:src/opencl/common/cl.hpp
 
 inline cl_int enqueueReadBuffer(
     const Buffer& buffer,
