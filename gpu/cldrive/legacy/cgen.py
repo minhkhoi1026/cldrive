@@ -313,7 +313,11 @@ int main(int argc, char** argv) {{
         long fsize = ftell(infile);
         fseek(infile, 0, SEEK_SET);
 
+<<<<<<< HEAD:gpu/cldrive/legacy/cgen.py
         char *buf = (char *)malloc(fsize + 1);
+=======
+        char *buf = malloc(fsize + 1);
+>>>>>>> 506ca7334... cgen: Support -f path:cldrive/cgen.py
         fread(buf, fsize, 1, infile);
         fclose(infile);
         buf[fsize] = 0;
@@ -380,9 +384,15 @@ int main(int argc, char** argv) {{
     check_error("clBuildProgram", build_err);
     """
 
+<<<<<<< HEAD:gpu/cldrive/legacy/cgen.py
   if not compile_only or (compile_only and create_kernel):
     kernel_name_ = _args.GetKernelName(src)
     c += f"""
+=======
+    if not compile_only or (compile_only and create_kernel):
+        kernel_name_ = kernel_name(src)
+        c += f"""
+>>>>>>> 506ca7334... cgen: Support -f path:cldrive/cgen.py
     cl_kernel kernels[128];
     cl_uint num_kernels;
     err = clCreateKernelsInProgram(program, 128, kernels, &num_kernels);
