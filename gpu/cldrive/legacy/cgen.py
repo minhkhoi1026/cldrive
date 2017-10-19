@@ -86,6 +86,7 @@ def gen_data_blocks(kernel_args: typing.List[_args.KernelArg],
     check_error("clSetKernelArg", err);
 """)
 
+<<<<<<< HEAD:gpu/cldrive/legacy/cgen.py
   return ('\n'.join(setup_c).rstrip(), '\n'.join(teardown_c).rstrip(),
           '\n'.join(print_c).rstrip())
 
@@ -157,6 +158,77 @@ def emit_c(src: str,
   clBuildProgram_opts = "NULL" if optimizations else '"-cl-opt-disable"'
 
   c = f"""
+=======
+    return (
+        '\n'.join(setup_c).rstrip(),
+        '\n'.join(teardown_c).rstrip(),
+        '\n'.join(print_c).rstrip()
+    )
+
+
+def emit_c(src: str, inputs: np.array,
+           gsize: NDRange, lsize: NDRange, timeout: int=-1,
+           optimizations: bool=True, profiling: bool=False,
+           debug: bool=False, compile_only: bool=False,
+           create_kernel: bool=True) -> np.array:
+    """
+    Generate C code to drive kernel.
+
+    Parameters
+    ----------
+    env : OpenCLEnvironment
+        The OpenCL environment to run the kernel in.
+    src : str
+        The OpenCL kernel source.
+    inputs : np.array
+        The input data to the kernel.
+    optimizations : bool, optional
+        Whether to enable or disbale OpenCL compiler optimizations.
+    profiling : bool, optional
+        If true, print OpenCLevent times for data transfers and kernel
+        executions to stderr.
+    timeout : int, optional
+        Cancel execution if it has not completed after this many seconds.
+        A value <= 0 means never time out.
+    debug : bool, optional
+        If true, silence the OpenCL compiler.
+    compile_only: bool, optional
+        If true, generate code only to compile the kernel, not to generate
+        inputs and run it.
+    create_kernel: bool, optional
+        If 'compile_only' parameter is set, this parameter determines whether
+        to create a kernel object after compilation. This requires a kernel
+        name.
+
+    Returns
+    -------
+    str
+        Code which can be compiled using a C compiler to drive the kernel.
+
+    Raises
+    ------
+    ValueError
+        If input types are incorrect.
+    TypeError
+        If an input is of an incorrect type.
+    LogicError
+        If the input types do not match OpenCL kernel types.
+    PorcelainError
+        If the OpenCL subprocess exits with non-zero return  code.
+    RuntimeError
+        If OpenCL program fails to build or run.
+
+    Examples
+    --------
+    TODO
+    """
+    src_string = escape_c_string(src)
+    optimizations_on_off = "on" if optimizations else "off"
+
+    clBuildProgram_opts = "NULL" if optimizations else '"-cl-opt-disable"'
+
+    c = f"""
+>>>>>>> f761ed83a... cgen wip:cldrive/cgen.py
 /*
  * Usage:
  *   gcc -std=c99 [-DPLATFORM_ID=<platform-id>] [-DDEVICE_ID=<device-id>] foo.c -lOpenCL
