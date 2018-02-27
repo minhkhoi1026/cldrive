@@ -1,52 +1,55 @@
-load("@requirements//:requirements.bzl", "requirement")
-
 licenses(["restricted"])  # GPL v3
 
 exports_files(["LICENSE"])
 
 py_library(
-    name = "db",
-    srcs = ["db.py"],
-    visibility = ["//deeplearning/deepsmith:__subpackages__"],
+    name = "cldrive",
+    srcs = ["__init__.py"],
+    visibility = ["//visibility:public"],
     deps = [
-        requirement("SQLAlchemy"),
-        requirement("absl-py"),
+        ":args",
+        ":cgen",
+        ":data",
+        ":driver",
+        ":env",
     ],
 )
 
 py_library(
-    name = "dbutil",
-    srcs = ["dbutil.py"],
-    visibility = ["//deeplearning/deepsmith:__subpackages__"],
+    name = "args",
+    srcs = ["_args.py"],
+)
+
+py_library(
+    name = "cgen",
+    srcs = ["cgen.py"],
     deps = [
-        ":db",
-        "@labm8//:crypto",
-        "@labm8//:fs",
-        "@labm8//:prof",
-        "@labm8//:system",
-        requirement("absl-py"),
+        ":args",
+        ":driver",
     ],
 )
 
 py_library(
-    name = "datastore",
-    srcs = ["datastore.py"],
-    visibility = ["//deeplearning/deepsmith:__subpackages__"],
+    name = "data",
+    srcs = ["data.py"],
     deps = [
-        ":db",
-        ":dbutil",
-        "@labm8//:crypto",
-        requirement("absl-py"),
-        "//deeplearning/deepsmith/protos:deepsmith",
+        ":args",
+        ":driver",
+        "@labm8//:err",
     ],
 )
 
-py_test(
-    name = "tests/db_test",
-    size = "small",
-    srcs = ["tests/db_test.py"],
+py_library(
+    name = "driver",
+    srcs = ["driver.py"],
     deps = [
-        ":db",
-        requirement("absl-py"),
+        ":args",
+        ":env",
+        "@labm8//:err",
     ],
+)
+
+py_library(
+    name = "env",
+    srcs = ["_env.py"],
 )
