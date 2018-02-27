@@ -17,8 +17,13 @@ import typing
 
 import numpy as np
 
+<<<<<<< HEAD:gpu/cldrive/legacy/cgen.py
 from gpu.cldrive.legacy import args as _args
 from gpu.cldrive.legacy import driver
+=======
+from gpu.cldrive import args as _args
+from gpu.cldrive import driver
+>>>>>>> 4638147c0... Indent by 2 spaces and enable doctest.:gpu/cldrive/cgen.py
 
 
 def escape_c_string(s: str) -> str:

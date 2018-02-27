@@ -541,7 +541,7 @@ py_library(
 
 py_library(
     name = "args",
-    srcs = ["_args.py"],
+    srcs = ["args.py"],
 )
 
 py_library(
@@ -575,6 +575,10 @@ py_library(
 
 py_library(
     name = "env",
+<<<<<<< HEAD
     srcs = ["_env.py"],
 >>>>>>> 7602c6372... Update cldrive layout for bazel build.
+=======
+    srcs = ["env.py"],
+>>>>>>> 4638147c0... Indent by 2 spaces and enable doctest.
 )
