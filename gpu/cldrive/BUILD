@@ -559,7 +559,7 @@ py_library(
     deps = [
         ":args",
         ":driver",
-        "@labm8//:err",
+        "//lib/labm8:err",
     ],
 )
 
@@ -569,7 +569,7 @@ py_library(
     deps = [
         ":args",
         ":env",
-        "@labm8//:err",
+        "//lib/labm8:err",
     ],
 )
 
