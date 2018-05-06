@@ -1,3 +1,4 @@
+<<<<<<< HEAD:gpu/cldrive/legacy/cgen.py
 # Copyright (c) 2016-2020 Chris Cummins.
 # This file is part of cldrive.
 #
@@ -15,7 +16,10 @@
 # along with cldrive.  If not, see <https://www.gnu.org/licenses/>.
 import typing
 
+=======
+>>>>>>> 887ccecf1... Automated code format.:gpu/cldrive/cgen.py
 import numpy as np
+import typing
 
 <<<<<<< HEAD:gpu/cldrive/legacy/cgen.py
 from gpu.cldrive.legacy import args as _args
