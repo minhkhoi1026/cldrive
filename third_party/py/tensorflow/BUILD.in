@@ -22,6 +22,7 @@ py_library(
         "//third_party/py/protobuf",
     ],
 )
+<<<<<<< HEAD:third_party/py/tensorflow/BUILD.in
 
 py_test(
     name = "tensorflow_smoke_test",
@@ -32,3 +33,5 @@ py_test(
         "//labm8:test",
     ],
 )
+=======
+>>>>>>> 9aa996847... Auto format BUILD file.:third_party/tensorflow/BUILD.in
