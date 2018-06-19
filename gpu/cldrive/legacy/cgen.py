@@ -1,4 +1,5 @@
 <<<<<<< HEAD:gpu/cldrive/legacy/cgen.py
+<<<<<<< HEAD:gpu/cldrive/legacy/cgen.py
 # Copyright (c) 2016-2020 Chris Cummins.
 # This file is part of cldrive.
 #
@@ -25,6 +26,12 @@ import typing
 from gpu.cldrive.legacy import args as _args
 from gpu.cldrive.legacy import driver
 =======
+=======
+import typing
+
+import numpy as np
+
+>>>>>>> c1018e2b1... Minor code style fixes.:gpu/cldrive/cgen.py
 from gpu.cldrive import args as _args
 from gpu.cldrive import driver
 >>>>>>> 4638147c0... Indent by 2 spaces and enable doctest.:gpu/cldrive/cgen.py
@@ -32,11 +39,16 @@ from gpu.cldrive import driver
 
 def escape_c_string(s: str) -> str:
   """ quote and return the given string """
+<<<<<<< HEAD:gpu/cldrive/legacy/cgen.py
   return "\n".join(
     '"{}"'.format(line.replace('"', '\\"'))
     for line in s.split("\n")
     if len(line.strip())
   )
+=======
+  return '\n'.join('"{}"'.format(line.replace('"', '\\"'))
+                   for line in s.split('\n') if len(line.strip()))
+>>>>>>> c1018e2b1... Minor code style fixes.:gpu/cldrive/cgen.py
 
 
 def to_array_str(array):
@@ -49,9 +61,14 @@ def to_array_str(array):
   return f"{{ {array_values} }}"
 
 
+<<<<<<< HEAD:gpu/cldrive/legacy/cgen.py
 def gen_data_blocks(
   kernel_args: typing.List[_args.KernelArg], inputs: np.array
 ):
+=======
+def gen_data_blocks(kernel_args: typing.List[_args.KernelArg],
+                    inputs: np.array):
+>>>>>>> c1018e2b1... Minor code style fixes.:gpu/cldrive/cgen.py
   setup_c, teardown_c, print_c = [], [], []
   for i, (arg, array) in enumerate(zip(kernel_args, inputs)):
     ctype = _args.OPENCL_TYPES[array.dtype]
