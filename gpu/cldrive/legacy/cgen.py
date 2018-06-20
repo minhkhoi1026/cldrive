@@ -502,7 +502,11 @@ int main(int argc, char** argv) {{
 
 <<<<<<< HEAD:gpu/cldrive/legacy/cgen.py
   if not compile_only or (compile_only and create_kernel):
+<<<<<<< HEAD:gpu/cldrive/legacy/cgen.py
     kernel_name_ = _args.GetKernelName(src)
+=======
+    kernel_name_ = _args.kernel_name(src)
+>>>>>>> f4753993a... Fix module name in cgen.:gpu/cldrive/cgen.py
     c += f"""
 =======
     if not compile_only or (compile_only and create_kernel):
@@ -532,7 +536,11 @@ int main(int argc, char** argv) {{
 """
 
   if not compile_only:
+<<<<<<< HEAD:gpu/cldrive/legacy/cgen.py
     args = _args.GetKernelArguments(src)
+=======
+    args = _args.extract_args(src)
+>>>>>>> f4753993a... Fix module name in cgen.:gpu/cldrive/cgen.py
     setup_block, teardown_block, print_block = gen_data_blocks(args, inputs)
     c += f"""
 {setup_block}
