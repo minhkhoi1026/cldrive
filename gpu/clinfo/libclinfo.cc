@@ -1,32 +1,13 @@
 // Get information about available OpenCL devices.
-//
-// Copyright 2017, 2018, 2019 Chris Cummins <chrisc.101@gmail.com>.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
 
-#include <algorithm>
-#include <cstdio>
 #include <iostream>
 #include <sstream>
-#include <stdexcept>
 #include <string>
 #include <vector>
+#include <algorithm>
+#include <cstdio>
 
 #include "gpu/clinfo/libclinfo.h"
-#include "phd/logging.h"
-
-#include "absl/strings/str_replace.h"
-#include "absl/strings/strip.h"
 
 namespace phd {
 
@@ -34,7 +15,7 @@ namespace gpu {
 
 namespace clinfo {
 
-const char* OpenClErrorString(cl_int err) {
+const char *OpenClErrorString(cl_int err) {
   // Based on code written by @Selmar http://stackoverflow.com/a/24336429 .
   switch (err) {
     // Run-time and JIT compiler errors.
@@ -79,7 +60,7 @@ const char* OpenClErrorString(cl_int err) {
     case -19:
       return "CL_KERNEL_ARG_INFO_NOT_AVAILABLE";
 
-    // Compile-time errors.
+      // Compile-time errors.
     case -30:
       return "CL_INVALID_VALUE";
     case -31:
@@ -159,7 +140,7 @@ const char* OpenClErrorString(cl_int err) {
     case -68:
       return "CL_INVALID_DEVICE_PARTITION_COUNT";
 
-    // Extension errors.
+      // Extension errors.
     case -1000:
       return "CL_INVALID_GL_SHAREGROUP_REFERENCE_KHR";
     case -1001:
@@ -178,20 +159,26 @@ const char* OpenClErrorString(cl_int err) {
   }
 }
 
-void OpenClCheckError(const string& api_call, cl_int err) {
+void OpenClCheckError(const char *api_call, cl_int err) {
   if (err != CL_SUCCESS) {
-    fprintf(stderr, "%s %s\\n", api_call.c_str(), OpenClErrorString(err));
+    fprintf(stderr, "%s %s\\n", api_call, OpenClErrorString(err));
     exit(1);
   }
 }
 
-template <char Remove>
+template<char Remove>
 bool BothAre(char lhs, char rhs) {
   return lhs == rhs && lhs == Remove;
 }
 
-std::string GetOpenClDeviceType(const cl::Device& device) {
-  cl_device_type num = (cl_device_type)device.getInfo<CL_DEVICE_TYPE>();
+void EscapeOpenCLString(std::string &string) {
+  std::replace(string.begin(), string.end(), ' ', '.');
+  string.erase(std::unique(string.begin(), string.end(), BothAre<'.'>),
+               string.end());
+}
+
+std::string GetOpenClDeviceType(const cl::Device &device) {
+  cl_device_type num = (cl_device_type) device.getInfo<CL_DEVICE_TYPE>();
   switch (num) {
     case CL_DEVICE_TYPE_CPU:
       return "CPU";
@@ -210,38 +197,12 @@ std::string GetOpenClDeviceType(const cl::Device& device) {
   }
 }
 
-std::vector<std::pair<string, string>> kSubstitutions = {
-    {"Intel(R)", "Intel"},
-    {"Xeon(R)", "Xeon"},
-};
-
-std::vector<string> kSuffixes = {
-    " CUDA",
-    " OpenCL",
-};
-
-string FormatOpenClString(const std::string& str) {
-  string simplified = absl::StrReplaceAll(str, kSubstitutions);
-  absl::string_view trimmed_view(simplified);
-  for (auto suffix : kSuffixes) {
-    absl::ConsumeSuffix(&trimmed_view, suffix);
-  }
-  string trimmed(trimmed_view);
-  std::replace(trimmed.begin(), trimmed.end(), ' ', '_');
-  // Strip duplicate double underscores.
-  trimmed.erase(std::unique(trimmed.begin(), trimmed.end(), BothAre<'_'>),
-                trimmed.end());
-  return trimmed;
-}
-
-void SetOpenClDevice(const cl::Platform& platform, const cl::Device& device,
-                     const int platform_id, const int device_id,
-                     ::gpu::clinfo::OpenClDevice* const message) {
+void SetOpenClDevice(const cl::Platform &platform, const cl::Device &device,
+                     ::gpu::clinfo::OpenClDevice *const message) {
   std::string platform_name, device_name, driver_version, opencl_version;
   int major, minor = -1;
 
   platform.getInfo(CL_PLATFORM_NAME, &platform_name);
-
   message->set_platform_name(platform_name.c_str());
 
   device.getInfo(CL_DEVICE_NAME, &device_name);
@@ -258,182 +219,35 @@ void SetOpenClDevice(const cl::Platform& platform, const cl::Device& device,
   std::string device_type = GetOpenClDeviceType(device);
   message->set_device_type(device_type.c_str());
 
+  EscapeOpenCLString(platform_name);
+  EscapeOpenCLString(device_name);
+  EscapeOpenCLString(driver_version);
+
   std::stringstream name;
-  name << FormatOpenClString(device_type.c_str()) << "|"
-       << FormatOpenClString(platform_name.c_str()) << "|"
-       << FormatOpenClString(device_name.c_str()) << "|"
-       << FormatOpenClString(driver_version.c_str()) << "|"
+  name << device_type.c_str() << "|"
+       << platform_name.c_str() << "|"
+       << device_name.c_str() << "|"
+       << driver_version.c_str() << "|"
        << opencl_version.c_str();
   message->set_name(name.str());
-
-  message->set_platform_id(platform_id);
-  message->set_device_id(device_id);
 }
 
 ::gpu::clinfo::OpenClDevices GetOpenClDevices() {
   ::gpu::clinfo::OpenClDevices message;
-  std::vector<cl::Platform> platforms;
-
-  try {
-    cl::Platform::get(&platforms);
-  } catch (cl::Error err) {
-    // In environments where there are no OpenCL platforms installed, the call
-    // to clGetPlatformIDs() will throw CL_PLATFORM_NOT_FOUND_KHR. We don't
-    // want to treat that as an error, but instead as a lack of platforms.
-    if (strcmp(err.what(), "clGetPlatformIDs") == 0 &&
-        strcmp(phd::gpu::clinfo::OpenClErrorString(err.err()),
-               "CL_PLATFORM_NOT_FOUND_KHR") == 0) {
-      return message;
-    }
-    throw err;
-  }
-
-  std::vector<cl::Device> devices;
-  int platform_id = 0;
-  for (const auto& platform : platforms) {
+  std::vector <cl::Platform> platforms;
+  cl::Platform::get(&platforms);
+  std::vector <cl::Device> devices;
+  for (const auto &platform : platforms) {
     platform.getDevices(CL_DEVICE_TYPE_ALL, &devices);
-    int device_id = 0;
-    for (const auto& device : devices) {
-      phd::gpu::clinfo::SetOpenClDevice(platform, device, platform_id,
-                                        device_id, message.add_device());
-      ++device_id;
+    for (const auto &device : devices) {
+      phd::gpu::clinfo::SetOpenClDevice(platform, device, message.add_device());
     }
-    ++platform_id;
   }
   return message;
-}
-
-::gpu::clinfo::OpenClDevice GetOpenClDevice(const int platform_id,
-                                            const int device_id) {
-  ::gpu::clinfo::OpenClDevice message;
-  std::vector<cl::Platform> platforms;
-  cl::Platform::get(&platforms);
-  std::vector<cl::Device> devices;
-  int cur_platform = 0;
-  for (const auto& platform : platforms) {
-    if (cur_platform == platform_id) {
-      platform.getDevices(CL_DEVICE_TYPE_ALL, &devices);
-      int cur_device = 0;
-      for (const auto& device : devices) {
-        if (cur_device == device_id) {
-          phd::gpu::clinfo::SetOpenClDevice(platform, device, cur_platform,
-                                            cur_device, &message);
-          return message;
-        }
-        ++cur_device;
-      }
-    }
-    ++cur_platform;
-  }
-  throw std::invalid_argument("Platform and device ID not found");
-}
-
-StatusOr<::gpu::clinfo::OpenClDevice> GetOpenClDeviceProto(const string& name) {
-  auto devices = GetOpenClDevices();
-
-  for (int i = 0; i < devices.device_size(); ++i) {
-    if (!devices.device(i).name().compare(name)) {
-      return devices.device(i);
-    }
-  }
-
-  return phd::Status(phd::error::Code::INVALID_ARGUMENT,
-                     "OpenCL device not found");
-}
-
-namespace {
-
-// Workaround for a defect in which getInfo<>() methods return strings
-// including terminating '\0' character. See discussion at:
-// https://github.com/KhronosGroup/OpenCL-CLHPP/issues/8
-void StripTrailingNullCharacter(string* str) {
-  if (!str->empty() && str->back() == '\0') {
-    str->resize(str->size() - 1);
-  }
-}
-
-}  // anonymous namespace
-
-cl::Device GetOpenClDevice(const ::gpu::clinfo::OpenClDevice& device_proto) {
-  string platform_name, device_name, driver_version, opencl_version;
-
-  std::vector<cl::Platform> platforms;
-  cl::Platform::get(&platforms);
-  for (const auto& platform : platforms) {
-    platform.getInfo(CL_PLATFORM_NAME, &platform_name);
-    StripTrailingNullCharacter(&platform_name);
-    if (platform_name.compare(device_proto.platform_name())) {
-      continue;
-    }
-
-    std::vector<cl::Device> devices;
-    platform.getDevices(CL_DEVICE_TYPE_ALL, &devices);
-    for (const auto& device : devices) {
-      device.getInfo(CL_DEVICE_NAME, &device_name);
-      StripTrailingNullCharacter(&device_name);
-      if (device_name.compare(device_proto.device_name())) {
-        continue;
-      }
-
-      device.getInfo(CL_DRIVER_VERSION, &driver_version);
-      StripTrailingNullCharacter(&driver_version);
-      if (driver_version.compare(device_proto.driver_version())) {
-        continue;
-      }
-
-      return device;
-    }
-  }
-
-  throw std::invalid_argument("Device not found");
-}
-
-cl::Device GetDefaultOpenClDeviceOrDie() {
-  auto devices = GetOpenClDevices();
-
-  for (int i = 0; i < devices.device_size(); ++i) {
-    if (!devices.device(i).platform_name().compare("Oclgrind")) {
-      return GetOpenClDeviceOrDie(devices.device(i));
-    }
-  }
-
-  CHECK(devices.device_size()) << "No OpenCL devices found!";
-  return GetOpenClDeviceOrDie(devices.device(0));
-}
-
-// Lookup an OpenCL device by proto or die.
-cl::Device GetOpenClDeviceOrDie(const ::gpu::clinfo::OpenClDevice& device) {
-  try {
-    return GetOpenClDevice(device);
-  } catch (std::invalid_argument e) {
-    LOG(FATAL) << "Could not find device '" << device.name() << "'";
-    abort();  // Unreachable since LOG(FATAL) terminates.
-  }
-}
-
-cl::Device GetOpenClDevice(const string& name) {
-  auto devices = GetOpenClDevices();
-
-  for (int i = 0; i < devices.device_size(); ++i) {
-    if (!devices.device(i).name().compare(name)) {
-      return GetOpenClDeviceOrDie(devices.device(i));
-    }
-  }
-
-  throw std::invalid_argument("Device not found");
-}
-
-cl::Device GetOpenClDeviceOrDie(const string& name) {
-  try {
-    return GetOpenClDevice(name);
-  } catch (std::invalid_argument e) {
-    LOG(FATAL) << "Could not find device '" << name << "'";
-    abort();  // Unreachable since LOG(FATAL) terminates.
-  }
 }
 
 }  // namespace clinfo
 
 }  // namespace gpu
 
-}  // namespace phd
+}  // phd
