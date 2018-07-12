@@ -1,7 +1,7 @@
 # A wrapper around tensorflow pip package to support optional gpu.
 #
 # If a python target requires TensorFlow, it should depend on this package
-# (i.e. //third_party/py/tensorflow), instead of requirement("tensorflow").
+# (i.e. //third_party/tensorflow), instead of requirement("tensorflow").
 # This is because the pip package for TensorFlow with CUDA support has a
 # different name.
 
@@ -18,20 +18,7 @@ py_library(
     srcs = ["tensorflow.py"],
     deps = [
         requirement("tensorflow"),
-        "//third_party/py/numpy",
-        "//third_party/py/protobuf",
+        requirement("numpy"),
+        requirement("protobuf"),
     ],
 )
-<<<<<<< HEAD:third_party/py/tensorflow/BUILD.in
-
-py_test(
-    name = "tensorflow_smoke_test",
-    srcs = ["tensorflow_smoke_test.py"],
-    deps = [
-        ":tensorflow",
-        "//labm8:app",
-        "//labm8:test",
-    ],
-)
-=======
->>>>>>> 9aa996847... Auto format BUILD file.:third_party/tensorflow/BUILD.in
