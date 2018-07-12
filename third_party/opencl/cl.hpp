@@ -8,11 +8,13 @@
 #pragma GCC diagnostic ignored "-Wundef"
 #pragma GCC diagnostic ignored "-Wsign-conversion"
 <<<<<<< HEAD:third_party/opencl/cl.hpp
+<<<<<<< HEAD:third_party/opencl/cl.hpp
 =======
 #pragma GCC diagnostic ignored "-Wreserved-id-macro"
 >>>>>>> 4b74f4f77... Fix more compiler warnings:extern/opencl/include/cl.hpp
+=======
+>>>>>>> 84e4ba966... Remove unrecognized error diagnostics.:third_party/opencl/include/cl.hpp
 #pragma GCC diagnostic ignored "-Wdeprecated"
-#pragma GCC diagnostic ignored "-Wextra-semi"
 
 /*******************************************************************************
 <<<<<<< HEAD:third_party/opencl/cl.hpp
