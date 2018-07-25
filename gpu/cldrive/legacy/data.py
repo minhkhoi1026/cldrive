@@ -15,9 +15,8 @@
 # along with cldrive.  If not, see <https://www.gnu.org/licenses/>.
 """Generate data for OpenCL arguments."""
 import functools
-from enum import Enum
-
 import numpy as np
+from enum import Enum
 
 <<<<<<< HEAD:gpu/cldrive/legacy/data.py
 from gpu.cldrive.legacy import args as _args
