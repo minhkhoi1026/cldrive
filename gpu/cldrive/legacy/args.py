@@ -170,9 +170,14 @@ class KernelArg(object):
       if "__constant" in self.ast.quals:
         address_quals.append("constant")
 
+<<<<<<< HEAD:gpu/cldrive/legacy/args.py
       err_prefix = (
         "Pointer argument " f"'{self.quals_str}{self.typename} *{self.name}'"
       )
+=======
+      err_prefix = ('Pointer argument '
+                    f"'{self.quals_str}{self.typename} *{self.name}'")
+>>>>>>> c4b44b06f... Better args tests.:gpu/cldrive/args.py
       if len(address_quals) == 1:
         self.address_space = address_quals[0]
       elif len(address_quals) > 1:
