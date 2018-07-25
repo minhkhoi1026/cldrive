@@ -1,3 +1,4 @@
+<<<<<<< HEAD:gpu/cldrive/legacy/data.py
 # Copyright (c) 2016-2020 Chris Cummins.
 # This file is part of cldrive.
 #
@@ -13,6 +14,8 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with cldrive.  If not, see <https://www.gnu.org/licenses/>.
+=======
+>>>>>>> ccad601bb... Refactor and test data module.:gpu/cldrive/data.py
 """Generate data for OpenCL arguments."""
 import functools
 import numpy as np
@@ -29,7 +32,10 @@ from lib.labm8 import err
 
 class Generator(Enum):
   """Data generator types."""
+<<<<<<< HEAD:gpu/cldrive/legacy/data.py
 
+=======
+>>>>>>> ccad601bb... Refactor and test data module.:gpu/cldrive/data.py
   # We wrap functions in a partial so that they are interpreted as attributes
   # rather than methods. See: http://stackoverflow.com/a/40339397
   RAND = functools.partial(np.random.rand)
@@ -42,7 +48,11 @@ class Generator(Enum):
     return self.value(*args, **kwargs).astype(numpy_type)
 
   @staticmethod
+<<<<<<< HEAD:gpu/cldrive/legacy/data.py
   def FromString(string: str) -> "Generator":
+=======
+  def FromString(string: str) -> 'Generator':
+>>>>>>> ccad601bb... Refactor and test data module.:gpu/cldrive/data.py
     if string == "rand":
       return Generator.RAND
     elif string == "arange":
@@ -55,9 +65,14 @@ class Generator(Enum):
       raise ValueError(f"Unknown generator name: '{string}'")
 
 
+<<<<<<< HEAD:gpu/cldrive/legacy/data.py
 def MakeData(
   src: str, size: int, data_generator: Generator, scalar_val: float = None
 ) -> np.array:
+=======
+def MakeData(src: str, size: int, data_generator: Generator,
+             scalar_val: float = None) -> np.array:
+>>>>>>> ccad601bb... Refactor and test data module.:gpu/cldrive/data.py
   """Generate data for OpenCL kernels.
 
   Creates a numpy array for each OpenCL argument, except arguments with the
