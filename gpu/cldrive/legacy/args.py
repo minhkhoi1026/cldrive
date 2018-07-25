@@ -16,6 +16,7 @@
 """OpenCL argument and type handling."""
 import re
 import typing
+<<<<<<< HEAD:gpu/cldrive/legacy/args.py
 
 import numpy as np
 from pycparser.c_ast import FileAST
@@ -23,6 +24,10 @@ from pycparser.c_ast import IdentifierType
 from pycparser.c_ast import NodeVisitor
 from pycparser.c_ast import PtrDecl
 from pycparser.c_ast import Struct
+=======
+from pycparser.c_ast import FileAST, IdentifierType, NodeVisitor, PtrDecl, \
+  Struct
+>>>>>>> cdfe8c9bb... Remove unused function.:gpu/cldrive/args.py
 from pycparser.plyparser import ParseError
 from pycparserext.ext_c_parser import OpenCLCParser
 
