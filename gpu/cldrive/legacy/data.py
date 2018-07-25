@@ -1,3 +1,4 @@
+<<<<<<< HEAD:gpu/cldrive/legacy/data.py
 # Copyright (c) 2016, 2017, 2018, 2019 Chris Cummins.
 # This file is part of cldrive.
 #
@@ -13,6 +14,8 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with cldrive.  If not, see <https://www.gnu.org/licenses/>.
+=======
+>>>>>>> ccad601bb... Refactor and test data module.:gpu/cldrive/data.py
 """Generate data for OpenCL arguments."""
 import functools
 import numpy as np
@@ -54,9 +57,13 @@ class Generator(Enum):
       raise ValueError(f"Unknown generator name: '{string}'")
 
 
+<<<<<<< HEAD:gpu/cldrive/legacy/data.py
 def MakeData(src: str,
              size: int,
              data_generator: Generator,
+=======
+def MakeData(src: str, size: int, data_generator: Generator,
+>>>>>>> ccad601bb... Refactor and test data module.:gpu/cldrive/data.py
              scalar_val: float = None) -> np.array:
   """Generate data for OpenCL kernels.
 
