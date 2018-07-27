@@ -23,11 +23,17 @@ from signal import Signals
 from subprocess import PIPE, Popen
 from tempfile import NamedTemporaryFile
 
+<<<<<<< HEAD:gpu/cldrive/legacy/driver.py
 import numpy as np
 
 from gpu.cldrive.legacy import args as _args
 from gpu.cldrive.legacy import env as _env
 from labm8 import app
+=======
+from gpu.cldrive import args as _args
+from gpu.cldrive import env as _env
+from phd.lib.labm8 import err
+>>>>>>> 386c66354... Add 'phd' prefix to labm8 imports.:gpu/cldrive/driver.py
 
 FLAGS = app.FLAGS
 

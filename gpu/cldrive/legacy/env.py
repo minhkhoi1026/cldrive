@@ -17,12 +17,18 @@ import platform
 import subprocess
 import sys
 import typing
+from phd.lib.labm8 import bazelutil
+from phd.lib.labm8 import pbutil
 from typing import Iterator
 
 from gpu.clinfo.proto import clinfo_pb2
 from gpu.oclgrind import oclgrind
+<<<<<<< HEAD:gpu/cldrive/legacy/env.py
 from labm8 import bazelutil
 from labm8 import pbutil
+=======
+
+>>>>>>> 386c66354... Add 'phd' prefix to labm8 imports.:gpu/cldrive/env.py
 
 CLINFO = bazelutil.DataPath('phd/gpu/clinfo/clinfo')
 
