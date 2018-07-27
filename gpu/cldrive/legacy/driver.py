@@ -104,7 +104,11 @@ class NDRange(typing.NamedTuple):
     return self == rhs or self > rhs
 
   def ToString(self) -> str:
+<<<<<<< HEAD:gpu/cldrive/legacy/driver.py
     return f"{self.x},{self.y},{self.x}"
+=======
+    return f'{self.x},{self.y},{self.x}'
+>>>>>>> 91de142f6... Add a ToString() method to NDRange.:gpu/cldrive/driver.py
 
   @staticmethod
   def FromString(string: str) -> "NDRange":
