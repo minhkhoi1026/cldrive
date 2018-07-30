@@ -136,6 +136,7 @@ def gen_data_blocks(kernel_args: typing.List[_args.KernelArg],
   )
 
 
+<<<<<<< HEAD:gpu/cldrive/legacy/cgen.py
 def emit_c(
   src: str,
   inputs: np.array,
@@ -148,6 +149,13 @@ def emit_c(
   compile_only: bool = False,
   create_kernel: bool = True,
 ) -> np.array:
+=======
+def emit_c(src: str, inputs: np.array, gsize: typing.Optional[driver.NDRange],
+           lsize: typing.Optional[driver.NDRange], timeout: int = -1,
+           optimizations: bool = True, profiling: bool = False,
+           debug: bool = False, compile_only: bool = False,
+           create_kernel: bool = True) -> np.array:
+>>>>>>> c765d1b02... Fix type hints for emit_c().:gpu/cldrive/cgen.py
   """
   Generate C code to drive kernel.
 
