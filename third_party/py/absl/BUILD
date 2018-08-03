@@ -11,6 +11,5 @@ py_library(
     srcs = ["absl.py"],
     deps = [
         requirement("absl-py"),
-        requirement("six"),
     ],
 )
