@@ -8,7 +8,11 @@ licenses(["notice"])  # BSD
 
 py_library(
     name = "protobuf",
+<<<<<<< HEAD
     srcs = ["//third_party/py:empty.py"],
+=======
+    srcs = ["protobuf.py"],
+>>>>>>> c1995bae2... More //third_party/py packages.
     deps = [
         requirement("protobuf"),
     ],

@@ -8,7 +8,11 @@ licenses(["notice"])  # BSD
 
 py_library(
     name = "pycparser",
+<<<<<<< HEAD
     srcs = ["//third_party/py:empty.py"],
+=======
+    srcs = ["pycparser.py"],
+>>>>>>> c1995bae2... More //third_party/py packages.
     deps = [
         requirement("pycparser"),
         requirement("pycparserext"),
