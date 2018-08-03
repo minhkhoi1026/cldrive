@@ -11,7 +11,10 @@ py_library(
     srcs = ["github.py"],
     deps = [
         requirement("PyGithub"),
+<<<<<<< HEAD
         requirement("jwt"),  # Implicit dependency.
         requirement("cryptography"),  # Implicit dependency.
+=======
+>>>>>>> c1995bae2... More //third_party/py packages.
     ],
 )
