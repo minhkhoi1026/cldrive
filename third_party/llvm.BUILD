@@ -38,14 +38,6 @@ filegroup(
 )
 
 filegroup(
-<<<<<<< HEAD:third_party/llvm.BUILD
-    name = "llvm-as",
-    srcs = [
-        "bin/llvm-as",
-    ],
-)
-
-filegroup(
     name = "llvm-link",
     srcs = [
         "bin/llvm-link",
@@ -53,8 +45,6 @@ filegroup(
 )
 
 filegroup(
-=======
->>>>>>> dd9155c85... Add an llvm ld binary filegroup.:llvm.BUILD
     name = "opt",
     srcs = ["bin/opt"],
 )
@@ -67,15 +57,7 @@ filegroup(
 )
 
 filegroup(
-<<<<<<< HEAD:third_party/llvm.BUILD
-<<<<<<< HEAD:third_party/llvm.BUILD
     name = "libs_files",
-=======
-    name = "libs",
->>>>>>> 05c5fe61f... Add a @llvm_{mac,linux}//:libs file group.:llvm.BUILD
-=======
-    name = "libs_files",
->>>>>>> c8b19119e... Fix conflicting target name.:llvm.BUILD
     srcs = glob([
         "lib/**/*",
     ]),
