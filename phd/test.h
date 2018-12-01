@@ -4,27 +4,38 @@
 // gtest and benchmark libraries.
 #pragma once
 
-#include "phd/app.h"
-
 #include "benchmark/benchmark.h"
-#include "gflags/gflags.h"
 #include "gtest/gtest.h"
 
 #ifdef TEST_MAIN
 #error "TEST_MAIN already defined!"
 #endif
 
-DEFINE_string(test_coverage_data_dir, "",
-              "TODO(cec): An unused flag added to provide usage compatbility "
-              "with python tests that use this flag.");
-
 // Inserts a main() function which runs google benchmarks and gtest suite.
-#define TEST_MAIN()                                    \
-  int main(int argc, char **argv) {                    \
-    testing::InitGoogleTest(&argc, argv);              \
-    phd::InitApp(&argc, &argv, "Test suite program."); \
-    const auto ret = RUN_ALL_TESTS();                  \
-    benchmark::Initialize(&argc, argv);                \
-    benchmark::RunSpecifiedBenchmarks();               \
-    return ret;                                        \
+#define TEST_MAIN() \
+  int main(int argc, char **argv) { \
+    testing::InitGoogleTest(&argc, argv); \
+    const auto ret = RUN_ALL_TESTS(); \
+    benchmark::Initialize(&argc, argv); \
+    benchmark::RunSpecifiedBenchmarks(); \
+    return ret; \
   }
+
+namespace test {
+namespace debug {
+
+// Debug type:
+template<typename T> struct debug_t {};
+
+}  // debug namespace
+}  // test namespace
+
+// Macros for debugging types:
+//
+// Fatally crash the compiler by attempting to construct an object of
+// 'type' using an unknown argument.
+#define PRINT_TYPENAME(type) type _____{test::debug::debug_t<type>};
+//
+// Fatally crash the compiler by attempting to cast 'variable' to an
+// unknown type.
+#define PRINT_TYPE(variable) static_cast<test::debug::debug_t<type>>(variable);
