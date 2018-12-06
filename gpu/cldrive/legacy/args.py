@@ -18,10 +18,15 @@ import re
 import typing
 <<<<<<< HEAD:gpu/cldrive/legacy/args.py
 <<<<<<< HEAD:gpu/cldrive/legacy/args.py
+<<<<<<< HEAD:gpu/cldrive/legacy/args.py
 
 import numpy as np
 =======
 >>>>>>> c1995bae2... More //third_party/py packages.:gpu/cldrive/args.py
+=======
+
+import numpy as np
+>>>>>>> 1eed6e90b... Automated code format.:gpu/cldrive/args.py
 from pycparser.c_ast import FileAST
 from pycparser.c_ast import IdentifierType
 from pycparser.c_ast import NodeVisitor
