@@ -19,15 +19,17 @@ import sys
 import typing
 from typing import Iterator
 
-from phd.lib.labm8 import bazelutil
-from phd.lib.labm8 import pbutil
-
 from gpu.clinfo.proto import clinfo_pb2
 from gpu.oclgrind import oclgrind
+<<<<<<< HEAD:gpu/cldrive/legacy/env.py
 <<<<<<< HEAD:gpu/cldrive/legacy/env.py
 from labm8 import bazelutil
 from labm8 import pbutil
 =======
+=======
+from labm8 import bazelutil
+from labm8 import pbutil
+>>>>>>> 190ef5131... Move //lib/labm8 to //labm8.:gpu/cldrive/env.py
 
 >>>>>>> 386c66354... Add 'phd' prefix to labm8 imports.:gpu/cldrive/env.py
 
