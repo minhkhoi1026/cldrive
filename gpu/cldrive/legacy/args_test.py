@@ -1,3 +1,4 @@
+<<<<<<< HEAD:gpu/cldrive/legacy/args_test.py
 # Copyright (c) 2016, 2017, 2018, 2019 Chris Cummins.
 # This file is part of cldrive.
 #
@@ -16,6 +17,13 @@
 """Unit tests for //gpu/cldrive/legacy/args.py."""
 
 import pytest
+=======
+"""Unit tests for //gpu/cldrive/args.py."""
+import sys
+
+import pytest
+from absl import app
+>>>>>>> 1eed6e90b... Automated code format.:gpu/cldrive/args_test.py
 
 from gpu.cldrive.legacy import args
 from labm8 import app

@@ -1,6 +1,7 @@
 <<<<<<< HEAD:gpu/cldrive/legacy/cgen.py
 <<<<<<< HEAD:gpu/cldrive/legacy/cgen.py
 <<<<<<< HEAD:gpu/cldrive/legacy/cgen.py
+<<<<<<< HEAD:gpu/cldrive/legacy/cgen.py
 # Copyright (c) 2016, 2017, 2018, 2019 Chris Cummins.
 # This file is part of cldrive.
 #
@@ -31,12 +32,19 @@ from gpu.cldrive.legacy import driver
 import typing
 =======
 import numpy as np
+=======
+>>>>>>> 1eed6e90b... Automated code format.:gpu/cldrive/cgen.py
 import typing
 >>>>>>> e75d20235... Begin cldrive args refactor.:gpu/cldrive/cgen.py
 
 import numpy as np
 
+<<<<<<< HEAD:gpu/cldrive/legacy/cgen.py
 >>>>>>> c1018e2b1... Minor code style fixes.:gpu/cldrive/cgen.py
+=======
+import numpy as np
+
+>>>>>>> 1eed6e90b... Automated code format.:gpu/cldrive/cgen.py
 from gpu.cldrive import args as _args
 from gpu.cldrive import driver
 >>>>>>> 4638147c0... Indent by 2 spaces and enable doctest.:gpu/cldrive/cgen.py
