@@ -32,11 +32,15 @@ from lib.labm8 import err
 =======
 =======
 import numpy as np
+<<<<<<< HEAD:gpu/cldrive/legacy/data.py
 >>>>>>> 1eed6e90b... Automated code format.:gpu/cldrive/data.py
 from phd.lib.labm8 import err
 >>>>>>> 386c66354... Add 'phd' prefix to labm8 imports.:gpu/cldrive/data.py
+=======
+>>>>>>> 190ef5131... Move //lib/labm8 to //labm8.:gpu/cldrive/data.py
 
 from gpu.cldrive import args as _args
+from labm8 import err
 
 
 class Generator(Enum):

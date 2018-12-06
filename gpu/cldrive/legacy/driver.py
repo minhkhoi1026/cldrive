@@ -37,11 +37,14 @@ from phd.lib.labm8 import err
 >>>>>>> 386c66354... Add 'phd' prefix to labm8 imports.:gpu/cldrive/driver.py
 =======
 import numpy as np
-from phd.lib.labm8 import err
 
 from gpu.cldrive import args as _args
 from gpu.cldrive import env as _env
+<<<<<<< HEAD:gpu/cldrive/legacy/driver.py
 >>>>>>> 1eed6e90b... Automated code format.:gpu/cldrive/driver.py
+=======
+from labm8 import err
+>>>>>>> 190ef5131... Move //lib/labm8 to //labm8.:gpu/cldrive/driver.py
 
 from gpu.cldrive.legacy import args as _args
 from gpu.cldrive.legacy import env as _env
