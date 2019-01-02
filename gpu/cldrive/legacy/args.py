@@ -158,7 +158,11 @@ class KernelArg(object):
       ) from e
 
     self.typename = " ".join(type_names)
+<<<<<<< HEAD:gpu/cldrive/legacy/args.py
     self.bare_type = self.typename.rstrip("0123456789")
+=======
+    self.bare_type = self.typename.rstrip('0123456789')
+>>>>>>> f0b15a3e0... Defer numpy_type property until needed.:gpu/cldrive/args.py
 
     # Get address space.
     if self.is_pointer:
@@ -214,12 +218,19 @@ class KernelArg(object):
       return NUMPY_TYPES[self.bare_type]
     except KeyError:
       supported_types_str = ",".join(sorted(NUMPY_TYPES.keys()))
+<<<<<<< HEAD:gpu/cldrive/legacy/args.py
       raise OpenCLValueError(
         f"""\
 Unsupported type '{self.typename}' for argument \
 '{self.quals_str}{self.typename} {self.name}'. \
 Supported types are: {{{supported_types_str}}}"""
       )
+=======
+      raise OpenCLValueError(f"""\
+Unsupported type '{self.typename}' for argument \
+'{self.quals_str}{self.typename} {self.name}'. \
+Supported types are: {{{supported_types_str}}}""")
+>>>>>>> f0b15a3e0... Defer numpy_type property until needed.:gpu/cldrive/args.py
 
   def __repr__(self):
     s = self.quals if len(self.quals) else []
