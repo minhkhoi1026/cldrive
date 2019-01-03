@@ -19,15 +19,24 @@
 import pytest
 =======
 """Unit tests for //gpu/cldrive/args.py."""
-import sys
 
 import pytest
+<<<<<<< HEAD:gpu/cldrive/legacy/args_test.py
 from absl import app
 >>>>>>> 1eed6e90b... Automated code format.:gpu/cldrive/args_test.py
 
 from gpu.cldrive.legacy import args
 from labm8 import app
 from labm8 import test
+=======
+from absl import flags
+
+from gpu.cldrive import args
+from labm8 import test
+
+
+FLAGS = flags.FLAGS
+>>>>>>> ad2622a47... Port tests to //labm8:test.:gpu/cldrive/args_test.py
 
 FLAGS = app.FLAGS
 
