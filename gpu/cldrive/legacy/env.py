@@ -77,10 +77,13 @@ class OpenCLEnvironment(object):
   def opencl_opt(self) -> str:
     return self._proto.opencl_opt
 
+<<<<<<< HEAD:gpu/cldrive/legacy/env.py
   @opencl_opt.setter
   def opencl_opt(self, opt: bool):
     self._proto.opencl_opt = opt
 
+=======
+>>>>>>> fb588fe2d... Begin forcing a specific device for benchmarks.:gpu/cldrive/env.py
   @property
   def proto(self) -> clinfo_pb2.OpenClDevice:
     return self._proto
@@ -151,6 +154,7 @@ class OpenCLEnvironment(object):
           f"Requested OpenCL environment not available: '{env_name}'.\n"
           f"Available OpenCL devices:\n{available}")
 
+<<<<<<< HEAD:gpu/cldrive/legacy/env.py
 
 class OclgrindOpenCLEnvironment(OpenCLEnvironment):
   """A mock OpenCLEnvironment for oclgrind."""
@@ -170,6 +174,8 @@ class OclgrindOpenCLEnvironment(OpenCLEnvironment):
                          stdin=stdin,
                          env=env)
 
+=======
+>>>>>>> fb588fe2d... Begin forcing a specific device for benchmarks.:gpu/cldrive/env.py
 
 class OclgrindOpenCLEnvironment(OpenCLEnvironment):
   """A mock OpenCLEnvironment for oclgrind."""
