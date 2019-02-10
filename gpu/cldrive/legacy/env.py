@@ -78,12 +78,18 @@ class OpenCLEnvironment(object):
     return self._proto.opencl_opt
 
 <<<<<<< HEAD:gpu/cldrive/legacy/env.py
+<<<<<<< HEAD:gpu/cldrive/legacy/env.py
+=======
+>>>>>>> ada112208... Allow setting OpenCL optimization.:gpu/cldrive/env.py
   @opencl_opt.setter
   def opencl_opt(self, opt: bool):
     self._proto.opencl_opt = opt
 
+<<<<<<< HEAD:gpu/cldrive/legacy/env.py
 =======
 >>>>>>> fb588fe2d... Begin forcing a specific device for benchmarks.:gpu/cldrive/env.py
+=======
+>>>>>>> ada112208... Allow setting OpenCL optimization.:gpu/cldrive/env.py
   @property
   def proto(self) -> clinfo_pb2.OpenClDevice:
     return self._proto
