@@ -1,29 +1,20 @@
 # Root package for code that works with GitHub.
-#
-# Copyright 2018-2020 Chris Cummins <chrisc.101@gmail.com>.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
 
-load("@build_stack_rules_proto//python:python_proto_library.bzl", "python_proto_library")
+load("@org_pubref_rules_protobuf//python:rules.bzl", "py_proto_library")
 
-py_binary(
+py_proto_library(
+    name = "github_py_pb2",
+    protos = ["github.proto"],
+)
+
+py_library(
     name = "api",
     srcs = ["api.py"],
     visibility = ["//visibility:public"],
     deps = [
-        "//labm8/py:app",
+        ":github_py_pb2",
+        "//third_party/py/absl",
         "//third_party/py/github",
-        "//tools/git:git_clone",
     ],
 )
 
@@ -32,10 +23,8 @@ py_test(
     srcs = ["api_test.py"],
     deps = [
         ":api",
-        "//datasets/github/testing:requires_access_token",
-        "//labm8/py:app",
-        "//labm8/py:fs",
-        "//labm8/py:test",
+        "//labm8:test",
+        "//third_party/py/absl",
         "//third_party/py/pytest",
     ],
 )
