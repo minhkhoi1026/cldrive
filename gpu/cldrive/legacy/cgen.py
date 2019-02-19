@@ -426,10 +426,14 @@ int main(int argc, char** argv) {{
         fseek(infile, 0, SEEK_SET);
 
 <<<<<<< HEAD:gpu/cldrive/legacy/cgen.py
+<<<<<<< HEAD:gpu/cldrive/legacy/cgen.py
         char *buf = (char *)malloc(fsize + 1);
 =======
         char *buf = malloc(fsize + 1);
 >>>>>>> 506ca7334... cgen: Support -f path:cldrive/cgen.py
+=======
+        char *buf = (char *)malloc(fsize + 1);
+>>>>>>> a24210ee6... Cast malloc return type.:gpu/cldrive/cgen.py
         fread(buf, fsize, 1, infile);
         fclose(infile);
         buf[fsize] = 0;
