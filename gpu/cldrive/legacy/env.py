@@ -85,12 +85,17 @@ class OpenCLEnvironment(object):
     """
     return self.platform_id, self.device_id
 
+<<<<<<< HEAD:gpu/cldrive/legacy/env.py
   def Exec(
     self,
     argv: typing.List[str],
     stdin: typing.Optional[str] = None,
     env: typing.Dict[str, str] = None,
   ) -> subprocess.Popen:
+=======
+  def Exec(self, argv: typing.List[str], stdin: typing.Optional[str] = None,
+           env: typing.Dict[str, str] = None) -> subprocess.Popen:
+>>>>>>> 3288bd5ae... Add optional stdin arguments.:gpu/cldrive/env.py
     """Execute a command in an environment for the OpenCL device.
 
     This creates a Popen process, executes it, and sets the stdout and stderr
@@ -107,6 +112,7 @@ class OpenCLEnvironment(object):
     Returns:
       A Popen instance, with string stdout and stderr attributes set.
     """
+<<<<<<< HEAD:gpu/cldrive/legacy/env.py
     # app.Log(2, '$ %s', ' '.join(argv))
     process = subprocess.Popen(
       argv,
@@ -116,6 +122,13 @@ class OpenCLEnvironment(object):
       universal_newlines=True,
       env=env,
     )
+=======
+    # logging.debug('$ %s', ' '.join(argv))
+    process = subprocess.Popen(argv, stdout=subprocess.PIPE,
+                               stdin=subprocess.PIPE if stdin else None,
+                               stderr=subprocess.PIPE, universal_newlines=True,
+                               env=env)
+>>>>>>> 3288bd5ae... Add optional stdin arguments.:gpu/cldrive/env.py
     if stdin:
       stdout, stderr = process.communicate(stdin)
     else:
@@ -151,6 +164,7 @@ class OclgrindOpenCLEnvironment(OpenCLEnvironment):
   """A mock OpenCLEnvironment for oclgrind."""
 
   def __init__(self):
+<<<<<<< HEAD:gpu/cldrive/legacy/env.py
     super(OclgrindOpenCLEnvironment, self).__init__(oclgrind.CLINFO_DESCRIPTION)
 
   def Exec(
@@ -173,6 +187,18 @@ class OclgrindOpenCLEnvironment(OpenCLEnvironment):
       stdin=stdin,
       env=env,
     )
+=======
+    super(OclgrindOpenCLEnvironment, self).__init__(
+        oclgrind.CLINFO_DESCRIPTION)
+
+  def Exec(self, argv: typing.List[str],
+           stdin: typing.Optional[str] = None,
+           env: typing.Dict[str, str] = None) -> subprocess.Popen:
+    """Execute a command in the device environment."""
+    return oclgrind.Exec(
+        ['--max-errors', '1', '--uninitialized', '--data-races',
+         '--uniform-writes', '--uniform-writes'] + argv, stdin=stdin, env=env)
+>>>>>>> 3288bd5ae... Add optional stdin arguments.:gpu/cldrive/env.py
 
 
 def host_os() -> str:
