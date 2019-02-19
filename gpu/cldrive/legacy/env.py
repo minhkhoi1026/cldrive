@@ -104,9 +104,13 @@ class OpenCLEnvironment(object):
     """
     return self.platform_id, self.device_id
 
+<<<<<<< HEAD:gpu/cldrive/legacy/env.py
   def Exec(self,
            argv: typing.List[str],
            stdin: typing.Optional[str] = None,
+=======
+  def Exec(self, argv: typing.List[str], stdin: typing.Optional[str] = None,
+>>>>>>> 3288bd5ae... Add optional stdin arguments.:gpu/cldrive/env.py
            env: typing.Dict[str, str] = None) -> subprocess.Popen:
     """Execute a command in an environment for the OpenCL device.
 
@@ -124,12 +128,19 @@ class OpenCLEnvironment(object):
     Returns:
       A Popen instance, with string stdout and stderr attributes set.
     """
+<<<<<<< HEAD:gpu/cldrive/legacy/env.py
     # app.Log(2, '$ %s', ' '.join(argv))
     process = subprocess.Popen(argv,
                                stdout=subprocess.PIPE,
                                stdin=subprocess.PIPE if stdin else None,
                                stderr=subprocess.PIPE,
                                universal_newlines=True,
+=======
+    # logging.debug('$ %s', ' '.join(argv))
+    process = subprocess.Popen(argv, stdout=subprocess.PIPE,
+                               stdin=subprocess.PIPE if stdin else None,
+                               stderr=subprocess.PIPE, universal_newlines=True,
+>>>>>>> 3288bd5ae... Add optional stdin arguments.:gpu/cldrive/env.py
                                env=env)
     if stdin:
       stdout, stderr = process.communicate(stdin)
@@ -191,11 +202,12 @@ class OclgrindOpenCLEnvironment(OpenCLEnvironment):
         oclgrind.CLINFO_DESCRIPTION)
 
   def Exec(self, argv: typing.List[str],
+           stdin: typing.Optional[str] = None,
            env: typing.Dict[str, str] = None) -> subprocess.Popen:
     """Execute a command in the device environment."""
     return oclgrind.Exec(
         ['--max-errors', '1', '--uninitialized', '--data-races',
-         '--uniform-writes', '--uniform-writes'] + argv, env=env)
+         '--uniform-writes', '--uniform-writes'] + argv, stdin=stdin, env=env)
 
 
 def host_os() -> str:
