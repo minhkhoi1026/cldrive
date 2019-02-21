@@ -35,6 +35,8 @@
 #include <string.h>
 #include <string>
 
+#include "phd/logging.h"
+
 namespace phd {
 
 std::ostream &operator<<(std::ostream &o, StringPiece piece) {
@@ -44,22 +46,21 @@ std::ostream &operator<<(std::ostream &o, StringPiece piece) {
 
 // Out-of-line error path.
 void StringPiece::LogFatalSizeTooBig(size_t size, const char *details) {
-  // FIXME(cec): LOG(FATAL) << "size too big: " << size << " details: " <<
-  // details;
+  LOG(FATAL) << "size too big: " << size << " details: " << details;
 }
 
 StringPiece::StringPiece(StringPiece x, stringpiece_ssize_type pos)
     : ptr_(x.ptr_ + pos), length_(x.length_ - pos) {
-  // FIXME(cec): DCHECK_LE(0, pos);
-  // FIXME(cec): DCHECK_LE(pos, x.length_);
+  DCHECK_LE(0, pos);
+  DCHECK_LE(pos, x.length_);
 }
 
 StringPiece::StringPiece(StringPiece x, stringpiece_ssize_type pos,
                          stringpiece_ssize_type len)
     : ptr_(x.ptr_ + pos), length_(std::min(len, x.length_ - pos)) {
-  // FIXME(cec): DCHECK_LE(0, pos);
-  // FIXME(cec): DCHECK_LE(pos, x.length_);
-  // FIXME(cec): DCHECK_GE(len, 0);
+  DCHECK_LE(0, pos);
+  DCHECK_LE(pos, x.length_);
+  DCHECK_GE(len, 0);
 }
 
 void StringPiece::CopyToString(string *target) const {
@@ -94,7 +95,7 @@ stringpiece_ssize_type StringPiece::copy(char *buf, size_type n,
   return ret;
 }
 
-bool StringPiece::contains(StringPiece s) const { return find(s, 0) != static_cast<int>(npos); }
+bool StringPiece::contains(StringPiece s) const { return find(s, 0) != npos; }
 
 stringpiece_ssize_type StringPiece::find(StringPiece s, size_type pos) const {
   if (length_ <= 0 || pos > static_cast<size_type>(length_)) {
@@ -271,7 +272,7 @@ stringpiece_ssize_type StringPiece::find_last_not_of(char c,
 }
 
 StringPiece StringPiece::substr(size_type pos, size_type n) const {
-  if (static_cast<int>(pos) > length_)
+  if (pos > length_)
     pos = length_;
   if (n > length_ - pos)
     n = length_ - pos;
