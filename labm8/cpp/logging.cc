@@ -32,13 +32,20 @@
 
 #include "labm8/cpp/logging.h"
 
+<<<<<<< HEAD:labm8/cpp/logging.cc
 #include <atomic>
 
+=======
+>>>>>>> 86760c837... Use same logging formatting in C++ as Python.:phd/logging.cc
 #include "absl/strings/str_format.h"
 #include "absl/time/clock.h"
 #include "absl/time/time.h"
 
+<<<<<<< HEAD:labm8/cpp/logging.cc
 #include "labm8/cpp/string.h"
+=======
+#include "phd/string.h"
+>>>>>>> 86760c837... Use same logging formatting in C++ as Python.:phd/logging.cc
 
 // ===================================================================
 // emulates google3/base/logging.cc
@@ -66,7 +73,11 @@ void DefaultLogHandler(LogLevel level, const char *filename, int line,
   // initialization time.
   fprintf(stderr, "%s %s [%s:%d] %s\n", level_names[level], timestamp.c_str(),
           filename, line, message.c_str());
+<<<<<<< HEAD:labm8/cpp/logging.cc
   fflush(stderr);  // Needed on MSVC.
+=======
+  fflush(stderr); // Needed on MSVC.
+>>>>>>> 86760c837... Use same logging formatting in C++ as Python.:phd/logging.cc
 }
 
 void NullLogHandler(LogLevel /* level */, const char * /* filename */,
