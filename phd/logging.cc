@@ -32,12 +32,6 @@
 
 #include "phd/logging.h"
 
-#include <atomic>
-
-#include "absl/strings/str_format.h"
-#include "absl/time/clock.h"
-#include "absl/time/time.h"
-
 #include "phd/string.h"
 
 // ===================================================================
@@ -59,13 +53,10 @@ void DefaultLogHandler(LogLevel level, const char *filename, int line,
   }
   static const char *level_names[] = {"D", "I", "W", "E", "F"};
 
-  string timestamp =
-      absl::FormatTime("%Y-%m-%d %H:%M:%S", absl::Now(), absl::TimeZone());
-
   // We use fprintf() instead of cerr because we want this to work at static
   // initialization time.
-  fprintf(stderr, "%s %s [%s:%d] %s\n", level_names[level], timestamp.c_str(),
-          filename, line, message.c_str());
+  fprintf(stderr, "[%s %s:%d] %s\n", level_names[level], filename, line,
+          message.c_str());
   fflush(stderr); // Needed on MSVC.
 }
 
