@@ -35,7 +35,11 @@
 #include <ostream>
 #include <string>
 
+<<<<<<< HEAD:labm8/cpp/stringpiece.cc
 namespace labm8 {
+=======
+namespace phd {
+>>>>>>> 946613116... Fixes for Google logging port.:phd/stringpiece.cc
 
 std::ostream &operator<<(std::ostream &o, StringPiece piece) {
   o.write(piece.data(), piece.size());

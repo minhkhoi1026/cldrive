@@ -30,9 +30,15 @@
 
 #pragma once
 
+<<<<<<< HEAD:labm8/cpp/logging.h
 #include "labm8/cpp/macros.h"
 #include "labm8/cpp/port.h"
 #include "labm8/cpp/stringpiece.h"
+=======
+#include "phd/macros.h"
+#include "phd/port.h"
+#include "phd/stringpiece.h"
+>>>>>>> 946613116... Fixes for Google logging port.:phd/logging.h
 
 // ===================================================================
 // emulates google3/base/logging.h
@@ -40,6 +46,7 @@
 namespace labm8 {
 
 enum LogLevel {
+<<<<<<< HEAD:labm8/cpp/logging.h
   LOGLEVEL_DEBUG,    // Debugging information.
   LOGLEVEL_INFO,     // Informational.
   LOGLEVEL_WARNING,  // Warns about issues that, although not technically a
@@ -52,6 +59,20 @@ enum LogLevel {
                      // recover.  This usually indicates a programming error
                      // in the code which calls the library, especially when
                      // compiled in debug mode.
+=======
+  LOGLEVEL_DEBUG,   // Debugging information.
+  LOGLEVEL_INFO,    // Informational.
+  LOGLEVEL_WARNING, // Warns about issues that, although not technically a
+                    // problem now, could cause problems in the future.  For
+                    // example, a // warning will be printed when parsing a
+                    // message that is near the message size limit.
+  LOGLEVEL_ERROR,   // An error occurred which should never happen during
+                    // normal use.
+  LOGLEVEL_FATAL,   // An error occurred from which the library cannot
+                    // recover.  This usually indicates a programming error
+                    // in the code which calls the library, especially when
+                    // compiled in debug mode.
+>>>>>>> 946613116... Fixes for Google logging port.:phd/logging.h
 
 #ifdef NDEBUG
   LOGLEVEL_DFATAL = LOGLEVEL_ERROR
