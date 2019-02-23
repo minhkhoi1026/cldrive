@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 // Copyright (c) 2016-2020 Chris Cummins.
 // This file is part of cldrive.
 //
@@ -33,3 +34,12 @@ void ProcessCldriveInstancesOrDie(CldriveInstances* instances) {
 
 PBUTIL_INPLACE_PROCESS_MAIN(gpu::cldrive::ProcessCldriveInstancesOrDie,
                             gpu::cldrive::CldriveInstances);
+=======
+#include "gpu/cldrive/native_driver_lib.h"
+#include "gpu/cldrive/proto/cldrive.pb.h"
+
+#include "phd/pbutil.h"
+
+PBUTIL_INPLACE_PROCESS_MAIN(gpu::cldrive::ProcessCldriveInstanceOrDie,
+                            gpu::cldrive::CldriveInstance);
+>>>>>>> c0eda32ea... Begin native implementation of cldrive.
