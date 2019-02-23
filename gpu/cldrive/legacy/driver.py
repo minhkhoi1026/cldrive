@@ -26,7 +26,10 @@ from tempfile import NamedTemporaryFile
 <<<<<<< HEAD:gpu/cldrive/legacy/driver.py
 <<<<<<< HEAD:gpu/cldrive/legacy/driver.py
 import numpy as np
+from absl import app
+from absl import flags
 
+<<<<<<< HEAD:gpu/cldrive/legacy/driver.py
 from gpu.cldrive.legacy import args as _args
 from gpu.cldrive.legacy import env as _env
 from labm8 import app
@@ -47,8 +50,21 @@ from labm8 import err
 >>>>>>> 190ef5131... Move //lib/labm8 to //labm8.:gpu/cldrive/driver.py
 
 FLAGS = app.FLAGS
+=======
+from gpu.cldrive.proto import cldrive_pb2
+from gpu.cldrive import args as _args
+from gpu.cldrive import env as _env
+from labm8 import bazelutil
+from labm8 import err
+from gpu.oclgrind import oclgrind
+from labm8 import pbutil
+
+FLAGS = flags.FLAGS
+>>>>>>> c0eda32ea... Begin native implementation of cldrive.:gpu/cldrive/driver.py
 
 ArgTuple = collections.namedtuple('ArgTuple', ['hostdata', 'devdata'])
+
+_NATIVE_DRIVER = bazelutil.DataPath('phd/gpu/cldrive/native_driver')
 
 
 class TimeoutError(RuntimeError):
@@ -299,3 +315,47 @@ def DriveKernel(env: _env.OpenCLEnvironment,
       raise error
     else:
       return outputs
+
+
+def DriveInstance(instance: cldrive_pb2.CldriveInstance) -> cldrive_pb2.CldriveInstance:
+  if instance.device.name == _env.OclgrindOpenCLEnvironment().name:
+    command = [str(oclgrind.OCLGRIND_PATH), str(_NATIVE_DRIVER)]
+  else:
+    command = [str(_NATIVE_DRIVER)]
+
+  pbutil.RunProcessMessageInPlace(command, instance)
+  return instance
+
+
+def main(argv):
+  assert not argv[1:]
+  # TODO(cec): Temporary hacky code for testing.
+  print(DriveInstance(cldrive_pb2.CldriveInstance(
+      device=_env.OclgrindOpenCLEnvironment().proto,
+      opencl_src="""
+kernel void A(global int* a, global float* b, const int c) {
+if (get_global_id(0) < c) { 
+  a[get_global_id(0)] = get_global_id(0);
+  b[get_global_id(0)] *= 2.0;
+}
+}""",
+      min_runs_per_kernel=10,
+      dynamic_params=[
+        cldrive_pb2.DynamicParams(
+            global_size_x=16,
+            local_size_x=16,
+        ),
+        cldrive_pb2.DynamicParams(
+            global_size_x=1024,
+            local_size_x=64,
+        ),
+        cldrive_pb2.DynamicParams(
+            global_size_x=128,
+            local_size_x=64,
+        ),
+      ],
+  )))
+
+
+if __name__ == '__main__':
+  app.run(main)

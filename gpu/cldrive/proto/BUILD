@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Copyright (c) 2016, 2017, 2018, 2019 Chris Cummins.
 # This file is part of cldrive.
 #
@@ -34,4 +35,27 @@ cc_proto_library(
 python_proto_library(
     name = "cldrive_pb_py",
     deps = [":cldrive_pb"],
+=======
+load("@org_pubref_rules_protobuf//cpp:rules.bzl", "cc_proto_library")
+load("@org_pubref_rules_protobuf//python:rules.bzl", "py_proto_library")
+
+package(default_visibility = ["//visibility:public"])
+
+cc_proto_library(
+    name = "cldrive_cc_pb2",
+    proto_deps = [
+        "//gpu/clinfo/proto:clinfo_cc_pb2",
+        "//gpu/libcecl/proto:libcecl_cc_pb2",
+    ],
+    protos = ["cldrive.proto"],
+)
+
+py_proto_library(
+    name = "cldrive_py_pb2",
+    proto_deps = [
+        "//gpu/clinfo/proto:clinfo_py_pb2",
+        "//gpu/libcecl/proto:libcecl_py_pb2",
+    ],
+    protos = ["cldrive.proto"],
+>>>>>>> c0eda32ea... Begin native implementation of cldrive.
 )
