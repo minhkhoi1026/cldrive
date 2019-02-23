@@ -33,10 +33,15 @@
 #include "labm8/cpp/logging.h"
 
 <<<<<<< HEAD:labm8/cpp/logging.cc
+<<<<<<< HEAD:labm8/cpp/logging.cc
 #include <atomic>
 
 =======
 >>>>>>> 86760c837... Use same logging formatting in C++ as Python.:phd/logging.cc
+=======
+#include <atomic>
+
+>>>>>>> 58b322611... Add missing atomic header.:phd/logging.cc
 #include "absl/strings/str_format.h"
 #include "absl/time/clock.h"
 #include "absl/time/time.h"
@@ -201,4 +206,8 @@ LogSilencer::LogSilencer() { ++internal::log_silencer_count_; };
 
 LogSilencer::~LogSilencer() { --internal::log_silencer_count_; };
 
+<<<<<<< HEAD:labm8/cpp/logging.cc
 }  // namespace labm8
+=======
+} // namespace phd
+>>>>>>> 58b322611... Add missing atomic header.:phd/logging.cc
