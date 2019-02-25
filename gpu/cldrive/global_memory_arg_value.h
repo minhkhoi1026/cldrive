@@ -120,10 +120,17 @@ class GlobalMemoryArgValueWithBuffer : public GlobalMemoryArgValue<T> {
 
   virtual std::unique_ptr<KernelArgValue> CopyFromDevice(
       const cl::CommandQueue &queue, ProfilingData *profiling) override {
+<<<<<<< HEAD:gpu/cldrive/global_memory_arg_value.h
     size_t buffer_size = this->vector().size() * sizeof(T);
     auto new_arg = std::make_unique<GlobalMemoryArgValue<T>>(this->size());
     util::CopyDeviceToHost(queue, buffer(), new_arg->vector().data(),
                            buffer_size, profiling);
+=======
+    auto new_arg =
+        std::make_unique<ArrayKernelArgValue<T>>(this->size());
+    CopyDeviceToHost(queue, buffer(), new_arg->vector().begin(),
+                     new_arg->vector().end(), profiling);
+>>>>>>> 7cb4e1620... Fixes for cldrive.:gpu/cldrive/array_kernel_arg_value.h
     return std::move(new_arg);
   }
 
