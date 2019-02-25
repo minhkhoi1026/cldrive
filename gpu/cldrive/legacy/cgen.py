@@ -1,66 +1,16 @@
-<<<<<<< HEAD:gpu/cldrive/legacy/cgen.py
-<<<<<<< HEAD:gpu/cldrive/legacy/cgen.py
-<<<<<<< HEAD:gpu/cldrive/legacy/cgen.py
-<<<<<<< HEAD:gpu/cldrive/legacy/cgen.py
-# Copyright (c) 2016-2020 Chris Cummins.
-# This file is part of cldrive.
-#
-# cldrive is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# cldrive is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with cldrive.  If not, see <https://www.gnu.org/licenses/>.
 import typing
 
-=======
->>>>>>> 887ccecf1... Automated code format.:gpu/cldrive/cgen.py
 import numpy as np
-import typing
 
-<<<<<<< HEAD:gpu/cldrive/legacy/cgen.py
 from gpu.cldrive.legacy import args as _args
 from gpu.cldrive.legacy import driver
-=======
-=======
-import typing
-=======
-import numpy as np
-import typing
->>>>>>> e75d20235... Begin cldrive args refactor.:gpu/cldrive/cgen.py
-
-import numpy as np
-
->>>>>>> c1018e2b1... Minor code style fixes.:gpu/cldrive/cgen.py
-=======
-import typing
-
-import numpy as np
-
->>>>>>> 1eed6e90b... Automated code format.:gpu/cldrive/cgen.py
-from gpu.cldrive import args as _args
-from gpu.cldrive import driver
->>>>>>> 4638147c0... Indent by 2 spaces and enable doctest.:gpu/cldrive/cgen.py
 
 
 def escape_c_string(s: str) -> str:
   """ quote and return the given string """
-<<<<<<< HEAD:gpu/cldrive/legacy/cgen.py
-  return "\n".join(
-    '"{}"'.format(line.replace('"', '\\"'))
-    for line in s.split("\n")
-    if len(line.strip())
-  )
-=======
   return '\n'.join('"{}"'.format(line.replace('"', '\\"'))
-                   for line in s.split('\n') if len(line.strip()))
->>>>>>> c1018e2b1... Minor code style fixes.:gpu/cldrive/cgen.py
+                   for line in s.split('\n')
+                   if len(line.strip()))
 
 
 def to_array_str(array):
@@ -69,18 +19,12 @@ def to_array_str(array):
   else:
     stringify = repr
 
-  array_values = ", ".join(stringify(x) for x in array.tolist())
+  array_values = ', '.join(stringify(x) for x in array.tolist())
   return f"{{ {array_values} }}"
 
 
-<<<<<<< HEAD:gpu/cldrive/legacy/cgen.py
-def gen_data_blocks(
-  kernel_args: typing.List[_args.KernelArg], inputs: np.array
-):
-=======
 def gen_data_blocks(kernel_args: typing.List[_args.KernelArg],
                     inputs: np.array):
->>>>>>> c1018e2b1... Minor code style fixes.:gpu/cldrive/cgen.py
   setup_c, teardown_c, print_c = [], [], []
   for i, (arg, array) in enumerate(zip(kernel_args, inputs)):
     ctype = _args.OPENCL_TYPES[array.dtype]
@@ -96,31 +40,25 @@ def gen_data_blocks(kernel_args: typing.List[_args.KernelArg],
       else:
         flags += " | CL_MEM_READ_WRITE"
 
-      setup_c.append(
-        f"""\
+      setup_c.append(f"""\
     {ctype} host_{i}[{array.size}] = {array_str};
     cl_mem dev_{i} = clCreateBuffer(ctx, {flags}, sizeof({ctype}) * {array.size}, &host_{i}, &err);
     check_error("clCreateBuffer", err);
     err = clSetKernelArg(kernel, {i}, sizeof(cl_mem), &dev_{i});
     check_error("clSetKernelArg", err);
-"""
-      )
+""")
       if format_specifier and not arg.is_const:
-        teardown_c.append(
-          f"""\
+        teardown_c.append(f"""\
     err = clEnqueueReadBuffer(queue, dev_{i}, CL_TRUE, 0, sizeof({ctype}) * {array.size}, &host_{i}, 0, NULL, NULL);
     check_error("clEnqueueReadBuffer", err);
-"""
-        )
-        print_c.append(
-          f"""\
+""")
+        print_c.append(f"""\
     printf("{arg}:");
     for (int i = 0; i < {array.size}; i++) {{
         printf(" {format_specifier}", host_{i}[i]);
     }}
     printf("\\n");
-"""
-        )
+""")
     else:
       if array.size > 1:
         data_val = to_array_str(array)
@@ -128,41 +66,25 @@ def gen_data_blocks(kernel_args: typing.List[_args.KernelArg],
       else:
         setup_c.append(f"{ctype} host_{i} = {array[0]};")
 
-      setup_c.append(
-        f"""\
+      setup_c.append(f"""\
     err = clSetKernelArg(kernel, {i}, sizeof({ctype}), &host_{i});
     check_error("clSetKernelArg", err);
-<<<<<<< HEAD:gpu/cldrive/legacy/cgen.py
-"""
-      )
+""")
 
-  return (
-    "\n".join(setup_c).rstrip(),
-    "\n".join(teardown_c).rstrip(),
-    "\n".join(print_c).rstrip(),
-  )
+  return ('\n'.join(setup_c).rstrip(), '\n'.join(teardown_c).rstrip(),
+          '\n'.join(print_c).rstrip())
 
 
-<<<<<<< HEAD:gpu/cldrive/legacy/cgen.py
-def emit_c(
-  src: str,
-  inputs: np.array,
-  gsize: typing.Optional[driver.NDRange],
-  lsize: typing.Optional[driver.NDRange],
-  timeout: int = -1,
-  optimizations: bool = True,
-  profiling: bool = False,
-  debug: bool = False,
-  compile_only: bool = False,
-  create_kernel: bool = True,
-) -> np.array:
-=======
-def emit_c(src: str, inputs: np.array, gsize: typing.Optional[driver.NDRange],
-           lsize: typing.Optional[driver.NDRange], timeout: int = -1,
-           optimizations: bool = True, profiling: bool = False,
-           debug: bool = False, compile_only: bool = False,
+def emit_c(src: str,
+           inputs: np.array,
+           gsize: typing.Optional[driver.NDRange],
+           lsize: typing.Optional[driver.NDRange],
+           timeout: int = -1,
+           optimizations: bool = True,
+           profiling: bool = False,
+           debug: bool = False,
+           compile_only: bool = False,
            create_kernel: bool = True) -> np.array:
->>>>>>> c765d1b02... Fix type hints for emit_c().:gpu/cldrive/cgen.py
   """
   Generate C code to drive kernel.
 
@@ -220,79 +142,6 @@ def emit_c(src: str, inputs: np.array, gsize: typing.Optional[driver.NDRange],
   clBuildProgram_opts = "NULL" if optimizations else '"-cl-opt-disable"'
 
   c = f"""
-=======
-""")
-
-    return (
-        '\n'.join(setup_c).rstrip(),
-        '\n'.join(teardown_c).rstrip(),
-        '\n'.join(print_c).rstrip()
-    )
-
-
-def emit_c(src: str, inputs: np.array,
-           gsize: NDRange, lsize: NDRange, timeout: int=-1,
-           optimizations: bool=True, profiling: bool=False,
-           debug: bool=False, compile_only: bool=False,
-           create_kernel: bool=True) -> np.array:
-    """
-    Generate C code to drive kernel.
-
-    Parameters
-    ----------
-    env : OpenCLEnvironment
-        The OpenCL environment to run the kernel in.
-    src : str
-        The OpenCL kernel source.
-    inputs : np.array
-        The input data to the kernel.
-    optimizations : bool, optional
-        Whether to enable or disbale OpenCL compiler optimizations.
-    profiling : bool, optional
-        If true, print OpenCLevent times for data transfers and kernel
-        executions to stderr.
-    timeout : int, optional
-        Cancel execution if it has not completed after this many seconds.
-        A value <= 0 means never time out.
-    debug : bool, optional
-        If true, silence the OpenCL compiler.
-    compile_only: bool, optional
-        If true, generate code only to compile the kernel, not to generate
-        inputs and run it.
-    create_kernel: bool, optional
-        If 'compile_only' parameter is set, this parameter determines whether
-        to create a kernel object after compilation. This requires a kernel
-        name.
-
-    Returns
-    -------
-    str
-        Code which can be compiled using a C compiler to drive the kernel.
-
-    Raises
-    ------
-    ValueError
-        If input types are incorrect.
-    TypeError
-        If an input is of an incorrect type.
-    LogicError
-        If the input types do not match OpenCL kernel types.
-    PorcelainError
-        If the OpenCL subprocess exits with non-zero return  code.
-    RuntimeError
-        If OpenCL program fails to build or run.
-
-    Examples
-    --------
-    TODO
-    """
-    src_string = escape_c_string(src)
-    optimizations_on_off = "on" if optimizations else "off"
-
-    clBuildProgram_opts = "NULL" if optimizations else '"-cl-opt-disable"'
-
-    c = f"""
->>>>>>> f761ed83a... cgen wip:cldrive/cgen.py
 /*
  * Usage:
  *   gcc -std=c99 [-DPLATFORM_ID=<platform-id>] [-DDEVICE_ID=<device-id>] foo.c -lOpenCL
@@ -449,15 +298,7 @@ int main(int argc, char** argv) {{
         long fsize = ftell(infile);
         fseek(infile, 0, SEEK_SET);
 
-<<<<<<< HEAD:gpu/cldrive/legacy/cgen.py
-<<<<<<< HEAD:gpu/cldrive/legacy/cgen.py
         char *buf = (char *)malloc(fsize + 1);
-=======
-        char *buf = malloc(fsize + 1);
->>>>>>> 506ca7334... cgen: Support -f path:cldrive/cgen.py
-=======
-        char *buf = (char *)malloc(fsize + 1);
->>>>>>> a24210ee6... Cast malloc return type.:gpu/cldrive/cgen.py
         fread(buf, fsize, 1, infile);
         fclose(infile);
         buf[fsize] = 0;
@@ -524,23 +365,9 @@ int main(int argc, char** argv) {{
     check_error("clBuildProgram", build_err);
     """
 
-<<<<<<< HEAD:gpu/cldrive/legacy/cgen.py
   if not compile_only or (compile_only and create_kernel):
-<<<<<<< HEAD:gpu/cldrive/legacy/cgen.py
-<<<<<<< HEAD:gpu/cldrive/legacy/cgen.py
     kernel_name_ = _args.GetKernelName(src)
-=======
-    kernel_name_ = _args.kernel_name(src)
->>>>>>> f4753993a... Fix module name in cgen.:gpu/cldrive/cgen.py
-=======
-    kernel_name_ = _args.GetKernelName(src)
->>>>>>> e75d20235... Begin cldrive args refactor.:gpu/cldrive/cgen.py
     c += f"""
-=======
-    if not compile_only or (compile_only and create_kernel):
-        kernel_name_ = kernel_name(src)
-        c += f"""
->>>>>>> 506ca7334... cgen: Support -f path:cldrive/cgen.py
     cl_kernel kernels[128];
     cl_uint num_kernels;
     err = clCreateKernelsInProgram(program, 128, kernels, &num_kernels);
@@ -564,15 +391,7 @@ int main(int argc, char** argv) {{
 """
 
   if not compile_only:
-<<<<<<< HEAD:gpu/cldrive/legacy/cgen.py
-<<<<<<< HEAD:gpu/cldrive/legacy/cgen.py
     args = _args.GetKernelArguments(src)
-=======
-    args = _args.extract_args(src)
->>>>>>> f4753993a... Fix module name in cgen.:gpu/cldrive/cgen.py
-=======
-    args = _args.GetKernelArguments(src)
->>>>>>> e75d20235... Begin cldrive args refactor.:gpu/cldrive/cgen.py
     setup_block, teardown_block, print_block = gen_data_blocks(args, inputs)
     c += f"""
 {setup_block}

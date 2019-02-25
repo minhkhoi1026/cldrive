@@ -1,68 +1,28 @@
-<<<<<<< HEAD:gpu/cldrive/legacy/driver.py
-# Copyright (c) 2016-2020 Chris Cummins.
-# This file is part of cldrive.
-#
-# cldrive is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# cldrive is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with cldrive.  If not, see <https://www.gnu.org/licenses/>.
-=======
 import collections
->>>>>>> 1eed6e90b... Automated code format.:gpu/cldrive/driver.py
 import pickle
 import re
 import sys
 import typing
 from contextlib import suppress
 from signal import Signals
-from subprocess import PIPE
-from subprocess import Popen
+from subprocess import PIPE, Popen
 from tempfile import NamedTemporaryFile
 
-<<<<<<< HEAD:gpu/cldrive/legacy/driver.py
-<<<<<<< HEAD:gpu/cldrive/legacy/driver.py
-import numpy as np
-=======
-from gpu.cldrive import args as _args
-from gpu.cldrive import env as _env
-from phd.lib.labm8 import err
->>>>>>> 386c66354... Add 'phd' prefix to labm8 imports.:gpu/cldrive/driver.py
-=======
 import numpy as np
 from absl import app
 from absl import flags
 
-from gpu.cldrive.proto import cldrive_pb2
-from gpu.cldrive import args as _args
-from gpu.cldrive import env as _env
-<<<<<<< HEAD:gpu/cldrive/legacy/driver.py
-<<<<<<< HEAD:gpu/cldrive/legacy/driver.py
->>>>>>> 1eed6e90b... Automated code format.:gpu/cldrive/driver.py
-=======
-from labm8 import err
->>>>>>> 190ef5131... Move //lib/labm8 to //labm8.:gpu/cldrive/driver.py
-
 from gpu.cldrive.legacy import args as _args
 from gpu.cldrive.legacy import env as _env
-from labm8.py import app
-=======
+from gpu.cldrive.proto import cldrive_pb2
+from gpu.oclgrind import oclgrind
 from labm8 import bazelutil
 from labm8 import err
-from gpu.oclgrind import oclgrind
 from labm8 import pbutil
 
 FLAGS = flags.FLAGS
->>>>>>> c0eda32ea... Begin native implementation of cldrive.:gpu/cldrive/driver.py
 
-FLAGS = app.FLAGS
+ArgTuple = collections.namedtuple('ArgTuple', ['hostdata', 'devdata'])
 
 _NATIVE_DRIVER = bazelutil.DataPath('phd/gpu/cldrive/native_driver')
 
@@ -87,7 +47,7 @@ class PorcelainError(RuntimeError):
     return f"Porcelain subprocess exited with return code {self.status}"
 
 
-class NDRange(typing.NamedTuple):
+class NDRange(collections.namedtuple('NDRange', ['x', 'y', 'z'])):
   """A 3 dimensional NDRange tuple. Has components x,y,z.
 
   Attributes:
@@ -105,10 +65,7 @@ class NDRange(typing.NamedTuple):
     >>> NDRange(10, 10, 10) > NDRange(10, 9, 10)
     True
   """
-
-  x: int
-  y: int
-  z: int
+  __slots__ = ()
 
   def __repr__(self) -> str:
     return f"[{self.x}, {self.y}, {self.z}]"
@@ -118,29 +75,21 @@ class NDRange(typing.NamedTuple):
     """Get the Linear product (x * y * z)."""
     return self.x * self.y * self.z
 
-  def __eq__(self, rhs: "NDRange") -> bool:
+  def __eq__(self, rhs: 'NDRange') -> bool:
     return self.x == rhs.x and self.y == rhs.y and self.z == rhs.z
 
-  def __gt__(self, rhs: "NDRange") -> bool:
-    return (
-      self.product > rhs.product
-      and self.x >= rhs.x
-      and self.y >= rhs.y
-      and self.z >= rhs.z
-    )
+  def __gt__(self, rhs: 'NDRange') -> bool:
+    return (self.product > rhs.product and self.x >= rhs.x and
+            self.y >= rhs.y and self.z >= rhs.z)
 
-  def __ge__(self, rhs: "NDRange") -> bool:
+  def __ge__(self, rhs: 'NDRange') -> bool:
     return self == rhs or self > rhs
 
   def ToString(self) -> str:
-<<<<<<< HEAD:gpu/cldrive/legacy/driver.py
-    return f"{self.x},{self.y},{self.x}"
-=======
     return f'{self.x},{self.y},{self.x}'
->>>>>>> 91de142f6... Add a ToString() method to NDRange.:gpu/cldrive/driver.py
 
   @staticmethod
-  def FromString(string: str) -> "NDRange":
+  def FromString(string: str) -> 'NDRange':
     """Parse an NDRange from a string of format 'x,y,z'.
 
     Args:
@@ -161,24 +110,22 @@ class NDRange(typing.NamedTuple):
       ...
       ValueError
     """
-    components = string.split(",")
+    components = string.split(',')
     if not len(components) == 3:
       raise ValueError(f"invalid NDRange '{string}'")
     x, y, z = int(components[0]), int(components[1]), int(components[2])
     return NDRange(x, y, z)
 
 
-def DriveKernel(
-  env: _env.OpenCLEnvironment,
-  src: str,
-  inputs: np.array,
-  gsize: typing.Union[typing.Tuple[int, int, int], NDRange],
-  lsize: typing.Union[typing.Tuple[int, int, int], NDRange],
-  timeout: int = -1,
-  optimizations: bool = True,
-  profiling: bool = False,
-  debug: bool = False,
-) -> np.array:
+def DriveKernel(env: _env.OpenCLEnvironment,
+                src: str,
+                inputs: np.array,
+                gsize: typing.Union[typing.Tuple[int, int, int], NDRange],
+                lsize: typing.Union[typing.Tuple[int, int, int], NDRange],
+                timeout: int = -1,
+                optimizations: bool = True,
+                profiling: bool = False,
+                debug: bool = False) -> np.array:
   """Drive an OpenCL kernel.
 
   Executes an OpenCL kernel on the given environment, over the given inputs.
@@ -221,33 +168,24 @@ def DriveKernel(
       print(*args, **kwargs, file=sys.stderr)
 
   # Assert input types.
-  app.AssertOrRaise(
-    isinstance(env, _env.OpenCLEnvironment),
-    ValueError,
-    "env argument is of incorrect type",
-  )
-  app.AssertOrRaise(isinstance(src, str), ValueError, "source is not a string")
+  err.assert_or_raise(
+      isinstance(env, _env.OpenCLEnvironment), ValueError,
+      "env argument is of incorrect type")
+  err.assert_or_raise(
+      isinstance(src, str), ValueError, "source is not a string")
 
   # Validate global and local sizes.
-  app.AssertOrRaise(len(gsize) == 3, TypeError)
-  app.AssertOrRaise(len(lsize) == 3, TypeError)
+  err.assert_or_raise(len(gsize) == 3, TypeError)
+  err.assert_or_raise(len(lsize) == 3, TypeError)
   gsize, lsize = NDRange(*gsize), NDRange(*lsize)
 
-  app.AssertOrRaise(
-    gsize.product >= 1,
-    ValueError,
-    f"Scalar global size {gsize.product} must be >= 1",
-  )
-  app.AssertOrRaise(
-    lsize.product >= 1,
-    ValueError,
-    f"Scalar local size {lsize.product} must be >= 1",
-  )
-  app.AssertOrRaise(
-    gsize >= lsize,
-    ValueError,
-    f"Global size {gsize} must be larger than local size {lsize}",
-  )
+  err.assert_or_raise(gsize.product >= 1, ValueError,
+                      f"Scalar global size {gsize.product} must be >= 1")
+  err.assert_or_raise(lsize.product >= 1, ValueError,
+                      f"Scalar local size {lsize.product} must be >= 1")
+  err.assert_or_raise(
+      gsize >= lsize, ValueError,
+      f"Global size {gsize} must be larger than local size {lsize}")
 
   # Parse args in this process since we want to preserve the sueful exception
   # type.
@@ -255,37 +193,33 @@ def DriveKernel(
 
   # Check that the number of inputs is correct.
   args_with_inputs = [
-    i for i, arg in enumerate(args) if not arg.address_space == "local"
+      i for i, arg in enumerate(args) if not arg.address_space == 'local'
   ]
-  app.AssertOrRaise(
-    len(args_with_inputs) == len(inputs),
-    ValueError,
-    "Kernel expects {} inputs, but {} were provided".format(
-      len(args_with_inputs), len(inputs)
-    ),
-  )
+  err.assert_or_raise(
+      len(args_with_inputs) == len(inputs), ValueError,
+      "Kernel expects {} inputs, but {} were provided".format(
+          len(args_with_inputs), len(inputs)))
 
   # All inputs must have some length.
   for i, x in enumerate(inputs):
-    app.AssertOrRaise(len(x), ValueError, f"Input {i} has size zero")
+    err.assert_or_raise(len(x), ValueError, f"Input {i} has size zero")
 
   # Copy inputs into the expected data types.
   data = np.array(
-    [np.array(d).astype(a.numpy_type) for d, a in zip(inputs, args)]
-  )
+      [np.array(d).astype(a.numpy_type) for d, a in zip(inputs, args)])
 
   job = {
-    "env": env,
-    "src": src,
-    "args": args,
-    "data": data,
-    "gsize": gsize,
-    "lsize": lsize,
-    "optimizations": optimizations,
-    "profiling": profiling,
+      "env": env,
+      "src": src,
+      "args": args,
+      "data": data,
+      "gsize": gsize,
+      "lsize": lsize,
+      "optimizations": optimizations,
+      "profiling": profiling
   }
 
-  with NamedTemporaryFile("rb+", prefix="cldrive-", suffix=".job") as tmp_file:
+  with NamedTemporaryFile('rb+', prefix='cldrive-', suffix='.job') as tmp_file:
     porcelain_job_file = tmp_file.name
 
     # Write job file.
@@ -308,12 +242,12 @@ def DriveKernel(
     status = process.returncode
 
     if debug:
-      print(stdout.decode("utf-8").strip(), file=sys.stderr)
-      print(stderr.decode("utf-8").strip(), file=sys.stderr)
+      print(stdout.decode('utf-8').strip(), file=sys.stderr)
+      print(stderr.decode('utf-8').strip(), file=sys.stderr)
     elif profiling:
       # Print profiling output when not in debug mode.
-      for line in stderr.decode("utf-8").split("\n"):
-        if re.match(r"\[cldrive\] .+ time: [0-9]+\.[0-9]+ ms", line):
+      for line in stderr.decode('utf-8').split('\n'):
+        if re.match(r'\[cldrive\] .+ time: [0-9]+\.[0-9]+ ms', line):
           print(line, file=sys.stderr)
     Log(f"Porcelain return code: {status}")
 
@@ -323,7 +257,7 @@ def DriveKernel(
     #
     # FIXME: I'm seeing a number of SIGABRT return codes which I can't explain.
     # However, ignoring them seems to not cause a problem ...
-    if status != 0 and status != -Signals["SIGABRT"].value:
+    if status != 0 and status != -Signals['SIGABRT'].value:
       # A negative return code means a signal. Try and convert the value into a
       # signal name.
       with suppress(ValueError):
@@ -345,7 +279,8 @@ def DriveKernel(
       return outputs
 
 
-def DriveInstance(instance: cldrive_pb2.CldriveInstance) -> cldrive_pb2.CldriveInstance:
+def DriveInstance(
+    instance: cldrive_pb2.CldriveInstance) -> cldrive_pb2.CldriveInstance:
   if instance.device.name == _env.OclgrindOpenCLEnvironment().name:
     command = [str(oclgrind.OCLGRIND_PATH), str(_NATIVE_DRIVER)]
   else:
@@ -358,31 +293,33 @@ def DriveInstance(instance: cldrive_pb2.CldriveInstance) -> cldrive_pb2.CldriveI
 def main(argv):
   assert not argv[1:]
   # TODO(cec): Temporary hacky code for testing.
-  print(DriveInstance(cldrive_pb2.CldriveInstance(
-      device=_env.OclgrindOpenCLEnvironment().proto,
-      opencl_src="""
+  print(
+      DriveInstance(
+          cldrive_pb2.CldriveInstance(
+              device=_env.OclgrindOpenCLEnvironment().proto,
+              opencl_src="""
 kernel void A(global int* a, global float* b, const int c) {
 if (get_global_id(0) < c) { 
   a[get_global_id(0)] = get_global_id(0);
   b[get_global_id(0)] *= 2.0;
 }
 }""",
-      min_runs_per_kernel=10,
-      dynamic_params=[
-        cldrive_pb2.DynamicParams(
-            global_size_x=16,
-            local_size_x=16,
-        ),
-        cldrive_pb2.DynamicParams(
-            global_size_x=1024,
-            local_size_x=64,
-        ),
-        cldrive_pb2.DynamicParams(
-            global_size_x=128,
-            local_size_x=64,
-        ),
-      ],
-  )))
+              min_runs_per_kernel=10,
+              dynamic_params=[
+                  cldrive_pb2.DynamicParams(
+                      global_size_x=16,
+                      local_size_x=16,
+                  ),
+                  cldrive_pb2.DynamicParams(
+                      global_size_x=1024,
+                      local_size_x=64,
+                  ),
+                  cldrive_pb2.DynamicParams(
+                      global_size_x=128,
+                      local_size_x=64,
+                  ),
+              ],
+          )))
 
 
 if __name__ == '__main__':

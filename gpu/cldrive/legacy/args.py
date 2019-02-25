@@ -1,67 +1,36 @@
-# Copyright (c) 2016-2020 Chris Cummins.
-# This file is part of cldrive.
-#
-# cldrive is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# cldrive is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with cldrive.  If not, see <https://www.gnu.org/licenses/>.
 """OpenCL argument and type handling."""
 import re
 import typing
-<<<<<<< HEAD:gpu/cldrive/legacy/args.py
-<<<<<<< HEAD:gpu/cldrive/legacy/args.py
-<<<<<<< HEAD:gpu/cldrive/legacy/args.py
 
 import numpy as np
-=======
->>>>>>> c1995bae2... More //third_party/py packages.:gpu/cldrive/args.py
-=======
-
-import numpy as np
->>>>>>> 1eed6e90b... Automated code format.:gpu/cldrive/args.py
 from pycparser.c_ast import FileAST
 from pycparser.c_ast import IdentifierType
 from pycparser.c_ast import NodeVisitor
 from pycparser.c_ast import PtrDecl
 from pycparser.c_ast import Struct
-<<<<<<< HEAD:gpu/cldrive/legacy/args.py
-=======
-from pycparser.c_ast import FileAST, IdentifierType, NodeVisitor, PtrDecl, \
-  Struct
->>>>>>> cdfe8c9bb... Remove unused function.:gpu/cldrive/args.py
-=======
->>>>>>> c1995bae2... More //third_party/py packages.:gpu/cldrive/args.py
 from pycparser.plyparser import ParseError
 from pycparserext.ext_c_parser import OpenCLCParser
 
 # A lookup table mapping OpenCL data type names to the corresponding numpy data
 # type.
 NUMPY_TYPES = {
-  "bool": np.dtype("bool"),
-  "char": np.dtype("int8"),
-  "double": np.dtype("float64"),
-  "float": np.dtype("float32"),
-  "half": np.dtype("uint8"),
-  "int": np.dtype("int32"),
-  "long": np.dtype("int64"),
-  "short": np.dtype("int16"),
-  "uchar": np.dtype("uint8"),
-  "uint": np.dtype("uint32"),
-  "ulong": np.dtype("uint64"),
-  "unsigned": np.dtype("uint32"),
-  "unsigned char": np.dtype("uint8"),
-  "unsigned int": np.dtype("uint32"),
-  "unsigned long": np.dtype("uint64"),
-  "unsigned short": np.dtype("uint16"),
-  "ushort": np.dtype("uint16"),
+    "bool": np.dtype("bool"),
+    "char": np.dtype("int8"),
+    "double": np.dtype("float64"),
+    "float": np.dtype("float32"),
+    "half": np.dtype("uint8"),
+    "int": np.dtype("int32"),
+    "long": np.dtype("int64"),
+    "short": np.dtype("int16"),
+    "uchar": np.dtype("uint8"),
+    "uint": np.dtype("uint32"),
+    "ulong": np.dtype("uint64"),
+    "unsigned": np.dtype("uint32"),
+    "unsigned char": np.dtype("uint8"),
+    "unsigned int": np.dtype("uint32"),
+    "unsigned long": np.dtype("uint64"),
+    "unsigned short": np.dtype("uint16"),
+    "ushort": np.dtype("uint16"),
 }
 
 # The inverse lookup table of NUMPY_TYPES.
@@ -69,17 +38,17 @@ OPENCL_TYPES = dict((v, k) for k, v in NUMPY_TYPES.items())
 
 # C printf() function format specifiers for numpy types.
 FORMAT_SPECIFIERS = {
-  np.dtype("bool"): "%d",
-  np.dtype("float32"): "%.3f",
-  np.dtype("float64"): "%.3f",
-  np.dtype("int16"): "%hd",
-  np.dtype("int32"): "%d",
-  np.dtype("int64"): "%ld",
-  np.dtype("int8"): "%hd",
-  np.dtype("uint16"): "%hu",
-  np.dtype("uint32"): "%u",
-  np.dtype("uint64"): "%lu",
-  np.dtype("uint8"): "%hd",
+    np.dtype("bool"): "%d",
+    np.dtype("float32"): "%.3f",
+    np.dtype("float64"): "%.3f",
+    np.dtype("int16"): "%hd",
+    np.dtype("int32"): "%d",
+    np.dtype("int64"): "%ld",
+    np.dtype("int8"): "%hd",
+    np.dtype("uint16"): "%hu",
+    np.dtype("uint32"): "%u",
+    np.dtype("uint64"): "%lu",
+    np.dtype("uint8"): "%hd",
 }
 
 # Private OpenCL parser instance.
@@ -107,19 +76,16 @@ class OpenCLPreprocessError(ValueError):
 
 class OpenCLValueError(ValueError):
   """Raised if there is an invalid OpenCL code."""
-
   pass
 
 
 class MultipleKernelsError(LookupError):
   """Raised if source contains multiple kernels."""
-
   pass
 
 
 class NoKernelError(LookupError):
   """Raised if a source does not contain a kernel."""
-
   pass
 
 
@@ -154,15 +120,10 @@ class KernelArg(object):
         type_names = self.ast.type.type.type.names
     except AttributeError as e:  # e.g. structs
       raise ValueError(
-        f"Unsupported data type for argument: '{self.name}'"
-      ) from e
+          f"Unsupported data type for argument: '{self.name}'") from e
 
     self.typename = " ".join(type_names)
-<<<<<<< HEAD:gpu/cldrive/legacy/args.py
-    self.bare_type = self.typename.rstrip("0123456789")
-=======
     self.bare_type = self.typename.rstrip('0123456789')
->>>>>>> f0b15a3e0... Defer numpy_type property until needed.:gpu/cldrive/args.py
 
     # Get address space.
     if self.is_pointer:
@@ -185,20 +146,13 @@ class KernelArg(object):
       if "__constant" in self.ast.quals:
         address_quals.append("constant")
 
-<<<<<<< HEAD:gpu/cldrive/legacy/args.py
-      err_prefix = (
-        "Pointer argument " f"'{self.quals_str}{self.typename} *{self.name}'"
-      )
-=======
       err_prefix = ('Pointer argument '
                     f"'{self.quals_str}{self.typename} *{self.name}'")
->>>>>>> c4b44b06f... Better args tests.:gpu/cldrive/args.py
       if len(address_quals) == 1:
         self.address_space = address_quals[0]
       elif len(address_quals) > 1:
         raise OpenCLValueError(
-          f"{err_prefix} has multiple address space qualifiers"
-        )
+            f"{err_prefix} has multiple address space qualifiers")
       else:
         raise OpenCLValueError(f"{err_prefix} has no address space qualifier")
 
@@ -206,7 +160,7 @@ class KernelArg(object):
     self.is_const = "const" in self.quals or self.address_space == "constant"
 
     if self.is_vector:
-      m = re.search(r"([0-9]+)\*?$", self.typename)
+      m = re.search(r'([0-9]+)\*?$', self.typename)
       self.vector_width = int(m.group(1))
     else:
       self.vector_width = 1
@@ -218,19 +172,10 @@ class KernelArg(object):
       return NUMPY_TYPES[self.bare_type]
     except KeyError:
       supported_types_str = ",".join(sorted(NUMPY_TYPES.keys()))
-<<<<<<< HEAD:gpu/cldrive/legacy/args.py
-      raise OpenCLValueError(
-        f"""\
-Unsupported type '{self.typename}' for argument \
-'{self.quals_str}{self.typename} {self.name}'. \
-Supported types are: {{{supported_types_str}}}"""
-      )
-=======
       raise OpenCLValueError(f"""\
 Unsupported type '{self.typename}' for argument \
 '{self.quals_str}{self.typename} {self.name}'. \
 Supported types are: {{{supported_types_str}}}""")
->>>>>>> f0b15a3e0... Defer numpy_type property until needed.:gpu/cldrive/args.py
 
   def __repr__(self):
     s = self.quals if len(self.quals) else []
@@ -267,7 +212,7 @@ class ArgumentExtractor(NodeVisitor):
 
   def visit_FuncDef(self, node):
     # Only visit kernels, not all functions.
-    if "kernel" in node.decl.funcspec or "__kernel" in node.decl.funcspec:
+    if ("kernel" in node.decl.funcspec or "__kernel" in node.decl.funcspec):
       self.kernel_count += 1
       self.name = node.decl.name
     else:
@@ -276,8 +221,7 @@ class ArgumentExtractor(NodeVisitor):
     # Ensure we've only visited one kernel.
     if self.kernel_count > 1:
       raise MultipleKernelsError(
-        "Source contains more than one kernel definition"
-      )
+          "Source contains more than one kernel definition")
 
     # Function may not have arguments
     if self.extract_args and node.decl.type.args:
@@ -391,4 +335,4 @@ def GetKernelName(src: str) -> str:
   if visitor.name:
     return visitor.name
   else:
-    raise NoKernelError("Source contains no kernel definitions")
+    raise NoKernelError('Source contains no kernel definitions')

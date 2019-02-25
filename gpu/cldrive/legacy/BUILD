@@ -20,7 +20,7 @@ py_binary(
 # py3_image(
 #     name = "cldrive_image",
 #     srcs = ["cldrive.py"],
-#     base = "@phd_base//image",
+#     base = "@base//image",
 #     main = "cldrive.py",
 #     deps = [":cldrive"],
 # )
@@ -41,8 +41,8 @@ py_test(
     srcs = ["args_test.py"],
     deps = [
         ":args",
-        "//labm8/py:app",
-        "//labm8/py:test",
+        "//labm8:test",
+        "//third_party/py/absl",
     ],
 )
 
@@ -63,7 +63,7 @@ py_library(
     deps = [
         ":args",
         ":driver",
-        "//labm8/py:app",
+        "//labm8:err",
         "//third_party/py/numpy",
     ],
 )
@@ -75,21 +75,22 @@ py_test(
     deps = [
         ":data",
         ":testlib",
-        "//labm8/py:app",
-        "//labm8/py:test",
+        "//labm8:test",
+        "//third_party/py/absl",
     ],
 )
 
 py_binary(
     name = "driver",
     srcs = ["driver.py"],
+    data = ["//gpu/cldrive:native_driver"],
     visibility = ["//visibility:public"],
     deps = [
         ":args",
         ":env",
-        "//gpu/cldrive/proto:cldrive_pb_py",
-        "//labm8/py:app",
-        "//labm8/py:bazelutil",
+        "//gpu/cldrive/proto:cldrive_py_pb2",
+        "//labm8:bazelutil",
+        "//labm8:err",
         "//third_party/py/numpy",
     ],
 )
@@ -102,8 +103,8 @@ py_test(
         ":data",
         ":driver",
         ":testlib",
-        "//labm8/py:app",
-        "//labm8/py:test",
+        "//labm8:test",
+        "//third_party/py/absl",
         "//third_party/py/numpy",
     ],
 )
@@ -114,11 +115,11 @@ py_library(
     data = ["//gpu/clinfo"],
     visibility = ["//visibility:public"],
     deps = [
-        "//gpu/clinfo/proto:clinfo_pb_py",
+        "//gpu/clinfo/proto:clinfo_py_pb2",
         "//gpu/oclgrind",
-        "//labm8/py:app",
-        "//labm8/py:bazelutil",
-        "//labm8/py:pbutil",
+        "//labm8:bazelutil",
+        "//labm8:pbutil",
+        "//third_party/py/absl",
     ],
 )
 
@@ -128,16 +129,21 @@ py_test(
     srcs = ["env_test.py"],
     deps = [
         ":env",
-        "//labm8/py:app",
-        "//labm8/py:test",
+        "//labm8:test",
+        "//third_party/py/absl",
     ],
 )
 
-py_library(
-    name = "testlib",
+cc_library(
+    name = "testutil",
     testonly = 1,
-    srcs = ["testlib.py"],
+    srcs = ["testutil.cc"],
+    hdrs = ["testutil.h"],
     deps = [
-        "//third_party/py/numpy",
+        ":array_kernel_arg_value",
+        ":kernel_arg_value",
+        ":scalar_kernel_arg_value",
+        "//gpu/cldrive/proto:cldrive_cc_pb2",
+        "//third_party/opencl",
     ],
 )
