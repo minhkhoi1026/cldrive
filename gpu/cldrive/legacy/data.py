@@ -1,45 +1,10 @@
-<<<<<<< HEAD:gpu/cldrive/legacy/data.py
-# Copyright (c) 2016, 2017, 2018, 2019 Chris Cummins.
-# This file is part of cldrive.
-#
-# cldrive is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# cldrive is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with cldrive.  If not, see <https://www.gnu.org/licenses/>.
-=======
->>>>>>> ccad601bb... Refactor and test data module.:gpu/cldrive/data.py
 """Generate data for OpenCL arguments."""
 import functools
 from enum import Enum
 
-<<<<<<< HEAD:gpu/cldrive/legacy/data.py
-<<<<<<< HEAD:gpu/cldrive/legacy/data.py
-from gpu.cldrive.legacy import args as _args
-from labm8 import app
-=======
-from gpu.cldrive import args as _args
-<<<<<<< HEAD:gpu/cldrive/legacy/data.py
-from lib.labm8 import err
->>>>>>> 48047f3ce... Update labm8 imports in cldrive.:gpu/cldrive/data.py
-=======
-=======
 import numpy as np
-<<<<<<< HEAD:gpu/cldrive/legacy/data.py
->>>>>>> 1eed6e90b... Automated code format.:gpu/cldrive/data.py
-from phd.lib.labm8 import err
->>>>>>> 386c66354... Add 'phd' prefix to labm8 imports.:gpu/cldrive/data.py
-=======
->>>>>>> 190ef5131... Move //lib/labm8 to //labm8.:gpu/cldrive/data.py
 
-from gpu.cldrive import args as _args
+from gpu.cldrive.legacy import args as _args
 from labm8 import err
 
 
@@ -70,13 +35,9 @@ class Generator(Enum):
       raise ValueError(f"Unknown generator name: '{string}'")
 
 
-<<<<<<< HEAD:gpu/cldrive/legacy/data.py
 def MakeData(src: str,
              size: int,
              data_generator: Generator,
-=======
-def MakeData(src: str, size: int, data_generator: Generator,
->>>>>>> ccad601bb... Refactor and test data module.:gpu/cldrive/data.py
              scalar_val: float = None) -> np.array:
   """Generate data for OpenCL kernels.
 
@@ -110,9 +71,10 @@ def MakeData(src: str, size: int, data_generator: Generator,
           dtype=object)
   """
   # check the input types
-  app.AssertOrRaise(isinstance(src, str), TypeError)
-  app.AssertOrRaise(isinstance(data_generator, Generator), TypeError,
-                    "invalid argument type for enum data_generator")
+  err.assert_or_raise(isinstance(src, str), TypeError)
+  err.assert_or_raise(
+      isinstance(data_generator, Generator), TypeError,
+      "invalid argument type for enum data_generator")
 
   if scalar_val is None:
     scalar_val = size

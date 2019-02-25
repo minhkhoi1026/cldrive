@@ -1,18 +1,3 @@
-# Copyright (c) 2016, 2017, 2018, 2019 Chris Cummins.
-# This file is part of cldrive.
-#
-# cldrive is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# cldrive is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with cldrive.  If not, see <https://www.gnu.org/licenses/>.
 import collections
 import pickle
 import re
@@ -23,44 +8,19 @@ from signal import Signals
 from subprocess import PIPE, Popen
 from tempfile import NamedTemporaryFile
 
-<<<<<<< HEAD:gpu/cldrive/legacy/driver.py
-<<<<<<< HEAD:gpu/cldrive/legacy/driver.py
 import numpy as np
 from absl import app
 from absl import flags
 
-<<<<<<< HEAD:gpu/cldrive/legacy/driver.py
 from gpu.cldrive.legacy import args as _args
 from gpu.cldrive.legacy import env as _env
-from labm8 import app
-=======
-from gpu.cldrive import args as _args
-from gpu.cldrive import env as _env
-from phd.lib.labm8 import err
->>>>>>> 386c66354... Add 'phd' prefix to labm8 imports.:gpu/cldrive/driver.py
-=======
-import numpy as np
-
-from gpu.cldrive import args as _args
-from gpu.cldrive import env as _env
-<<<<<<< HEAD:gpu/cldrive/legacy/driver.py
->>>>>>> 1eed6e90b... Automated code format.:gpu/cldrive/driver.py
-=======
-from labm8 import err
->>>>>>> 190ef5131... Move //lib/labm8 to //labm8.:gpu/cldrive/driver.py
-
-FLAGS = app.FLAGS
-=======
 from gpu.cldrive.proto import cldrive_pb2
-from gpu.cldrive import args as _args
-from gpu.cldrive import env as _env
+from gpu.oclgrind import oclgrind
 from labm8 import bazelutil
 from labm8 import err
-from gpu.oclgrind import oclgrind
 from labm8 import pbutil
 
 FLAGS = flags.FLAGS
->>>>>>> c0eda32ea... Begin native implementation of cldrive.:gpu/cldrive/driver.py
 
 ArgTuple = collections.namedtuple('ArgTuple', ['hostdata', 'devdata'])
 
@@ -208,20 +168,22 @@ def DriveKernel(env: _env.OpenCLEnvironment,
       print(*args, **kwargs, file=sys.stderr)
 
   # Assert input types.
-  app.AssertOrRaise(isinstance(env, _env.OpenCLEnvironment), ValueError,
-                    "env argument is of incorrect type")
-  app.AssertOrRaise(isinstance(src, str), ValueError, "source is not a string")
+  err.assert_or_raise(
+      isinstance(env, _env.OpenCLEnvironment), ValueError,
+      "env argument is of incorrect type")
+  err.assert_or_raise(
+      isinstance(src, str), ValueError, "source is not a string")
 
   # Validate global and local sizes.
-  app.AssertOrRaise(len(gsize) == 3, TypeError)
-  app.AssertOrRaise(len(lsize) == 3, TypeError)
+  err.assert_or_raise(len(gsize) == 3, TypeError)
+  err.assert_or_raise(len(lsize) == 3, TypeError)
   gsize, lsize = NDRange(*gsize), NDRange(*lsize)
 
-  app.AssertOrRaise(gsize.product >= 1, ValueError,
-                    f"Scalar global size {gsize.product} must be >= 1")
-  app.AssertOrRaise(lsize.product >= 1, ValueError,
-                    f"Scalar local size {lsize.product} must be >= 1")
-  app.AssertOrRaise(
+  err.assert_or_raise(gsize.product >= 1, ValueError,
+                      f"Scalar global size {gsize.product} must be >= 1")
+  err.assert_or_raise(lsize.product >= 1, ValueError,
+                      f"Scalar local size {lsize.product} must be >= 1")
+  err.assert_or_raise(
       gsize >= lsize, ValueError,
       f"Global size {gsize} must be larger than local size {lsize}")
 
@@ -233,14 +195,14 @@ def DriveKernel(env: _env.OpenCLEnvironment,
   args_with_inputs = [
       i for i, arg in enumerate(args) if not arg.address_space == 'local'
   ]
-  app.AssertOrRaise(
+  err.assert_or_raise(
       len(args_with_inputs) == len(inputs), ValueError,
       "Kernel expects {} inputs, but {} were provided".format(
           len(args_with_inputs), len(inputs)))
 
   # All inputs must have some length.
   for i, x in enumerate(inputs):
-    app.AssertOrRaise(len(x), ValueError, f"Input {i} has size zero")
+    err.assert_or_raise(len(x), ValueError, f"Input {i} has size zero")
 
   # Copy inputs into the expected data types.
   data = np.array(
@@ -317,7 +279,8 @@ def DriveKernel(env: _env.OpenCLEnvironment,
       return outputs
 
 
-def DriveInstance(instance: cldrive_pb2.CldriveInstance) -> cldrive_pb2.CldriveInstance:
+def DriveInstance(
+    instance: cldrive_pb2.CldriveInstance) -> cldrive_pb2.CldriveInstance:
   if instance.device.name == _env.OclgrindOpenCLEnvironment().name:
     command = [str(oclgrind.OCLGRIND_PATH), str(_NATIVE_DRIVER)]
   else:
@@ -330,31 +293,33 @@ def DriveInstance(instance: cldrive_pb2.CldriveInstance) -> cldrive_pb2.CldriveI
 def main(argv):
   assert not argv[1:]
   # TODO(cec): Temporary hacky code for testing.
-  print(DriveInstance(cldrive_pb2.CldriveInstance(
-      device=_env.OclgrindOpenCLEnvironment().proto,
-      opencl_src="""
+  print(
+      DriveInstance(
+          cldrive_pb2.CldriveInstance(
+              device=_env.OclgrindOpenCLEnvironment().proto,
+              opencl_src="""
 kernel void A(global int* a, global float* b, const int c) {
 if (get_global_id(0) < c) { 
   a[get_global_id(0)] = get_global_id(0);
   b[get_global_id(0)] *= 2.0;
 }
 }""",
-      min_runs_per_kernel=10,
-      dynamic_params=[
-        cldrive_pb2.DynamicParams(
-            global_size_x=16,
-            local_size_x=16,
-        ),
-        cldrive_pb2.DynamicParams(
-            global_size_x=1024,
-            local_size_x=64,
-        ),
-        cldrive_pb2.DynamicParams(
-            global_size_x=128,
-            local_size_x=64,
-        ),
-      ],
-  )))
+              min_runs_per_kernel=10,
+              dynamic_params=[
+                  cldrive_pb2.DynamicParams(
+                      global_size_x=16,
+                      local_size_x=16,
+                  ),
+                  cldrive_pb2.DynamicParams(
+                      global_size_x=1024,
+                      local_size_x=64,
+                  ),
+                  cldrive_pb2.DynamicParams(
+                      global_size_x=128,
+                      local_size_x=64,
+                  ),
+              ],
+          )))
 
 
 if __name__ == '__main__':

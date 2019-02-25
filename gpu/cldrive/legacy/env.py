@@ -1,18 +1,3 @@
-# Copyright (c) 2016, 2017, 2018, 2019 Chris Cummins.
-# This file is part of cldrive.
-#
-# cldrive is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# cldrive is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with cldrive.  If not, see <https://www.gnu.org/licenses/>.
 import platform
 import subprocess
 import sys
@@ -21,17 +6,8 @@ from typing import Iterator
 
 from gpu.clinfo.proto import clinfo_pb2
 from gpu.oclgrind import oclgrind
-<<<<<<< HEAD:gpu/cldrive/legacy/env.py
-<<<<<<< HEAD:gpu/cldrive/legacy/env.py
 from labm8 import bazelutil
 from labm8 import pbutil
-=======
-=======
-from labm8 import bazelutil
-from labm8 import pbutil
->>>>>>> 190ef5131... Move //lib/labm8 to //labm8.:gpu/cldrive/env.py
-
->>>>>>> 386c66354... Add 'phd' prefix to labm8 imports.:gpu/cldrive/env.py
 
 CLINFO = bazelutil.DataPath('phd/gpu/clinfo/clinfo')
 
@@ -77,19 +53,10 @@ class OpenCLEnvironment(object):
   def opencl_opt(self) -> str:
     return self._proto.opencl_opt
 
-<<<<<<< HEAD:gpu/cldrive/legacy/env.py
-<<<<<<< HEAD:gpu/cldrive/legacy/env.py
-=======
->>>>>>> ada112208... Allow setting OpenCL optimization.:gpu/cldrive/env.py
   @opencl_opt.setter
   def opencl_opt(self, opt: bool):
     self._proto.opencl_opt = opt
 
-<<<<<<< HEAD:gpu/cldrive/legacy/env.py
-=======
->>>>>>> fb588fe2d... Begin forcing a specific device for benchmarks.:gpu/cldrive/env.py
-=======
->>>>>>> ada112208... Allow setting OpenCL optimization.:gpu/cldrive/env.py
   @property
   def proto(self) -> clinfo_pb2.OpenClDevice:
     return self._proto
@@ -104,13 +71,9 @@ class OpenCLEnvironment(object):
     """
     return self.platform_id, self.device_id
 
-<<<<<<< HEAD:gpu/cldrive/legacy/env.py
   def Exec(self,
            argv: typing.List[str],
            stdin: typing.Optional[str] = None,
-=======
-  def Exec(self, argv: typing.List[str], stdin: typing.Optional[str] = None,
->>>>>>> 3288bd5ae... Add optional stdin arguments.:gpu/cldrive/env.py
            env: typing.Dict[str, str] = None) -> subprocess.Popen:
     """Execute a command in an environment for the OpenCL device.
 
@@ -128,20 +91,14 @@ class OpenCLEnvironment(object):
     Returns:
       A Popen instance, with string stdout and stderr attributes set.
     """
-<<<<<<< HEAD:gpu/cldrive/legacy/env.py
-    # app.Log(2, '$ %s', ' '.join(argv))
-    process = subprocess.Popen(argv,
-                               stdout=subprocess.PIPE,
-                               stdin=subprocess.PIPE if stdin else None,
-                               stderr=subprocess.PIPE,
-                               universal_newlines=True,
-=======
     # logging.debug('$ %s', ' '.join(argv))
-    process = subprocess.Popen(argv, stdout=subprocess.PIPE,
-                               stdin=subprocess.PIPE if stdin else None,
-                               stderr=subprocess.PIPE, universal_newlines=True,
->>>>>>> 3288bd5ae... Add optional stdin arguments.:gpu/cldrive/env.py
-                               env=env)
+    process = subprocess.Popen(
+        argv,
+        stdout=subprocess.PIPE,
+        stdin=subprocess.PIPE if stdin else None,
+        stderr=subprocess.PIPE,
+        universal_newlines=True,
+        env=env)
     if stdin:
       stdout, stderr = process.communicate(stdin)
     else:
@@ -171,7 +128,6 @@ class OpenCLEnvironment(object):
           f"Requested OpenCL environment not available: '{env_name}'.\n"
           f"Available OpenCL devices:\n{available}")
 
-<<<<<<< HEAD:gpu/cldrive/legacy/env.py
 
 class OclgrindOpenCLEnvironment(OpenCLEnvironment):
   """A mock OpenCLEnvironment for oclgrind."""
@@ -184,30 +140,13 @@ class OclgrindOpenCLEnvironment(OpenCLEnvironment):
            stdin: typing.Optional[str] = None,
            env: typing.Dict[str, str] = None) -> subprocess.Popen:
     """Execute a command in the device environment."""
-    return oclgrind.Exec([
-        '--max-errors', '1', '--uninitialized', '--data-races',
-        '--uniform-writes', '--uniform-writes'
-    ] + argv,
-                         stdin=stdin,
-                         env=env)
-
-=======
->>>>>>> fb588fe2d... Begin forcing a specific device for benchmarks.:gpu/cldrive/env.py
-
-class OclgrindOpenCLEnvironment(OpenCLEnvironment):
-  """A mock OpenCLEnvironment for oclgrind."""
-
-  def __init__(self):
-    super(OclgrindOpenCLEnvironment, self).__init__(
-        oclgrind.CLINFO_DESCRIPTION)
-
-  def Exec(self, argv: typing.List[str],
-           stdin: typing.Optional[str] = None,
-           env: typing.Dict[str, str] = None) -> subprocess.Popen:
-    """Execute a command in the device environment."""
     return oclgrind.Exec(
-        ['--max-errors', '1', '--uninitialized', '--data-races',
-         '--uniform-writes', '--uniform-writes'] + argv, stdin=stdin, env=env)
+        [
+            '--max-errors', '1', '--uninitialized', '--data-races',
+            '--uniform-writes', '--uniform-writes'
+        ] + argv,
+        stdin=stdin,
+        env=env)
 
 
 def host_os() -> str:
@@ -284,8 +223,8 @@ def GetOpenClEnvironments() -> typing.List[OpenCLEnvironment]:
   Returns:
     A list of OpenCLEnvironment instances.
   """
-  return sorted(list(all_envs()) + [OclgrindOpenCLEnvironment()],
-                key=lambda x: x.name)
+  return sorted(
+      list(all_envs()) + [OclgrindOpenCLEnvironment()], key=lambda x: x.name)
 
 
 def GetTestbedNames() -> typing.List[str]:

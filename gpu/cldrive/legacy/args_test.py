@@ -1,44 +1,12 @@
-<<<<<<< HEAD:gpu/cldrive/legacy/args_test.py
-# Copyright (c) 2016, 2017, 2018, 2019 Chris Cummins.
-# This file is part of cldrive.
-#
-# cldrive is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# cldrive is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with cldrive.  If not, see <https://www.gnu.org/licenses/>.
 """Unit tests for //gpu/cldrive/legacy/args.py."""
 
 import pytest
-=======
-"""Unit tests for //gpu/cldrive/args.py."""
-
-import pytest
-<<<<<<< HEAD:gpu/cldrive/legacy/args_test.py
-from absl import app
->>>>>>> 1eed6e90b... Automated code format.:gpu/cldrive/args_test.py
-
-from gpu.cldrive.legacy import args
-from labm8 import app
-from labm8 import test
-=======
 from absl import flags
 
-from gpu.cldrive import args
+from gpu.cldrive.legacy import args
 from labm8 import test
 
-
 FLAGS = flags.FLAGS
->>>>>>> ad2622a47... Port tests to //labm8:test.:gpu/cldrive/args_test.py
-
-FLAGS = app.FLAGS
 
 # GetKernelArguments() tests.
 
