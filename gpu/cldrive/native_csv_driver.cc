@@ -15,7 +15,16 @@
 // along with cldrive.  If not, see <https://www.gnu.org/licenses/>.
 #include "gpu/cldrive/libcldrive.h"
 
+<<<<<<< HEAD:gpu/cldrive/native_csv_driver.cc
 #include "labm8/cpp/logging.h"
+=======
+#include "gpu/cldrive/kernel_arg_value.h"
+
+#include "third_party/opencl/cl.hpp"
+
+#include "phd/logging.h"
+#include "phd/string.h"
+>>>>>>> 10c24c393... Move opencl headers into top dir.:gpu/cldrive/array_kernel_arg_value.cc
 
 namespace gpu {
 namespace cldrive {
