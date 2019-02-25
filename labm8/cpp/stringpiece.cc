@@ -98,9 +98,13 @@ stringpiece_ssize_type StringPiece::copy(char *buf, size_type n,
   return ret;
 }
 
+<<<<<<< HEAD:labm8/cpp/stringpiece.cc
 bool StringPiece::contains(StringPiece s) const {
   return find(s, 0) != static_cast<int>(npos);
 }
+=======
+bool StringPiece::contains(StringPiece s) const { return find(s, 0) != static_cast<int>(npos); }
+>>>>>>> 5ebd233da... Signed int casts in stringpiece.:phd/stringpiece.cc
 
 stringpiece_ssize_type StringPiece::find(StringPiece s, size_type pos) const {
   if (length_ <= 0 || pos > static_cast<size_type>(length_)) {
@@ -262,8 +266,15 @@ stringpiece_ssize_type StringPiece::find_last_not_of(char c,
 }
 
 StringPiece StringPiece::substr(size_type pos, size_type n) const {
+<<<<<<< HEAD:labm8/cpp/stringpiece.cc
   if (static_cast<int>(pos) > length_) pos = length_;
   if (n > length_ - pos) n = length_ - pos;
+=======
+  if (static_cast<int>(pos) > length_)
+    pos = length_;
+  if (n > length_ - pos)
+    n = length_ - pos;
+>>>>>>> 5ebd233da... Signed int casts in stringpiece.:phd/stringpiece.cc
   return StringPiece(ptr_ + pos, n);
 }
 
