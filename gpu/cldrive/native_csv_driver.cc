@@ -13,7 +13,15 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with cldrive.  If not, see <https://www.gnu.org/licenses/>.
+<<<<<<< HEAD:gpu/cldrive/native_csv_driver.cc
 #include "gpu/cldrive/libcldrive.h"
+=======
+#include "gpu/cldrive/array_kernel_arg_value.h"
+
+#include "gpu/cldrive/kernel_arg_value.h"
+
+#include "third_party/opencl/cl.hpp"
+>>>>>>> 10c24c393... Move opencl headers into top dir.:gpu/cldrive/array_kernel_arg_value.cc
 
 #include "phd/logging.h"
 
