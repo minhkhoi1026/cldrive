@@ -20,7 +20,6 @@
 
 #include "third_party/opencl/cl.hpp"
 
-#include "opencl_type.h"
 #include "phd/logging.h"
 #include "phd/string.h"
 
@@ -28,6 +27,7 @@ namespace gpu {
 namespace cldrive {
 
 // An array argument.
+<<<<<<< HEAD:gpu/cldrive/global_memory_arg_value.h
 <<<<<<< HEAD:gpu/cldrive/global_memory_arg_value.h
 template <typename T>
 class GlobalMemoryArgValue : public KernelArgValue {
@@ -41,6 +41,13 @@ class ArrayKernelArgValue : public KernelArgValue {
   ArrayKernelArgValue(const OpenClType &type, size_t size, Args &&... args)
       : KernelArgValue(type), vector_(size, args...) {}
 >>>>>>> 36b52bcfa... Work in progress cldrive args.:gpu/cldrive/array_kernel_arg_value.h
+=======
+template <typename T>
+class ArrayKernelArgValue : public KernelArgValue {
+ public:
+  template <typename... Args>
+  ArrayKernelArgValue(size_t size, Args &&... args) : vector_(size, args...) {}
+>>>>>>> 6292922f7... Switch back to templates.:gpu/cldrive/array_kernel_arg_value.h
 
   virtual bool operator==(const KernelArgValue *const rhs) const override {
 <<<<<<< HEAD:gpu/cldrive/global_memory_arg_value.h
@@ -59,6 +66,7 @@ class ArrayKernelArgValue : public KernelArgValue {
     for (size_t i = 0; i < vector().size(); ++i) {
 <<<<<<< HEAD:gpu/cldrive/global_memory_arg_value.h
 <<<<<<< HEAD:gpu/cldrive/global_memory_arg_value.h
+<<<<<<< HEAD:gpu/cldrive/global_memory_arg_value.h
       if (!opencl_type::Equal(vector()[i], array_ptr->vector()[i])) {
 =======
       if (!ElementEquality(vector()[i], array_ptr->vector()[i])) {
@@ -66,6 +74,9 @@ class ArrayKernelArgValue : public KernelArgValue {
 =======
       if (!type().ElementsAreEqual(vector()[i], array_ptr->vector()[i])) {
 >>>>>>> 36b52bcfa... Work in progress cldrive args.:gpu/cldrive/array_kernel_arg_value.h
+=======
+      if (!opencl_type::Equal(vector()[i], array_ptr->vector()[i])) {
+>>>>>>> 6292922f7... Switch back to templates.:gpu/cldrive/array_kernel_arg_value.h
         return false;
       }
     }
@@ -77,9 +88,9 @@ class ArrayKernelArgValue : public KernelArgValue {
     return !(*this == rhs);
   }
 
-  std::vector<Scalar> &vector() { return vector_; }
+  std::vector<T> &vector() { return vector_; }
 
-  const std::vector<Scalar> &vector() const { return vector_; }
+  const std::vector<T> &vector() const { return vector_; }
 
   size_t size() const { return vector().size(); }
 
@@ -119,7 +130,7 @@ class ArrayKernelArgValue : public KernelArgValue {
   virtual string ToString() const override {
     string s = "";
     for (auto &value : vector()) {
-      absl::StrAppend(&s, type().FormatToString(value));
+      absl::StrAppend(&s, opencl_type::ToString(value));
       absl::StrAppend(&s, ",");
     }
     return s;
@@ -127,10 +138,11 @@ class ArrayKernelArgValue : public KernelArgValue {
 >>>>>>> 36b52bcfa... Work in progress cldrive args.:gpu/cldrive/array_kernel_arg_value.h
 
  protected:
-  std::vector<Scalar> vector_;
+  std::vector<T> vector_;
 };
 
 // An array value with a device-side buffer.
+<<<<<<< HEAD:gpu/cldrive/global_memory_arg_value.h
 <<<<<<< HEAD:gpu/cldrive/global_memory_arg_value.h
 template <typename T>
 class GlobalMemoryArgValueWithBuffer : public GlobalMemoryArgValue<T> {
@@ -141,15 +153,22 @@ class GlobalMemoryArgValueWithBuffer : public GlobalMemoryArgValue<T> {
       : GlobalMemoryArgValue<T>(size, args...),
 =======
 class ArrayKernelArgValueWithBuffer : public ArrayKernelArgValue {
+=======
+template <typename T>
+class ArrayKernelArgValueWithBuffer : public ArrayKernelArgValue<T> {
+>>>>>>> 6292922f7... Switch back to templates.:gpu/cldrive/array_kernel_arg_value.h
  public:
   template <typename... Args>
-  ArrayKernelArgValueWithBuffer(const OpenClType &type,
-                                const cl::Context &context, size_t size,
+  ArrayKernelArgValueWithBuffer(const cl::Context &context, size_t size,
                                 Args &&... args)
+<<<<<<< HEAD:gpu/cldrive/global_memory_arg_value.h
       : ArrayKernelArgValue(type, size, args...),
 >>>>>>> 1a9fec66a... Work in progress testing OpenCL union.:gpu/cldrive/array_kernel_arg_value.h
+=======
+      : ArrayKernelArgValue<T>(size, args...),
+>>>>>>> 6292922f7... Switch back to templates.:gpu/cldrive/array_kernel_arg_value.h
         buffer_(context, /*flags=*/CL_MEM_READ_WRITE,
-                /*size=*/type.ElementSize() * size) {}
+                /*size=*/sizeof(T) * size) {}
 
   cl::Buffer &buffer() { return buffer_; }
 
@@ -169,6 +188,7 @@ class ArrayKernelArgValueWithBuffer : public ArrayKernelArgValue {
 <<<<<<< HEAD:gpu/cldrive/global_memory_arg_value.h
 <<<<<<< HEAD:gpu/cldrive/global_memory_arg_value.h
 <<<<<<< HEAD:gpu/cldrive/global_memory_arg_value.h
+<<<<<<< HEAD:gpu/cldrive/global_memory_arg_value.h
     size_t buffer_size = this->vector().size() * sizeof(T);
     auto new_arg = std::make_unique<GlobalMemoryArgValue<T>>(this->size());
     util::CopyDeviceToHost(queue, buffer(), new_arg->vector().data(),
@@ -182,6 +202,9 @@ class ArrayKernelArgValueWithBuffer : public ArrayKernelArgValue {
 =======
     auto new_arg = std::make_unique<ArrayKernelArgValue>(type(), this->size());
 >>>>>>> 1a9fec66a... Work in progress testing OpenCL union.:gpu/cldrive/array_kernel_arg_value.h
+=======
+    auto new_arg = std::make_unique<ArrayKernelArgValue<T>>(this->size());
+>>>>>>> 6292922f7... Switch back to templates.:gpu/cldrive/array_kernel_arg_value.h
     CopyDeviceToHost(queue, buffer(), new_arg->vector().begin(),
                      new_arg->vector().end(), profiling);
 >>>>>>> 7cb4e1620... Fixes for cldrive.:gpu/cldrive/array_kernel_arg_value.h
