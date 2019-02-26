@@ -41,8 +41,35 @@ std::unique_ptr<KernelArgValue> CreateLocalMemoryArgValue(
 std::unique_ptr<KernelArgValue> CreateScalarArgValue(const OpenClType& type,
                                                      const int& value);
 
+<<<<<<< HEAD:gpu/cldrive/opencl_type_util.h
 }  // namespace util
 =======
 >>>>>>> ac755253f... Remove commented out code.:gpu/cldrive/array_kernel_arg_value.cc
+=======
+namespace {
+
+// TODO(cldrive): Work in progress!
+
+template <typename T>
+bool Vec2Equality(const T& lhs, const T& rhs) {
+  return true;
+  // TODO: return (l[0] == r[0]) && (l[1] == r[1]);
+}
+
+}  // anonymous namespace
+
+template <>
+/*virtual*/ string ArrayKernelArgValue<cl_char2>::ToString() const {
+  string s = "";
+  return s;
+}
+
+template <>
+/*virtual*/ bool ArrayKernelArgValue<cl_char2>::ElementEquality(
+    const cl_char2& lhs, const cl_char2& rhs) const {
+  return Vec2Equality(lhs, rhs);
+}
+
+>>>>>>> 8b16e8e86... Work in progress on cldrive vector args.:gpu/cldrive/array_kernel_arg_value.cc
 }  // namespace cldrive
 }  // namespace gpu
