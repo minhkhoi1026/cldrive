@@ -30,6 +30,7 @@ namespace gpu {
 namespace cldrive {
 
 <<<<<<< HEAD:gpu/cldrive/native_csv_driver.cc
+<<<<<<< HEAD:gpu/cldrive/native_csv_driver.cc
 void ProcessCldriveInstancesOrDie(CldriveInstances* instances) {
   CsvLogger logger(std::cout, instances);
   for (int i = 0; i < instances->instance_size(); ++i) {
@@ -61,6 +62,9 @@ template <>
   return Vec2Equality(lhs, rhs);
 >>>>>>> 8b16e8e86... Work in progress on cldrive vector args.:gpu/cldrive/array_kernel_arg_value.cc
 }
+=======
+namespace {}
+>>>>>>> 36b52bcfa... Work in progress cldrive args.:gpu/cldrive/array_kernel_arg_value.cc
 
 }  // namespace cldrive
 }  // namespace gpu

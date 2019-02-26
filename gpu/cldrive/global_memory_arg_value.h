@@ -20,24 +20,32 @@
 
 #include "third_party/opencl/cl.hpp"
 
+<<<<<<< HEAD:gpu/cldrive/global_memory_arg_value.h
 #include "labm8/cpp/logging.h"
 #include "labm8/cpp/string.h"
+=======
+#include "opencl_type.h"
+#include "phd/logging.h"
+#include "phd/string.h"
+>>>>>>> 36b52bcfa... Work in progress cldrive args.:gpu/cldrive/array_kernel_arg_value.h
 
 namespace gpu {
 namespace cldrive {
 
-// TODO(cldrive): Work in progress!
-template <typename T>
-bool ScalarEquality(const T &lhs, const T &rhs) {
-  return lhs == rhs;
-}
-
 // An array argument.
+<<<<<<< HEAD:gpu/cldrive/global_memory_arg_value.h
 template <typename T>
 class GlobalMemoryArgValue : public KernelArgValue {
  public:
   template <typename... Args>
   GlobalMemoryArgValue(size_t size, Args &&... args) : vector_(size, args...) {}
+=======
+class ArrayKernelArgValue : public KernelArgValue {
+ public:
+  template <typename... Args>
+  ArrayKernelArgValue(const OpenClType &type, size_t size, Args &&... args)
+      : KernelArgValue(type), vector_(size, args...) {}
+>>>>>>> 36b52bcfa... Work in progress cldrive args.:gpu/cldrive/array_kernel_arg_value.h
 
   virtual bool operator==(const KernelArgValue *const rhs) const override {
 <<<<<<< HEAD:gpu/cldrive/global_memory_arg_value.h
@@ -55,19 +63,19 @@ class GlobalMemoryArgValue : public KernelArgValue {
 
     for (size_t i = 0; i < vector().size(); ++i) {
 <<<<<<< HEAD:gpu/cldrive/global_memory_arg_value.h
+<<<<<<< HEAD:gpu/cldrive/global_memory_arg_value.h
       if (!opencl_type::Equal(vector()[i], array_ptr->vector()[i])) {
 =======
       if (!ElementEquality(vector()[i], array_ptr->vector()[i])) {
 >>>>>>> 8b16e8e86... Work in progress on cldrive vector args.:gpu/cldrive/array_kernel_arg_value.h
+=======
+      if (!type().ElementsAreEqual(vector()[i], array_ptr->vector()[i])) {
+>>>>>>> 36b52bcfa... Work in progress cldrive args.:gpu/cldrive/array_kernel_arg_value.h
         return false;
       }
     }
 
     return true;
-  }
-
-  bool ElementEquality(const T &lhs, const T &rhs) const {
-    return ScalarEquality(lhs, rhs);
   }
 
   virtual bool operator!=(const KernelArgValue *const rhs) const override {
@@ -96,6 +104,7 @@ class GlobalMemoryArgValue : public KernelArgValue {
   }
 
 <<<<<<< HEAD:gpu/cldrive/global_memory_arg_value.h
+<<<<<<< HEAD:gpu/cldrive/global_memory_arg_value.h
   virtual string ToString() const override {
     string s = "";
     for (const auto &value : vector()) {
@@ -111,28 +120,20 @@ class GlobalMemoryArgValue : public KernelArgValue {
 =======
   virtual string ToString() const override;
 >>>>>>> 8b16e8e86... Work in progress on cldrive vector args.:gpu/cldrive/array_kernel_arg_value.h
+=======
+  virtual string ToString() const override {
+    string s = "";
+    for (auto &value : vector()) {
+      absl::StrAppend(&s, type().FormatToString(value));
+      absl::StrAppend(&s, ", ");
+    }
+    return s;
+  };
+>>>>>>> 36b52bcfa... Work in progress cldrive args.:gpu/cldrive/array_kernel_arg_value.h
 
  protected:
   std::vector<T> vector_;
 };
-
-// TODO(cldrive): Work in progress!
-template <typename T>
-/*virtual*/ string ArrayKernelArgValue<T>::ToString() const {
-  string s = "";
-  for (auto &value : vector()) {
-    absl::StrAppend(&s, value);
-    absl::StrAppend(&s, ", ");
-  }
-  return s;
-}
-
-template <>
-/*virtual*/ string ArrayKernelArgValue<cl_char2>::ToString() const;
-
-template <>
-/*virtual*/ bool ArrayKernelArgValue<cl_char2>::ElementEquality(
-    const cl_char2 &lhs, const cl_char2 &rhs) const;
 
 // An array value with a device-side buffer.
 template <typename T>
