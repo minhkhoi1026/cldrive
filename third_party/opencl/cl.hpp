@@ -1,27 +1,11 @@
-// Chris edit: Always use exceptions!
-#ifndef __CL_ENABLE_EXCEPTIONS
-#define __CL_ENABLE_EXCEPTIONS
-#endif
-
 #pragma GCC diagnostic push  // Chris edit
 #pragma GCC diagnostic ignored "-Wold-style-cast"
 #pragma GCC diagnostic ignored "-Wundef"
 #pragma GCC diagnostic ignored "-Wsign-conversion"
-<<<<<<< HEAD:third_party/opencl/cl.hpp
-<<<<<<< HEAD:third_party/opencl/cl.hpp
-=======
-#pragma GCC diagnostic ignored "-Wreserved-id-macro"
->>>>>>> 4b74f4f77... Fix more compiler warnings:extern/opencl/include/cl.hpp
-=======
->>>>>>> 84e4ba966... Remove unrecognized error diagnostics.:third_party/opencl/include/cl.hpp
 #pragma GCC diagnostic ignored "-Wdeprecated"
 
 /*******************************************************************************
-<<<<<<< HEAD:third_party/opencl/cl.hpp
  * Copyright (c) 2008-2015 The Khronos Group Inc.
-=======
- * Copyright (c) 2008-2013 The Khronos Group Inc.
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and/or associated documentation files (the
@@ -45,7 +29,6 @@
 
 /*! \file
  *
-<<<<<<< HEAD:third_party/opencl/cl.hpp
  *   \brief C++ bindings for OpenCL 1.0 (rev 48), OpenCL 1.1 (rev 33) and
  *       OpenCL 1.2 (rev 15)
  *   \author Benedict R. Gaster, Laurent Morichetti and Lee Howes
@@ -58,20 +41,6 @@
  *
  *   \version 1.2.7
  *   \date January 2015
-=======
- *   \brief C++ bindings for OpenCL 1.0 (rev 48), OpenCL 1.1 (rev 33) and 
- *       OpenCL 1.2 (rev 15)    
- *   \author Benedict R. Gaster, Laurent Morichetti and Lee Howes
- *   
- *   Additions and fixes from:
- *       Brian Cole, March 3rd 2010 and April 2012 
- *       Matt Gruenke, April 2012.
- *       Bruce Merry, February 2013.
- *       Tom Deakin and Simon McIntosh-Smith, July 2013
- *   
- *   \version 1.2.6
- *   \date August 2013
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
  *
  *   Optional extension support
  *
@@ -183,25 +152,12 @@
 #define CL_HPP_
 
 #ifdef _WIN32
-<<<<<<< HEAD:third_party/opencl/cl.hpp
-=======
-
-#include <windows.h>
-#include <malloc.h>
-#include <iterator>
-#include <intrin.h>
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
 
 #include <malloc.h>
 
 #if defined(USE_DX_INTEROP)
-<<<<<<< HEAD:third_party/opencl/cl.hpp
 #include "third_party/opencl/cl_d3d10.h"
 #include "third_party/opencl/cl_dx9_media_sharing.h"
-=======
-#include <CL/cl_d3d10.h>
-#include <CL/cl_dx9_media_sharing.h>
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
 #endif
 #endif // _WIN32
 
@@ -222,15 +178,8 @@
 #include <atomic>
 #endif
 
-<<<<<<< HEAD:third_party/opencl/cl.hpp
 #if (__cplusplus >= 201103L)
 #define CL_HPP_NOEXCEPT noexcept
-=======
-#if defined(__APPLE__) || defined(__MACOSX)
-#include <OpenGL/OpenGL.h>
-#include <OpenCL/opencl.h>
-#include <libkern/OSAtomic.h>
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
 #else
 #define CL_HPP_NOEXCEPT
 #endif
@@ -249,24 +198,6 @@
 // in case they are not pre-defined
 #if !defined(CL_EXT_PREFIX__VERSION_1_1_DEPRECATED)
 #define CL_EXT_PREFIX__VERSION_1_1_DEPRECATED
-#endif // #if !defined(CL_EXT_PREFIX__VERSION_1_1_DEPRECATED)
-#if !defined(CL_EXT_SUFFIX__VERSION_1_1_DEPRECATED)
-#define CL_EXT_SUFFIX__VERSION_1_1_DEPRECATED
-#endif // #if !defined(CL_EXT_PREFIX__VERSION_1_1_DEPRECATED)
-
-// To avoid accidentally taking ownership of core OpenCL types
-// such as cl_kernel constructors are made explicit
-// under OpenCL 1.2
-#if defined(CL_VERSION_1_2) && !defined(CL_USE_DEPRECATED_OPENCL_1_1_APIS)
-#define __CL_EXPLICIT_CONSTRUCTORS explicit
-#else // #if defined(CL_USE_DEPRECATED_OPENCL_1_1_APIS)
-#define __CL_EXPLICIT_CONSTRUCTORS 
-#endif // #if defined(CL_USE_DEPRECATED_OPENCL_1_1_APIS)
-
-// Define deprecated prefixes and suffixes to ensure compilation
-// in case they are not pre-defined
-#if !defined(CL_EXT_PREFIX__VERSION_1_1_DEPRECATED)
-#define CL_EXT_PREFIX__VERSION_1_1_DEPRECATED  
 #endif // #if !defined(CL_EXT_PREFIX__VERSION_1_1_DEPRECATED)
 #if !defined(CL_EXT_SUFFIX__VERSION_1_1_DEPRECATED)
 #define CL_EXT_SUFFIX__VERSION_1_1_DEPRECATED
@@ -294,9 +225,6 @@
 
 #if defined(__ANDROID__) || defined(linux) || defined(__APPLE__) || defined(__MACOSX)
 #include <alloca.h>
-
-#include <emmintrin.h>
-#include <xmmintrin.h>
 #endif // linux
 
 #include <cstring>
@@ -314,11 +242,7 @@ class Memory;
 /**
  * Deprecated APIs for 1.2
  */
-<<<<<<< HEAD:third_party/opencl/cl.hpp
 #if defined(CL_USE_DEPRECATED_OPENCL_1_1_APIS) || (defined(CL_VERSION_1_1) && !defined(CL_VERSION_1_2))
-=======
-#if defined(CL_USE_DEPRECATED_OPENCL_1_1_APIS) || (defined(CL_VERSION_1_1) && !defined(CL_VERSION_1_2)) 
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
 #define __INIT_CL_EXT_FCN_PTR(name) \
     if(!pfn_##name) { \
         pfn_##name = (PFN_##name) \
@@ -346,13 +270,8 @@ class Memory;
 class Buffer;
 
 #if defined(__CL_ENABLE_EXCEPTIONS)
-<<<<<<< HEAD:third_party/opencl/cl.hpp
 /*! \brief Exception class
  *
-=======
-/*! \brief Exception class 
- * 
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
  *  This may be thrown by API functions when __CL_ENABLE_EXCEPTIONS is defined.
  */
 class Error : public std::exception
@@ -363,11 +282,7 @@ private:
 public:
     /*! \brief Create a new CL error exception for a given error code
      *  and corresponding message.
-<<<<<<< HEAD:third_party/opencl/cl.hpp
      *
-=======
-     * 
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
      *  \param err error code value.
      *
      *  \param errStr a descriptive string that must remain in scope until
@@ -483,11 +398,7 @@ static inline cl_int errHandler (cl_int err, const char * errStr = NULL)
 #define __BUILD_PROGRAM_ERR                 __ERR_STR(clBuildProgram)
 #if defined(CL_VERSION_1_2)
 #define __COMPILE_PROGRAM_ERR                  __ERR_STR(clCompileProgram)
-<<<<<<< HEAD:third_party/opencl/cl.hpp
 #define __LINK_PROGRAM_ERR                  __ERR_STR(clLinkProgram)
-=======
-
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
 #endif // #if defined(CL_VERSION_1_2)
 #define __CREATE_KERNELS_IN_PROGRAM_ERR     __ERR_STR(clCreateKernelsInProgram)
 
@@ -538,11 +449,7 @@ static inline cl_int errHandler (cl_int err, const char * errStr = NULL)
 /**
  * Deprecated APIs for 1.2
  */
-<<<<<<< HEAD:third_party/opencl/cl.hpp
 #if defined(CL_USE_DEPRECATED_OPENCL_1_1_APIS) || (defined(CL_VERSION_1_1) && !defined(CL_VERSION_1_2))
-=======
-#if defined(CL_USE_DEPRECATED_OPENCL_1_1_APIS) || (defined(CL_VERSION_1_1) && !defined(CL_VERSION_1_2)) 
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
 #define __ENQUEUE_MARKER_ERR                __ERR_STR(clEnqueueMarker)
 #define __ENQUEUE_WAIT_FOR_EVENTS_ERR       __ERR_STR(clEnqueueWaitForEvents)
 #define __ENQUEUE_BARRIER_ERR               __ERR_STR(clEnqueueBarrier)
@@ -566,20 +473,12 @@ static inline cl_int errHandler (cl_int err, const char * errStr = NULL)
 
 #if !defined(__USE_DEV_STRING) && !defined(__NO_STD_STRING)
 typedef std::string STRING_CLASS;
-<<<<<<< HEAD:third_party/opencl/cl.hpp
 #elif !defined(__USE_DEV_STRING)
-=======
-#elif !defined(__USE_DEV_STRING) 
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
 
 /*! \class string
  * \brief Simple string class, that provides a limited subset of std::string
  * functionality but avoids many of the issues that come with that class.
-<<<<<<< HEAD:third_party/opencl/cl.hpp
 
-=======
- 
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
  *  \note Deprecated. Please use std::string as default or
  *  re-define the string class to match the std::string
  *  interface by defining STRING_CLASS
@@ -597,17 +496,10 @@ public:
 
     /*! \brief Constructs a string populated from an arbitrary value of
      *  specified size.
-<<<<<<< HEAD:third_party/opencl/cl.hpp
      *
      *  An extra '\0' is added, in case none was contained in str.
      *
      *  \param str the initial value of the string instance.  Note that '\0'
-=======
-     * 
-     *  An extra '\0' is added, in case none was contained in str.
-     *
-     *  \param str the initial value of the string instance.  Note that '\0'     
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
      *             characters receive no special treatment.  If NULL,
      *             the string is left empty, with a size of 0.
      *
@@ -660,25 +552,6 @@ public:
             }
             str_ = NULL;
             size_ = 0;
-        } 
-        else {
-            char *newString = new char[n + 1];
-            int copySize = n;
-            if( size_ < n ) {
-                copySize = size_;
-            }
-            size_ = n;
-            
-            if(str_) {
-                memcpy(newString, str_, (copySize + 1) * sizeof(char));
-            }
-            if( copySize < size_ ) {
-                memset(newString + copySize, 0, size_ - copySize);
-            }
-            newString[size_] = '\0';
-
-            delete [] str_;
-            str_ = newString;
         }
         else {
             char *newString = new char[n + 1];
@@ -711,19 +584,6 @@ public:
         return str_[pos];
     }
 
-<<<<<<< HEAD:third_party/opencl/cl.hpp
-=======
-    const char& operator[] ( ::size_t pos ) const
-    {
-        return str_[pos];
-    }
-
-    char& operator[] ( ::size_t pos )
-    {
-        return str_[pos];
-    }
-
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
     /*! \brief Copies the value of another string to this one.
      *
      *  \param rhs the string to copy.
@@ -745,19 +605,11 @@ public:
         if (rhs.size_ == 0 || rhs.str_ == NULL) {
             str_ = NULL;
             size_ = 0;
-<<<<<<< HEAD:third_party/opencl/cl.hpp
         }
         else {
             str_ = new char[rhs.size_ + 1];
             size_ = rhs.size_;
 
-=======
-        } 
-        else {
-            str_ = new char[rhs.size_ + 1];
-            size_ = rhs.size_;
-            
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
             if (str_ != NULL) {
                 memcpy(str_, rhs.str_, (size_ + 1) * sizeof(char));
             }
@@ -786,11 +638,7 @@ public:
         delete[] str_;
         str_ = NULL;
     }
-<<<<<<< HEAD:third_party/opencl/cl.hpp
 
-=======
-    
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
     //! \brief Queries the length of the string, excluding any added '\0's.
     ::size_t size(void) const   { return size_; }
 
@@ -803,32 +651,19 @@ public:
     const char * c_str(void) const { return (str_) ? str_ : "";}
 };
 typedef cl::string STRING_CLASS;
-<<<<<<< HEAD:third_party/opencl/cl.hpp
 #endif // #elif !defined(__USE_DEV_STRING)
 
 #if !defined(__USE_DEV_VECTOR) && !defined(__NO_STD_VECTOR)
 #define VECTOR_CLASS std::vector
 #elif !defined(__USE_DEV_VECTOR)
 #define VECTOR_CLASS cl::vector
-=======
-#endif // #elif !defined(__USE_DEV_STRING) 
-
-#if !defined(__USE_DEV_VECTOR) && !defined(__NO_STD_VECTOR)
-#define VECTOR_CLASS std::vector
-#elif !defined(__USE_DEV_VECTOR) 
-#define VECTOR_CLASS cl::vector 
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
 
 #if !defined(__MAX_DEFAULT_VECTOR_SIZE)
 #define __MAX_DEFAULT_VECTOR_SIZE 10
 #endif
 
 /*! \class vector
-<<<<<<< HEAD:third_party/opencl/cl.hpp
  * \brief Fixed sized vector implementation that mirroring
-=======
- * \brief Fixed sized vector implementation that mirroring 
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
  *
  *  \note Deprecated. Please use std::vector as default or
  *  re-define the vector class to match the std::vector
@@ -850,11 +685,7 @@ typedef cl::string STRING_CLASS;
  *  \param N maximum size of the vector.
  */
 template <typename T, unsigned int N = __MAX_DEFAULT_VECTOR_SIZE>
-<<<<<<< HEAD:third_party/opencl/cl.hpp
 class CL_EXT_PREFIX__VERSION_1_1_DEPRECATED vector
-=======
-class CL_EXT_PREFIX__VERSION_1_1_DEPRECATED vector CL_EXT_SUFFIX__VERSION_1_1_DEPRECATED
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
 {
 private:
     T data_[N];
@@ -862,20 +693,12 @@ private:
 
 public:
     //! \brief Constructs an empty vector with no memory allocated.
-<<<<<<< HEAD:third_party/opencl/cl.hpp
     vector() :
-=======
-    vector() :  
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
         size_(static_cast<unsigned int>(0))
     {}
 
     //! \brief Deallocates the vector's memory and destroys all of its elements.
-<<<<<<< HEAD:third_party/opencl/cl.hpp
     ~vector()
-=======
-    ~vector() 
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
     {
         clear();
     }
@@ -885,11 +708,7 @@ public:
     {
         return size_;
     }
-<<<<<<< HEAD:third_party/opencl/cl.hpp
 
-=======
-    
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
     /*! \brief Empties the vector of all elements.
      *  \note
      *  This does not deallocate memory but will invoke destructors
@@ -903,11 +722,7 @@ public:
     }
 
     /*! \brief Appends an element after the last valid element.
-<<<<<<< HEAD:third_party/opencl/cl.hpp
      * Calling this on a vector that has reached capacity will throw an
-=======
-     * Calling this on a vector that has reached capacity will throw an 
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
      * exception if exceptions are enabled.
      */
     void push_back (const T& x)
@@ -933,20 +748,12 @@ public:
             detail::errHandler(CL_MEM_OBJECT_ALLOCATION_FAILURE, __VECTOR_CAPACITY_ERR);
         }
     }
-<<<<<<< HEAD:third_party/opencl/cl.hpp
 
-=======
-  
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
     /*! \brief Constructs with a value copied from another.
      *
      *  \param vec the vector to copy.
      */
-<<<<<<< HEAD:third_party/opencl/cl.hpp
     vector(const vector<T, N>& vec) :
-=======
-    vector(const vector<T, N>& vec) : 
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
         size_(vec.size_)
     {
         if (size_ != 0) {
@@ -1007,31 +814,19 @@ public:
         }
         return true;
     }
-<<<<<<< HEAD:third_party/opencl/cl.hpp
 
-=======
-  
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
     //! \brief Conversion operator to T*.
     operator T* ()             { return data_; }
 
     //! \brief Conversion operator to const T*.
     operator const T* () const { return data_; }
-<<<<<<< HEAD:third_party/opencl/cl.hpp
 
-=======
-   
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
     //! \brief Tests whether this instance has any elements.
     bool empty (void) const
     {
         return size_==0;
     }
-<<<<<<< HEAD:third_party/opencl/cl.hpp
 
-=======
-  
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
     //! \brief Returns the maximum number of elements this instance can hold.
     unsigned int max_size (void) const
     {
@@ -1044,7 +839,6 @@ public:
         return N;
     }
 
-<<<<<<< HEAD:third_party/opencl/cl.hpp
     //! \brief Resizes the vector to the given size
     void resize(unsigned int newSize, T fill = T())
     {
@@ -1067,8 +861,6 @@ public:
         }
     }
 
-=======
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
     /*! \brief Returns a reference to a given element.
      *
      *  \param index which element to access.     *
@@ -1079,11 +871,7 @@ public:
     {
         return data_[index];
     }
-<<<<<<< HEAD:third_party/opencl/cl.hpp
 
-=======
-  
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
     /*! \brief Returns a const reference to a given element.
      *
      *  \param index which element to access.
@@ -1095,11 +883,7 @@ public:
     {
         return data_[index];
     }
-<<<<<<< HEAD:third_party/opencl/cl.hpp
 
-=======
-  
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
     /*! \brief Assigns elements of the vector based on a source iterator range.
      *
      *  \param start Beginning iterator of source range
@@ -1253,11 +1037,7 @@ public:
     {
         return data_[size_-1];
     }
-<<<<<<< HEAD:third_party/opencl/cl.hpp
 } CL_EXT_SUFFIX__VERSION_1_1_DEPRECATED;
-=======
-};  
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
 #endif // #if !defined(__USE_DEV_VECTOR) && !defined(__NO_STD_VECTOR)
 
 
@@ -1304,28 +1084,16 @@ namespace detail {
         __sync_synchronize();
 #endif // !CL_HPP_CPP11_ATOMICS_SUPPORTED
     }
-<<<<<<< HEAD:third_party/opencl/cl.hpp
 } // namespace detail
 
 
-=======
-
-    inline void fence() { _mm_mfence(); }
-}; // namespace detail
-
-    
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
 /*! \brief class used to interface between C++ and
  *  OpenCL C calls that require arrays of size_t values, whose
  *  size is known statically.
  */
 template <int N>
 class size_t
-<<<<<<< HEAD:third_party/opencl/cl.hpp
 {
-=======
-{ 
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
 private:
     ::size_t data_[N];
 
@@ -1339,64 +1107,6 @@ public:
     }
 
     ::size_t& operator[](int index)
-<<<<<<< HEAD:third_party/opencl/cl.hpp
-    {
-        return data_[index];
-    }
-
-    const ::size_t& operator[](int index) const
-    {
-        return data_[index];
-    }
-
-    //! \brief Conversion operator to T*.
-    operator ::size_t* ()             { return data_; }
-
-    //! \brief Conversion operator to const T*.
-    operator const ::size_t* () const { return data_; }
-};
-
-namespace detail {
-
-// Generic getInfoHelper. The final parameter is used to guide overload
-// resolution: the actual parameter passed is an int, which makes this
-// a worse conversion sequence than a specialization that declares the
-// parameter as an int.
-template<typename Functor, typename T>
-inline cl_int getInfoHelper(Functor f, cl_uint name, T* param, long)
-{
-    return f(name, sizeof(T), param, NULL);
-}
-
-// Specialized getInfoHelper for VECTOR_CLASS params
-template <typename Func, typename T>
-inline cl_int getInfoHelper(Func f, cl_uint name, VECTOR_CLASS<T>* param, long)
-{
-    ::size_t required;
-    cl_int err = f(name, 0, NULL, &required);
-    if (err != CL_SUCCESS) {
-        return err;
-    }
-
-    T* value = (T*) alloca(required);
-    err = f(name, required, value, NULL);
-    if (err != CL_SUCCESS) {
-        return err;
-    }
-
-    param->assign(&value[0], &value[required/sizeof(T)]);
-    return CL_SUCCESS;
-}
-
-/* Specialization for reference-counted types. This depends on the
- * existence of Wrapper<T>::cl_type, and none of the other types having the
- * cl_type member. Note that simplify specifying the parameter as Wrapper<T>
- * does not work, because when using a derived type (e.g. Context) the generic
- * template will provide a better match.
- */
-template <typename Func, typename T>
-inline cl_int getInfoHelper(Func f, cl_uint name, VECTOR_CLASS<T>* param, int, typename T::cl_type = 0)
-=======
     {
         return data_[index];
     }
@@ -1465,56 +1175,6 @@ inline cl_int getInfoHelper(Func f, cl_uint name, VECTOR_CLASS<T>* param, int, t
     if (err != CL_SUCCESS) {
         return err;
     }
-
-    ::size_t elements = required / sizeof(typename T::cl_type);
-    param->assign(&value[0], &value[elements]);
-    for (::size_t i = 0; i < elements; i++)
-    {
-        if (value[i] != NULL)
-        {
-            err = (*param)[i].retain();
-            if (err != CL_SUCCESS) {
-                return err;
-            }
-        }
-    }
-    return CL_SUCCESS;
-}
-
-// Specialized for getInfo<CL_PROGRAM_BINARIES>
-template <typename Func>
-inline cl_int getInfoHelper(Func f, cl_uint name, VECTOR_CLASS<char *>* param, int)
-{
-    cl_int err = f(name, param->size() * sizeof(char *), &(*param)[0], NULL);
-
-    if (err != CL_SUCCESS) {
-        return err;
-    }
-
-    return CL_SUCCESS;
-}
-
-// Specialized GetInfoHelper for STRING_CLASS params
-template <typename Func>
-inline cl_int getInfoHelper(Func f, cl_uint name, STRING_CLASS* param, long)
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
-{
-    ::size_t required;
-    cl_int err = f(name, 0, NULL, &required);
-    if (err != CL_SUCCESS) {
-        return err;
-    }
-
-<<<<<<< HEAD:third_party/opencl/cl.hpp
-    typename T::cl_type * value = (typename T::cl_type *) alloca(required);
-=======
-    char* value = (char*) alloca(required);
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
-    err = f(name, required, value, NULL);
-    if (err != CL_SUCCESS) {
-        return err;
-    }
-<<<<<<< HEAD:third_party/opencl/cl.hpp
 
     ::size_t elements = required / sizeof(typename T::cl_type);
     param->assign(&value[0], &value[elements]);
@@ -1592,38 +1252,6 @@ inline cl_int getInfoHelper(Func f, cl_uint name, size_t<N>* param, long)
 
 template<typename T> struct ReferenceHandler;
 
-=======
-
-    *param = value;
-    return CL_SUCCESS;
-}
-
-// Specialized GetInfoHelper for cl::size_t params
-template <typename Func, ::size_t N>
-inline cl_int getInfoHelper(Func f, cl_uint name, size_t<N>* param, long)
-{
-    ::size_t required;
-    cl_int err = f(name, 0, NULL, &required);
-    if (err != CL_SUCCESS) {
-        return err;
-    }
-
-    ::size_t* value = (::size_t*) alloca(required);
-    err = f(name, required, value, NULL);
-    if (err != CL_SUCCESS) {
-        return err;
-    }
-
-    for(int i = 0; i < N; ++i) {
-        (*param)[i] = value[i];
-    }
-
-    return CL_SUCCESS;
-}
-
-template<typename T> struct ReferenceHandler;
-
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
 /* Specialization for reference-counted types. This depends on the
  * existence of Wrapper<T>::cl_type, and none of the other types having the
  * cl_type member. Note that simplify specifying the parameter as Wrapper<T>
@@ -2095,11 +1723,7 @@ static cl_uint getVersion(const char *versionInfo)
         ++index;
     }
     ++index;
-<<<<<<< HEAD:third_party/opencl/cl.hpp
     while(versionInfo[index] != ' ' &&  versionInfo[index] != '\0') {
-=======
-    while(versionInfo[index] != ' ' ) {
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
         lowVersion *= 10;
         lowVersion += versionInfo[index]-'0';
         ++index;
@@ -2313,102 +1937,6 @@ public:
 protected:
     template<typename Func, typename U>
     friend inline cl_int getInfoHelper(Func, cl_uint, U*, int, typename U::cl_type);
-<<<<<<< HEAD:third_party/opencl/cl.hpp
-
-    template<typename Func, typename U>
-    friend inline cl_int getInfoHelper(Func, cl_uint, VECTOR_CLASS<U>*, int, typename U::cl_type);
-=======
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
-
-    cl_int retain() const
-    {
-        if( referenceCountable_ ) {
-            return ReferenceHandler<cl_type>::retain(object_);
-        }
-        else {
-            return CL_SUCCESS;
-        }
-    }
-
-    cl_int release() const
-    {
-        if( referenceCountable_ ) {
-            return ReferenceHandler<cl_type>::release(object_);
-        }
-        else {
-            return CL_SUCCESS;
-        }
-    }
-};
-
-template <>
-class Wrapper<cl_device_id>
-{
-public:
-    typedef cl_device_id cl_type;
-
-protected:
-    cl_type object_;
-    bool referenceCountable_;
-
-    static bool isReferenceCountable(cl_device_id device)
-    {
-        bool retVal = false;
-        if (device != NULL) {
-            int version = getDevicePlatformVersion(device);
-            if(version > ((1 << 16) + 1)) {
-                retVal = true;
-            }
-        }
-        return retVal;
-    }
-
-public:
-    Wrapper() : object_(NULL), referenceCountable_(false) 
-    { 
-    }
-    
-    Wrapper(const cl_type &obj) : object_(obj), referenceCountable_(false) 
-    {
-        referenceCountable_ = isReferenceCountable(obj); 
-    }
-
-    ~Wrapper()
-    {
-        if (object_ != NULL) { release(); }
-    }
-    
-    Wrapper(const Wrapper<cl_type>& rhs)
-    {
-        object_ = rhs.object_;
-        referenceCountable_ = isReferenceCountable(object_); 
-        if (object_ != NULL) { detail::errHandler(retain(), __RETAIN_ERR); }
-    }
-
-    Wrapper<cl_type>& operator = (const Wrapper<cl_type>& rhs)
-    {
-        if (object_ != NULL) { detail::errHandler(release(), __RELEASE_ERR); }
-        object_ = rhs.object_;
-        referenceCountable_ = rhs.referenceCountable_;
-        if (object_ != NULL) { detail::errHandler(retain(), __RETAIN_ERR); }
-        return *this;
-    }
-
-    Wrapper<cl_type>& operator = (const cl_type &rhs)
-    {
-        if (object_ != NULL) { detail::errHandler(release(), __RELEASE_ERR); }
-        object_ = rhs;
-        referenceCountable_ = isReferenceCountable(object_); 
-        return *this;
-    }
-
-    cl_type operator ()() const { return object_; }
-
-    cl_type& operator ()() { return object_; }
-
-protected:
-    template<typename Func, typename U>
-    friend inline cl_int getInfoHelper(Func, cl_uint, U*, int, typename U::cl_type);
 
     template<typename Func, typename U>
     friend inline cl_int getInfoHelper(Func, cl_uint, VECTOR_CLASS<U>*, int, typename U::cl_type);
@@ -2478,25 +2006,11 @@ public:
     //! \brief Default constructor - initializes to NULL.
     Device() : detail::Wrapper<cl_type>() { }
 
-<<<<<<< HEAD:third_party/opencl/cl.hpp
     /*! \brief Constructor from cl_device_id.
      *
      *  This simply copies the device ID value, which is an inexpensive operation.
      */
     __CL_EXPLICIT_CONSTRUCTORS Device(const cl_device_id &device) : detail::Wrapper<cl_type>(device) { }
-=======
-    /*! \brief Copy constructor.
-     * 
-     *  This simply copies the device ID value, which is an inexpensive operation.
-     */
-    Device(const Device& device) : detail::Wrapper<cl_type>(device) { }
-
-    /*! \brief Constructor from cl_device_id.
-     * 
-     *  This simply copies the device ID value, which is an inexpensive operation.
-     */
-    Device(const cl_device_id &device) : detail::Wrapper<cl_type>(device) { }
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
 
     /*! \brief Returns the first device on the default context.
      *
@@ -2504,25 +2018,16 @@ public:
      */
     static Device getDefault(cl_int * err = NULL);
 
-<<<<<<< HEAD:third_party/opencl/cl.hpp
     /*! \brief Assignment operator from cl_device_id.
      *
      *  This simply copies the device ID value, which is an inexpensive operation.
      */
     Device& operator = (const cl_device_id& rhs)
-=======
-    /*! \brief Assignment operator from Device.
-     * 
-     *  This simply copies the device ID value, which is an inexpensive operation.
-     */
-    Device& operator = (const Device& rhs)
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
     {
         detail::Wrapper<cl_type>::operator=(rhs);
         return *this;
     }
 
-<<<<<<< HEAD:third_party/opencl/cl.hpp
     /*! \brief Copy constructor to forward copy to the superclass correctly.
      * Required for MSVC.
      */
@@ -2532,13 +2037,6 @@ public:
      * Required for MSVC.
      */
     Device& operator = (const Device &dev)
-=======
-    /*! \brief Assignment operator from cl_device_id.
-     * 
-     *  This simply copies the device ID value, which is an inexpensive operation.
-     */
-    Device& operator = (const cl_device_id& rhs)
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
     {
         detail::Wrapper<cl_type>::operator=(dev);
         return *this;
@@ -2661,7 +2159,6 @@ public:
     //! \brief Default constructor - initializes to NULL.
     Platform() : detail::Wrapper<cl_type>()  { }
 
-<<<<<<< HEAD:third_party/opencl/cl.hpp
     /*! \brief Constructor from cl_platform_id.
      *
      *  This simply copies the platform ID value, which is an inexpensive operation.
@@ -2670,34 +2167,6 @@ public:
 
     /*! \brief Assignment operator from cl_platform_id.
      *
-=======
-    /*! \brief Copy constructor.
-     * 
-     *  This simply copies the platform ID value, which is an inexpensive operation.
-     */
-    Platform(const Platform& platform) : detail::Wrapper<cl_type>(platform) { }
-
-    /*! \brief Constructor from cl_platform_id.
-     * 
-     *  This simply copies the platform ID value, which is an inexpensive operation.
-     */
-    Platform(const cl_platform_id &platform) : detail::Wrapper<cl_type>(platform) { }
-
-    /*! \brief Assignment operator from Platform.
-     * 
-     *  This simply copies the platform ID value, which is an inexpensive operation.
-     */
-    Platform& operator = (const Platform& rhs)
-    {
-        if (this != &rhs) {
-            detail::Wrapper<cl_type>::operator=(rhs);
-        }
-        return *this;
-    }
-
-    /*! \brief Assignment operator from cl_platform_id.
-     * 
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
      *  This simply copies the platform ID value, which is an inexpensive operation.
      */
     Platform& operator = (const cl_platform_id& rhs)
@@ -2729,11 +2198,7 @@ public:
     }
 
     /*! \brief Gets a list of devices for this platform.
-<<<<<<< HEAD:third_party/opencl/cl.hpp
      *
-=======
-     * 
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
      *  Wraps clGetDeviceIDs().
      */
     cl_int getDevices(
@@ -2837,11 +2302,7 @@ public:
 #endif
 
     /*! \brief Gets a list of available platforms.
-<<<<<<< HEAD:third_party/opencl/cl.hpp
      *
-=======
-     * 
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
      *  Wraps clGetPlatformIDs().
      */
     static cl_int get(
@@ -2870,11 +2331,7 @@ public:
     }
 
     /*! \brief Gets the first available platform.
-<<<<<<< HEAD:third_party/opencl/cl.hpp
      *
-=======
-     * 
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
      *  Wraps clGetPlatformIDs(), returning the first result.
      */
     static cl_int get(
@@ -2903,11 +2360,7 @@ public:
     }
 
     /*! \brief Gets the first available platform, returning it by value.
-<<<<<<< HEAD:third_party/opencl/cl.hpp
      *
-=======
-     * 
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
      *  Wraps clGetPlatformIDs(), returning the first result.
      */
     static Platform get(
@@ -2982,11 +2435,7 @@ UnloadCompiler()
  *
  *  \see cl_context
  */
-<<<<<<< HEAD:third_party/opencl/cl.hpp
 class Context
-=======
-class Context 
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
     : public detail::Wrapper<cl_context>
 {
 private:
@@ -2999,15 +2448,6 @@ private:
     static Context default_;
     static volatile cl_int default_error_;
 public:
-<<<<<<< HEAD:third_party/opencl/cl.hpp
-=======
-    /*! \brief Destructor.
-     *
-     *  This calls clReleaseContext() on the value held by this instance.
-     */
-    ~Context() { }
-
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
     /*! \brief Constructs a context including a list of specified devices.
      *
      *  Wraps clCreateContext().
@@ -3085,11 +2525,7 @@ public:
     {
         cl_int error;
 
-<<<<<<< HEAD:third_party/opencl/cl.hpp
 #if !defined(__APPLE__) && !defined(__MACOS)
-=======
-#if !defined(__APPLE__) || !defined(__MACOS)
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
         cl_context_properties prop[4] = {CL_CONTEXT_PLATFORM, 0, 0, 0 };
 
         if (properties == NULL) {
@@ -3100,8 +2536,6 @@ public:
                 detail::errHandler(error, __CREATE_CONTEXT_FROM_TYPE_ERR);
                 if (err != NULL) {
                     *err = error;
-<<<<<<< HEAD:third_party/opencl/cl.hpp
-=======
                 }
                 return;
             }
@@ -3118,55 +2552,6 @@ public:
 
                     error = platforms[i].getDevices(type, &devices);
 
-#if defined(__CL_ENABLE_EXCEPTIONS)
-                } catch (Error) {}
-    // Catch if exceptions are enabled as we don't want to exit if first platform has no devices of type
-    // We do error checking next anyway, and can throw there if needed
-#endif
-
-                // Only squash CL_SUCCESS and CL_DEVICE_NOT_FOUND
-                if (error != CL_SUCCESS && error != CL_DEVICE_NOT_FOUND) {
-                    detail::errHandler(error, __CREATE_CONTEXT_FROM_TYPE_ERR);
-                    if (err != NULL) {
-                        *err = error;
-                    }
-                }
-
-                if (devices.size() > 0) {
-                    platform_id = (cl_context_properties)platforms[i]();
-                    break;
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
-                }
-                return;
-            }
-
-<<<<<<< HEAD:third_party/opencl/cl.hpp
-            // Check the platforms we found for a device of our specified type
-            cl_context_properties platform_id = 0;
-            for (unsigned int i = 0; i < platforms.size(); i++) {
-
-                VECTOR_CLASS<Device> devices;
-
-#if defined(__CL_ENABLE_EXCEPTIONS)
-                try {
-=======
-            if (platform_id == 0) {
-                detail::errHandler(CL_DEVICE_NOT_FOUND, __CREATE_CONTEXT_FROM_TYPE_ERR);
-                if (err != NULL) {
-                    *err = CL_DEVICE_NOT_FOUND;
-                }
-                return;
-            }
-
-            prop[1] = platform_id;
-            properties = &prop[0];
-        }
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
-#endif
-
-                    error = platforms[i].getDevices(type, &devices);
-
-<<<<<<< HEAD:third_party/opencl/cl.hpp
 #if defined(__CL_ENABLE_EXCEPTIONS)
                 } catch (Error) {}
     // Catch if exceptions are enabled as we don't want to exit if first platform has no devices of type
@@ -3238,17 +2623,11 @@ public:
     }
 #endif // #if defined(CL_HPP_RVALUE_REFERENCES_SUPPORTED)
 
-=======
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
     /*! \brief Returns a singleton context including all devices of CL_DEVICE_TYPE_DEFAULT.
      *
      *  \note All calls to this function return the same cl_context as the first.
      */
-<<<<<<< HEAD:third_party/opencl/cl.hpp
     static Context getDefault(cl_int * err = NULL)
-=======
-    static Context getDefault(cl_int * err = NULL) 
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
     {
         int state = detail::compare_exchange(
             &default_initialized_,
@@ -3299,45 +2678,15 @@ public:
     //! \brief Default constructor - initializes to NULL.
     Context() : detail::Wrapper<cl_type>() { }
 
-<<<<<<< HEAD:third_party/opencl/cl.hpp
     /*! \brief Constructor from cl_context - takes ownership.
      *
-=======
-    /*! \brief Copy constructor.
-     * 
-     *  This calls clRetainContext() on the parameter's cl_context.
-     */
-    Context(const Context& context) : detail::Wrapper<cl_type>(context) { }
-
-    /*! \brief Constructor from cl_context - takes ownership.
-     * 
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
      *  This effectively transfers ownership of a refcount on the cl_context
      *  into the new Context object.
      */
     __CL_EXPLICIT_CONSTRUCTORS Context(const cl_context& context) : detail::Wrapper<cl_type>(context) { }
-<<<<<<< HEAD:third_party/opencl/cl.hpp
 
     /*! \brief Assignment operator from cl_context - takes ownership.
      *
-=======
-
-    /*! \brief Assignment operator from Context.
-     * 
-     *  This calls clRetainContext() on the parameter and clReleaseContext() on
-     *  the previous value held by this instance.
-     */
-    Context& operator = (const Context& rhs)
-    {
-        if (this != &rhs) {
-            detail::Wrapper<cl_type>::operator=(rhs);
-        }
-        return *this;
-    }
-
-    /*! \brief Assignment operator from cl_context - takes ownership.
-     * 
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
      *  This effectively transfers ownership of a refcount on the rhs and calls
      *  clReleaseContext() on the value previously held by this instance.
      */
@@ -3371,11 +2720,7 @@ public:
     }
 
     /*! \brief Gets a list of supported image formats.
-<<<<<<< HEAD:third_party/opencl/cl.hpp
      *
-=======
-     *  
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
      *  Wraps clGetSupportedImageFormats().
      */
     cl_int getSupportedImageFormats(
@@ -3445,37 +2790,16 @@ __declspec(selectany) volatile int Context::default_initialized_ = __DEFAULT_NOT
 #endif // !CL_HPP_CPP11_ATOMICS_SUPPORTED
 __declspec(selectany) Context Context::default_;
 __declspec(selectany) volatile cl_int Context::default_error_ = CL_SUCCESS;
-<<<<<<< HEAD:third_party/opencl/cl.hpp
 #else // !_WIN32
 #ifdef CL_HPP_CPP11_ATOMICS_SUPPORTED
 __attribute__((weak)) std::atomic<int> Context::default_initialized_;
 #else // !CL_HPP_CPP11_ATOMICS_SUPPORTED
-=======
-#else
-<<<<<<< HEAD:third_party/opencl/cl.hpp
-
-#if !defined(__PGI) || defined(SHOC_DEFINE_CLHPP_WEAKS)
->>>>>>> 7edd023da... Added support for building SHOC with PGI compiler on x86_64.:src/opencl/common/cl.hpp
-=======
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
 __attribute__((weak)) volatile int Context::default_initialized_ = __DEFAULT_NOT_INITIALIZED;
 #endif // !CL_HPP_CPP11_ATOMICS_SUPPORTED
 __attribute__((weak)) Context Context::default_;
 __attribute__((weak)) volatile cl_int Context::default_error_ = CL_SUCCESS;
-<<<<<<< HEAD:third_party/opencl/cl.hpp
-<<<<<<< HEAD:third_party/opencl/cl.hpp
 #endif // !_WIN32
-=======
-#endif // !defined(__PGI) || define(SHOC_DEFINE_CLHPP_WEAKS)
-#endif
 
-__GET_INFO_HELPER_WITH_RETAIN(cl::Context)
->>>>>>> 7edd023da... Added support for building SHOC with PGI compiler on x86_64.:src/opencl/common/cl.hpp
-
-=======
-#endif
-
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
 /*! \brief Class interface for cl_event.
  *
  *  \note Copies of these objects are shallow, meaning that the copy will refer
@@ -3487,7 +2811,6 @@ __GET_INFO_HELPER_WITH_RETAIN(cl::Context)
 class Event : public detail::Wrapper<cl_event>
 {
 public:
-<<<<<<< HEAD:third_party/opencl/cl.hpp
     //! \brief Default constructor - initializes to NULL.
     Event() : detail::Wrapper<cl_type>() { }
 
@@ -3502,47 +2825,6 @@ public:
      *
      *  This effectively transfers ownership of a refcount on the rhs and calls
      *  clReleaseEvent() on the value previously held by this instance.
-=======
-    /*! \brief Destructor.
-     *
-     *  This calls clReleaseEvent() on the value held by this instance.
-     */
-    ~Event() { }
- 
-    //! \brief Default constructor - initializes to NULL.
-    Event() : detail::Wrapper<cl_type>() { }
-
-    /*! \brief Copy constructor.
-     * 
-     *  This calls clRetainEvent() on the parameter's cl_event.
-     */
-    Event(const Event& event) : detail::Wrapper<cl_type>(event) { }
-
-    /*! \brief Constructor from cl_event - takes ownership.
-     * 
-     *  This effectively transfers ownership of a refcount on the cl_event
-     *  into the new Event object.
-     */
-    Event(const cl_event& event) : detail::Wrapper<cl_type>(event) { }
-
-    /*! \brief Assignment operator from cl_event - takes ownership.
-     *
-     *  This effectively transfers ownership of a refcount on the rhs and calls
-     *  clReleaseEvent() on the value previously held by this instance.
-     */
-    Event& operator = (const Event& rhs)
-    {
-        if (this != &rhs) {
-            detail::Wrapper<cl_type>::operator=(rhs);
-        }
-        return *this;
-    }
-
-    /*! \brief Assignment operator from cl_event.
-     * 
-     *  This calls clRetainEvent() on the parameter and clReleaseEvent() on
-     *  the previous value held by this instance.
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
      */
     Event& operator = (const cl_event& rhs)
     {
@@ -3597,11 +2879,7 @@ public:
     }
 
     /*! \brief Blocks the calling thread until this event completes.
-<<<<<<< HEAD:third_party/opencl/cl.hpp
      *
-=======
-     * 
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
      *  Wraps clWaitForEvents().
      */
     cl_int wait() const
@@ -3632,11 +2910,7 @@ public:
 #endif
 
     /*! \brief Blocks the calling thread until every event specified is complete.
-<<<<<<< HEAD:third_party/opencl/cl.hpp
      *
-=======
-     * 
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
      *  Wraps clWaitForEvents().
      */
     static cl_int
@@ -3651,11 +2925,7 @@ public:
 
 #if defined(CL_VERSION_1_1)
 /*! \brief Class interface for user events (a subset of cl_event's).
-<<<<<<< HEAD:third_party/opencl/cl.hpp
  *
-=======
- * 
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
  *  See Event for details about copy semantics, etc.
  */
 class UserEvent : public Event
@@ -3683,21 +2953,6 @@ public:
     //! \brief Default constructor - initializes to NULL.
     UserEvent() : Event() { }
 
-<<<<<<< HEAD:third_party/opencl/cl.hpp
-=======
-    //! \brief Copy constructor - performs shallow copy.
-    UserEvent(const UserEvent& event) : Event(event) { }
-
-    //! \brief Assignment Operator - performs shallow copy.
-    UserEvent& operator = (const UserEvent& rhs)
-    {
-        if (this != &rhs) {
-            Event::operator=(rhs);
-        }
-        return *this;
-    }
-
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
     /*! \brief Sets the execution status of a user event object.
      *
      *  Wraps clSetUserEventStatus().
@@ -3712,11 +2967,7 @@ public:
 #endif
 
 /*! \brief Blocks the calling thread until every event specified is complete.
-<<<<<<< HEAD:third_party/opencl/cl.hpp
  *
-=======
- * 
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
  *  Wraps clWaitForEvents().
  */
 inline static cl_int
@@ -3739,7 +2990,6 @@ WaitForEvents(const VECTOR_CLASS<Event>& events)
 class Memory : public detail::Wrapper<cl_mem>
 {
 public:
-<<<<<<< HEAD:third_party/opencl/cl.hpp
     //! \brief Default constructor - initializes to NULL.
     Memory() : detail::Wrapper<cl_type>() { }
 
@@ -3770,43 +3020,11 @@ public:
      * Required for MSVC.
      */
     Memory& operator = (const Memory &mem)
-=======
- 
-    /*! \brief Destructor.
-     *
-     *  This calls clReleaseMemObject() on the value held by this instance.
-     */
-    ~Memory() {}
-
-    //! \brief Default constructor - initializes to NULL.
-    Memory() : detail::Wrapper<cl_type>() { }
-
-    /*! \brief Copy constructor - performs shallow copy.
-     * 
-     *  This calls clRetainMemObject() on the parameter's cl_mem.
-     */
-    Memory(const Memory& memory) : detail::Wrapper<cl_type>(memory) { }
-
-    /*! \brief Constructor from cl_mem - takes ownership.
-     * 
-     *  This effectively transfers ownership of a refcount on the cl_mem
-     *  into the new Memory object.
-     */
-    __CL_EXPLICIT_CONSTRUCTORS Memory(const cl_mem& memory) : detail::Wrapper<cl_type>(memory) { }
-
-    /*! \brief Assignment operator from Memory.
-     * 
-     *  This calls clRetainMemObject() on the parameter and clReleaseMemObject()
-     *  on the previous value held by this instance.
-     */
-    Memory& operator = (const Memory& rhs)
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
     {
         detail::Wrapper<cl_type>::operator=(mem);
         return *this;
     }
 
-<<<<<<< HEAD:third_party/opencl/cl.hpp
 #if defined(CL_HPP_RVALUE_REFERENCES_SUPPORTED)
     /*! \brief Move constructor to forward move to the superclass correctly.
      * Required for MSVC.
@@ -3817,14 +3035,6 @@ public:
      * Required for MSVC.
      */
     Memory& operator = (Memory &&mem)
-=======
-    /*! \brief Assignment operator from cl_mem - takes ownership.
-     *
-     *  This effectively transfers ownership of a refcount on the rhs and calls
-     *  clReleaseMemObject() on the value previously held by this instance.
-     */
-    Memory& operator = (const cl_mem& rhs)
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
     {
         detail::Wrapper<cl_type>::operator=(std::move(mem));
         return *this;
@@ -3896,11 +3106,7 @@ cl_int copy( const CommandQueue &queue, const cl::Buffer &buffer, IteratorType s
 
 
 /*! \brief Class interface for Buffer Memory Objects.
-<<<<<<< HEAD:third_party/opencl/cl.hpp
  *
-=======
- * 
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
  *  See Memory for details about copy semantics, etc.
  *
  *  \see Memory
@@ -4018,7 +3224,6 @@ public:
     template< typename IteratorType >
     Buffer(const Context &context, IteratorType startIterator, IteratorType endIterator,
         bool readOnly, bool useHostPtr = false, cl_int* err = NULL);
-<<<<<<< HEAD:third_party/opencl/cl.hpp
 
     /*!
     * \brief Construct a Buffer from a host container via iterators using a specified queue.
@@ -4027,13 +3232,10 @@ public:
     template< typename IteratorType >
     Buffer(const CommandQueue &queue, IteratorType startIterator, IteratorType endIterator,
         bool readOnly, bool useHostPtr = false, cl_int* err = NULL);
-=======
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
 
     //! \brief Default constructor - initializes to NULL.
     Buffer() : Memory() { }
 
-<<<<<<< HEAD:third_party/opencl/cl.hpp
     /*! \brief Constructor from cl_mem - takes ownership.
      *
      *  See Memory for further details.
@@ -4059,31 +3261,11 @@ public:
      * Required for MSVC.
      */
     Buffer& operator = (const Buffer &buf)
-=======
-    /*! \brief Copy constructor - performs shallow copy.
-     *
-     *  See Memory for further details.
-     */
-    Buffer(const Buffer& buffer) : Memory(buffer) { }
-
-    /*! \brief Constructor from cl_mem - takes ownership.
-     *
-     *  See Memory for further details.
-     */
-    __CL_EXPLICIT_CONSTRUCTORS Buffer(const cl_mem& buffer) : Memory(buffer) { }
-
-    /*! \brief Assignment from Buffer - performs shallow copy.
-     *
-     *  See Memory for further details.
-     */
-    Buffer& operator = (const Buffer& rhs)
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
     {
         Memory::operator=(buf);
         return *this;
     }
 
-<<<<<<< HEAD:third_party/opencl/cl.hpp
 #if defined(CL_HPP_RVALUE_REFERENCES_SUPPORTED)
     /*! \brief Move constructor to forward move to the superclass correctly.
      * Required for MSVC.
@@ -4094,13 +3276,6 @@ public:
      * Required for MSVC.
      */
     Buffer& operator = (Buffer &&buf)
-=======
-    /*! \brief Assignment from cl_mem - performs shallow copy.
-     *
-     *  See Memory for further details.
-     */
-    Buffer& operator = (const cl_mem& rhs)
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
     {
         Memory::operator=(std::move(buf));
         return *this;
@@ -4141,11 +3316,7 @@ public:
 /*! \brief Class interface for creating OpenCL buffers from ID3D10Buffer's.
  *
  *  This is provided to facilitate interoperability with Direct3D.
-<<<<<<< HEAD:third_party/opencl/cl.hpp
  *
-=======
- * 
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
  *  See Memory for details about copy semantics, etc.
  *
  *  \see Memory
@@ -4200,7 +3371,6 @@ public:
     //! \brief Default constructor - initializes to NULL.
     BufferD3D10() : Buffer() { }
 
-<<<<<<< HEAD:third_party/opencl/cl.hpp
     /*! \brief Constructor from cl_mem - takes ownership.
      *
      *  See Memory for further details.
@@ -4226,31 +3396,11 @@ public:
     * Required for MSVC.
     */
     BufferD3D10& operator = (const BufferD3D10 &buf)
-=======
-    /*! \brief Copy constructor - performs shallow copy.
-     *
-     *  See Memory for further details.
-     */
-    BufferD3D10(const BufferD3D10& buffer) : Buffer(buffer) { }
-
-    /*! \brief Constructor from cl_mem - takes ownership.
-     *
-     *  See Memory for further details.
-     */
-    __CL_EXPLICIT_CONSTRUCTORS BufferD3D10(const cl_mem& buffer) : Buffer(buffer) { }
-
-    /*! \brief Assignment from BufferD3D10 - performs shallow copy.
-     *
-     *  See Memory for further details.
-     */
-    BufferD3D10& operator = (const BufferD3D10& rhs)
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
     {
         Buffer::operator=(buf);
         return *this;
     }
 
-<<<<<<< HEAD:third_party/opencl/cl.hpp
 #if defined(CL_HPP_RVALUE_REFERENCES_SUPPORTED)
     /*! \brief Move constructor to forward move to the superclass correctly.
     * Required for MSVC.
@@ -4261,13 +3411,6 @@ public:
     * Required for MSVC.
     */
     BufferD3D10& operator = (BufferD3D10 &&buf)
-=======
-    /*! \brief Assignment from cl_mem - performs shallow copy.
-     *
-     *  See Memory for further details.
-     */
-    BufferD3D10& operator = (const cl_mem& rhs)
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
     {
         Buffer::operator=(std::move(buf));
         return *this;
@@ -4279,15 +3422,9 @@ public:
 /*! \brief Class interface for GL Buffer Memory Objects.
  *
  *  This is provided to facilitate interoperability with OpenGL.
-<<<<<<< HEAD:third_party/opencl/cl.hpp
  *
  *  See Memory for details about copy semantics, etc.
  *
-=======
- * 
- *  See Memory for details about copy semantics, etc.
- * 
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
  *  \see Memory
  */
 class BufferGL : public Buffer
@@ -4320,7 +3457,6 @@ public:
     //! \brief Default constructor - initializes to NULL.
     BufferGL() : Buffer() { }
 
-<<<<<<< HEAD:third_party/opencl/cl.hpp
     /*! \brief Constructor from cl_mem - takes ownership.
      *
      *  See Memory for further details.
@@ -4346,31 +3482,11 @@ public:
     * Required for MSVC.
     */
     BufferGL& operator = (const BufferGL &buf)
-=======
-    /*! \brief Copy constructor - performs shallow copy.
-     *
-     *  See Memory for further details.
-     */
-    BufferGL(const BufferGL& buffer) : Buffer(buffer) { }
-
-    /*! \brief Constructor from cl_mem - takes ownership.
-     *
-     *  See Memory for further details.
-     */
-    __CL_EXPLICIT_CONSTRUCTORS BufferGL(const cl_mem& buffer) : Buffer(buffer) { }
-
-    /*! \brief Assignment from BufferGL - performs shallow copy.
-     *
-     *  See Memory for further details.
-     */
-    BufferGL& operator = (const BufferGL& rhs)
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
     {
         Buffer::operator=(buf);
         return *this;
     }
 
-<<<<<<< HEAD:third_party/opencl/cl.hpp
 #if defined(CL_HPP_RVALUE_REFERENCES_SUPPORTED)
     /*! \brief Move constructor to forward move to the superclass correctly.
     * Required for MSVC.
@@ -4381,13 +3497,6 @@ public:
     * Required for MSVC.
     */
     BufferGL& operator = (BufferGL &&buf)
-=======
-    /*! \brief Assignment from cl_mem - performs shallow copy.
-     *
-     *  See Memory for further details.
-     */
-    BufferGL& operator = (const cl_mem& rhs)
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
     {
         Buffer::operator=(std::move(buf));
         return *this;
@@ -4405,68 +3514,22 @@ public:
     }
 };
 
-<<<<<<< HEAD:third_party/opencl/cl.hpp
 /*! \brief C++ base class for Image Memory objects.
  *
  *  See Memory for details about copy semantics, etc.
  *
-=======
-/*! \brief Class interface for GL Render Buffer Memory Objects.
- *
- *  This is provided to facilitate interoperability with OpenGL.
- * 
- *  See Memory for details about copy semantics, etc.
- * 
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
  *  \see Memory
  */
 class Image : public Memory
 {
-<<<<<<< HEAD:third_party/opencl/cl.hpp
 protected:
     //! \brief Default constructor - initializes to NULL.
     Image() : Memory() { }
-=======
-public:
-    /*! \brief Constructs a BufferRenderGL in a specified context, from a given
-     *         GL Renderbuffer.
-     *
-     *  Wraps clCreateFromGLRenderbuffer().
-     */
-    BufferRenderGL(
-        const Context& context,
-        cl_mem_flags flags,
-        GLuint bufobj,
-        cl_int * err = NULL)
-    {
-        cl_int error;
-        object_ = ::clCreateFromGLRenderbuffer(
-            context(),
-            flags,
-            bufobj,
-            &error);
-
-        detail::errHandler(error, __CREATE_GL_RENDER_BUFFER_ERR);
-        if (err != NULL) {
-            *err = error;
-        }
-    }
-
-    //! \brief Default constructor - initializes to NULL.
-    BufferRenderGL() : Buffer() { }
-
-    /*! \brief Copy constructor - performs shallow copy.
-     *
-     *  See Memory for further details.
-     */
-    BufferRenderGL(const BufferGL& buffer) : Buffer(buffer) { }
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
 
     /*! \brief Constructor from cl_mem - takes ownership.
      *
      *  See Memory for further details.
      */
-<<<<<<< HEAD:third_party/opencl/cl.hpp
     __CL_EXPLICIT_CONSTRUCTORS Image(const cl_mem& image) : Memory(image) { }
 
     /*! \brief Assignment from cl_mem - performs shallow copy.
@@ -4488,78 +3551,11 @@ public:
      * Required for MSVC.
      */
     Image& operator = (const Image &img)
-=======
-    __CL_EXPLICIT_CONSTRUCTORS BufferRenderGL(const cl_mem& buffer) : Buffer(buffer) { }
-
-    /*! \brief Assignment from BufferGL - performs shallow copy.
-     *
-     *  See Memory for further details.
-     */
-    BufferRenderGL& operator = (const BufferRenderGL& rhs)
-    {
-        if (this != &rhs) {
-            Buffer::operator=(rhs);
-        }
-        return *this;
-    }
-
-    /*! \brief Assignment from cl_mem - performs shallow copy.
-     *
-     *  See Memory for further details.
-     */
-    BufferRenderGL& operator = (const cl_mem& rhs)
-    {
-        Buffer::operator=(rhs);
-        return *this;
-    }
-
-    //! \brief Wrapper for clGetGLObjectInfo().
-    cl_int getObjectInfo(
-        cl_gl_object_type *type,
-        GLuint * gl_object_name)
-    {
-        return detail::errHandler(
-            ::clGetGLObjectInfo(object_,type,gl_object_name),
-            __GET_GL_OBJECT_INFO_ERR);
-    }
-};
-
-/*! \brief C++ base class for Image Memory objects.
- *
- *  See Memory for details about copy semantics, etc.
- * 
- *  \see Memory
- */
-class Image : public Memory
-{
-protected:
-    //! \brief Default constructor - initializes to NULL.
-    Image() : Memory() { }
-
-    /*! \brief Copy constructor - performs shallow copy.
-     *
-     *  See Memory for further details.
-     */
-    Image(const Image& image) : Memory(image) { }
-
-    /*! \brief Constructor from cl_mem - takes ownership.
-     *
-     *  See Memory for further details.
-     */
-    __CL_EXPLICIT_CONSTRUCTORS Image(const cl_mem& image) : Memory(image) { }
-
-    /*! \brief Assignment from Image - performs shallow copy.
-     *
-     *  See Memory for further details.
-     */
-    Image& operator = (const Image& rhs)
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
     {
         Memory::operator=(img);
         return *this;
     }
 
-<<<<<<< HEAD:third_party/opencl/cl.hpp
 #if defined(CL_HPP_RVALUE_REFERENCES_SUPPORTED)
     /*! \brief Move constructor to forward move to the superclass correctly.
      * Required for MSVC.
@@ -4570,13 +3566,6 @@ protected:
      * Required for MSVC.
      */
     Image& operator = (Image &&img)
-=======
-    /*! \brief Assignment from cl_mem - performs shallow copy.
-     *
-     *  See Memory for further details.
-     */
-    Image& operator = (const cl_mem& rhs)
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
     {
         Memory::operator=(std::move(img));
         return *this;
@@ -4592,11 +3581,7 @@ public:
             detail::getInfo(&::clGetImageInfo, object_, name, param),
             __GET_IMAGE_INFO_ERR);
     }
-<<<<<<< HEAD:third_party/opencl/cl.hpp
 
-=======
-    
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
     //! \brief Wrapper for clGetImageInfo() that returns by value.
     template <cl_int name> typename
     detail::param_traits<detail::cl_image_info, name>::param_type
@@ -4616,11 +3601,7 @@ public:
 /*! \brief Class interface for 1D Image Memory objects.
  *
  *  See Memory for details about copy semantics, etc.
-<<<<<<< HEAD:third_party/opencl/cl.hpp
  *
-=======
- * 
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
  *  \see Memory
  */
 class Image1D : public Image
@@ -4662,7 +3643,6 @@ public:
     //! \brief Default constructor - initializes to NULL.
     Image1D() { }
 
-<<<<<<< HEAD:third_party/opencl/cl.hpp
     /*! \brief Constructor from cl_mem - takes ownership.
      *
      *  See Memory for further details.
@@ -4688,31 +3668,11 @@ public:
      * Required for MSVC.
      */
     Image1D& operator = (const Image1D &img)
-=======
-    /*! \brief Copy constructor - performs shallow copy.
-     *
-     *  See Memory for further details.
-     */
-    Image1D(const Image1D& image1D) : Image(image1D) { }
-
-    /*! \brief Constructor from cl_mem - takes ownership.
-     *
-     *  See Memory for further details.
-     */
-    __CL_EXPLICIT_CONSTRUCTORS Image1D(const cl_mem& image1D) : Image(image1D) { }
-
-    /*! \brief Assignment from Image1D - performs shallow copy.
-     *
-     *  See Memory for further details.
-     */
-    Image1D& operator = (const Image1D& rhs)
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
     {
         Image::operator=(img);
         return *this;
     }
 
-<<<<<<< HEAD:third_party/opencl/cl.hpp
 #if defined(CL_HPP_RVALUE_REFERENCES_SUPPORTED)
     /*! \brief Move constructor to forward move to the superclass correctly.
      * Required for MSVC.
@@ -4723,13 +3683,6 @@ public:
      * Required for MSVC.
      */
     Image1D& operator = (Image1D &&img)
-=======
-    /*! \brief Assignment from cl_mem - performs shallow copy.
-     *
-     *  See Memory for further details.
-     */
-    Image1D& operator = (const cl_mem& rhs)
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
     {
         Image::operator=(std::move(img));
         return *this;
@@ -4760,19 +3713,11 @@ public:
             buffer()
         };
         object_ = ::clCreateImage(
-<<<<<<< HEAD:third_party/opencl/cl.hpp
             context(),
             flags,
             &format,
             &desc,
             NULL,
-=======
-            context(), 
-            flags, 
-            &format, 
-            &desc, 
-            NULL, 
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
             &error);
 
         detail::errHandler(error, __CREATE_IMAGE_ERR);
@@ -4791,14 +3736,10 @@ public:
         return *this;
     }
 
-<<<<<<< HEAD:third_party/opencl/cl.hpp
     /*! \brief Copy constructor to forward copy to the superclass correctly.
      * Required for MSVC.
      */
     Image1DBuffer(const Image1DBuffer& img) : Image(img) {}
-=======
-    __CL_EXPLICIT_CONSTRUCTORS Image1DBuffer(const cl_mem& image1D) : Image(image1D) { }
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
 
     /*! \brief Copy assignment to forward copy to the superclass correctly.
      * Required for MSVC.
@@ -4876,14 +3817,10 @@ public:
         return *this;
     }
 
-<<<<<<< HEAD:third_party/opencl/cl.hpp
     /*! \brief Copy constructor to forward copy to the superclass correctly.
      * Required for MSVC.
      */
     Image1DArray(const Image1DArray& img) : Image(img) {}
-=======
-    __CL_EXPLICIT_CONSTRUCTORS Image1DArray(const cl_mem& imageArray) : Image(imageArray) { }
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
 
     /*! \brief Copy assignment to forward copy to the superclass correctly.
      * Required for MSVC.
@@ -4916,11 +3853,7 @@ public:
 /*! \brief Class interface for 2D Image Memory objects.
  *
  *  See Memory for details about copy semantics, etc.
-<<<<<<< HEAD:third_party/opencl/cl.hpp
  *
-=======
- * 
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
  *  \see Memory
  */
 class Image2D : public Image
@@ -4998,7 +3931,6 @@ public:
     //! \brief Default constructor - initializes to NULL.
     Image2D() { }
 
-<<<<<<< HEAD:third_party/opencl/cl.hpp
     /*! \brief Constructor from cl_mem - takes ownership.
      *
      *  See Memory for further details.
@@ -5024,31 +3956,11 @@ public:
      * Required for MSVC.
      */
     Image2D& operator = (const Image2D &img)
-=======
-    /*! \brief Copy constructor - performs shallow copy.
-     *
-     *  See Memory for further details.
-     */
-    Image2D(const Image2D& image2D) : Image(image2D) { }
-
-    /*! \brief Constructor from cl_mem - takes ownership.
-     *
-     *  See Memory for further details.
-     */
-    __CL_EXPLICIT_CONSTRUCTORS Image2D(const cl_mem& image2D) : Image(image2D) { }
-
-    /*! \brief Assignment from Image2D - performs shallow copy.
-     *
-     *  See Memory for further details.
-     */
-    Image2D& operator = (const Image2D& rhs)
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
     {
         Image::operator=(img);
         return *this;
     }
 
-<<<<<<< HEAD:third_party/opencl/cl.hpp
 #if defined(CL_HPP_RVALUE_REFERENCES_SUPPORTED)
     /*! \brief Move constructor to forward move to the superclass correctly.
      * Required for MSVC.
@@ -5059,13 +3971,6 @@ public:
      * Required for MSVC.
      */
     Image2D& operator = (Image2D &&img)
-=======
-    /*! \brief Assignment from cl_mem - performs shallow copy.
-     *
-     *  See Memory for further details.
-     */
-    Image2D& operator = (const cl_mem& rhs)
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
     {
         Image::operator=(std::move(img));
         return *this;
@@ -5078,15 +3983,9 @@ public:
 /*! \brief Class interface for GL 2D Image Memory objects.
  *
  *  This is provided to facilitate interoperability with OpenGL.
-<<<<<<< HEAD:third_party/opencl/cl.hpp
  *
  *  See Memory for details about copy semantics, etc.
  *
-=======
- * 
- *  See Memory for details about copy semantics, etc.
- * 
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
  *  \see Memory
  *  \note Deprecated for OpenCL 1.2. Please use ImageGL instead.
  */
@@ -5121,7 +4020,6 @@ public:
         }
 
     }
-<<<<<<< HEAD:third_party/opencl/cl.hpp
 
     //! \brief Default constructor - initializes to NULL.
     Image2DGL() : Image2D() { }
@@ -5151,35 +4049,11 @@ public:
      * Required for MSVC.
      */
     Image2DGL& operator = (const Image2DGL &img)
-=======
-    
-    //! \brief Default constructor - initializes to NULL.
-    Image2DGL() : Image2D() { }
-
-    /*! \brief Copy constructor - performs shallow copy.
-     *
-     *  See Memory for further details.
-     */
-    Image2DGL(const Image2DGL& image) : Image2D(image) { }
-
-    /*! \brief Constructor from cl_mem - takes ownership.
-     *
-     *  See Memory for further details.
-     */
-    __CL_EXPLICIT_CONSTRUCTORS Image2DGL(const cl_mem& image) : Image2D(image) { }
-
-    /*! \brief Assignment from Image2DGL - performs shallow copy.
-     *
-     *  See Memory for further details.
-     */
-    Image2DGL& operator = (const Image2DGL& rhs)
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
     {
         Image2D::operator=(img);
         return *this;
     }
 
-<<<<<<< HEAD:third_party/opencl/cl.hpp
 #if defined(CL_HPP_RVALUE_REFERENCES_SUPPORTED)
     /*! \brief Move constructor to forward move to the superclass correctly.
      * Required for MSVC.
@@ -5190,13 +4064,6 @@ public:
      * Required for MSVC.
      */
     Image2DGL& operator = (Image2DGL &&img)
-=======
-    /*! \brief Assignment from cl_mem - performs shallow copy.
-     *
-     *  See Memory for further details.
-     */
-    Image2DGL& operator = (const cl_mem& rhs)
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
     {
         Image2D::operator=(std::move(img));
         return *this;
@@ -5260,14 +4127,10 @@ public:
         return *this;
     }
 
-<<<<<<< HEAD:third_party/opencl/cl.hpp
     /*! \brief Copy constructor to forward copy to the superclass correctly.
      * Required for MSVC.
      */
     Image2DArray(const Image2DArray& img) : Image(img) {}
-=======
-    __CL_EXPLICIT_CONSTRUCTORS Image2DArray(const cl_mem& imageArray) : Image(imageArray) { }
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
 
     /*! \brief Copy assignment to forward copy to the superclass correctly.
      * Required for MSVC.
@@ -5299,11 +4162,7 @@ public:
 /*! \brief Class interface for 3D Image Memory objects.
  *
  *  See Memory for details about copy semantics, etc.
-<<<<<<< HEAD:third_party/opencl/cl.hpp
  *
-=======
- * 
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
  *  \see Memory
  */
 class Image3D : public Image
@@ -5327,7 +4186,6 @@ public:
     {
         cl_int error;
         bool useCreateImage;
-<<<<<<< HEAD:third_party/opencl/cl.hpp
 
 #if defined(CL_VERSION_1_2) && defined(CL_USE_DEPRECATED_OPENCL_1_1_APIS)
         // Run-time decision based on the actual platform
@@ -5363,43 +4221,6 @@ public:
                 host_ptr,
                 &error);
 
-=======
-
-#if defined(CL_VERSION_1_2) && defined(CL_USE_DEPRECATED_OPENCL_1_1_APIS)
-        // Run-time decision based on the actual platform
-        {
-            cl_uint version = detail::getContextPlatformVersion(context());
-            useCreateImage = (version >= 0x10002); // OpenCL 1.2 or above
-        }
-#elif defined(CL_VERSION_1_2)
-        useCreateImage = true;
-#else
-        useCreateImage = false;
-#endif
-
-#if defined(CL_VERSION_1_2)
-        if (useCreateImage)
-        {
-            cl_image_desc desc =
-            {
-                CL_MEM_OBJECT_IMAGE3D,
-                width,
-                height,
-                depth,
-                0,      // array size (unused)
-                row_pitch,
-                slice_pitch,
-                0, 0, 0
-            };
-            object_ = ::clCreateImage(
-                context(), 
-                flags, 
-                &format, 
-                &desc, 
-                host_ptr, 
-                &error);
-
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
             detail::errHandler(error, __CREATE_IMAGE_ERR);
             if (err != NULL) {
                 *err = error;
@@ -5422,7 +4243,6 @@ public:
     }
 
     //! \brief Default constructor - initializes to NULL.
-<<<<<<< HEAD:third_party/opencl/cl.hpp
     Image3D() : Image() { }
 
     /*! \brief Constructor from cl_mem - takes ownership.
@@ -5450,33 +4270,11 @@ public:
      * Required for MSVC.
      */
     Image3D& operator = (const Image3D &img)
-=======
-    Image3D() { }
-
-    /*! \brief Copy constructor - performs shallow copy.
-     *
-     *  See Memory for further details.
-     */
-    Image3D(const Image3D& image3D) : Image(image3D) { }
-
-    /*! \brief Constructor from cl_mem - takes ownership.
-     *
-     *  See Memory for further details.
-     */
-    __CL_EXPLICIT_CONSTRUCTORS Image3D(const cl_mem& image3D) : Image(image3D) { }
-
-    /*! \brief Assignment from Image3D - performs shallow copy.
-     *
-     *  See Memory for further details.
-     */
-    Image3D& operator = (const Image3D& rhs)
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
     {
         Image::operator=(img);
         return *this;
     }
 
-<<<<<<< HEAD:third_party/opencl/cl.hpp
 #if defined(CL_HPP_RVALUE_REFERENCES_SUPPORTED)
     /*! \brief Move constructor to forward move to the superclass correctly.
      * Required for MSVC.
@@ -5487,13 +4285,6 @@ public:
      * Required for MSVC.
      */
     Image3D& operator = (Image3D &&img)
-=======
-    /*! \brief Assignment from cl_mem - performs shallow copy.
-     *
-     *  See Memory for further details.
-     */
-    Image3D& operator = (const cl_mem& rhs)
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
     {
         Image::operator=(std::move(img));
         return *this;
@@ -5505,15 +4296,9 @@ public:
 /*! \brief Class interface for GL 3D Image Memory objects.
  *
  *  This is provided to facilitate interoperability with OpenGL.
-<<<<<<< HEAD:third_party/opencl/cl.hpp
  *
  *  See Memory for details about copy semantics, etc.
  *
-=======
- * 
- *  See Memory for details about copy semantics, etc.
- * 
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
  *  \see Memory
  */
 class Image3DGL : public Image3D
@@ -5550,7 +4335,6 @@ public:
     //! \brief Default constructor - initializes to NULL.
     Image3DGL() : Image3D() { }
 
-<<<<<<< HEAD:third_party/opencl/cl.hpp
     /*! \brief Constructor from cl_mem - takes ownership.
      *
      *  See Memory for further details.
@@ -5576,31 +4360,11 @@ public:
      * Required for MSVC.
      */
     Image3DGL& operator = (const Image3DGL &img)
-=======
-    /*! \brief Copy constructor - performs shallow copy.
-     *
-     *  See Memory for further details.
-     */
-    Image3DGL(const Image3DGL& image) : Image3D(image) { }
-
-    /*! \brief Constructor from cl_mem - takes ownership.
-     *
-     *  See Memory for further details.
-     */
-    __CL_EXPLICIT_CONSTRUCTORS Image3DGL(const cl_mem& image) : Image3D(image) { }
-
-    /*! \brief Assignment from Image3DGL - performs shallow copy.
-     *
-     *  See Memory for further details.
-     */
-    Image3DGL& operator = (const Image3DGL& rhs)
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
     {
         Image3D::operator=(img);
         return *this;
     }
 
-<<<<<<< HEAD:third_party/opencl/cl.hpp
 #if defined(CL_HPP_RVALUE_REFERENCES_SUPPORTED)
     /*! \brief Move constructor to forward move to the superclass correctly.
      * Required for MSVC.
@@ -5611,13 +4375,6 @@ public:
      * Required for MSVC.
      */
     Image3DGL& operator = (Image3DGL &&img)
-=======
-    /*! \brief Assignment from cl_mem - performs shallow copy.
-     *
-     *  See Memory for further details.
-     */
-    Image3DGL& operator = (const cl_mem& rhs)
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
     {
         Image3D::operator=(std::move(img));
         return *this;
@@ -5669,21 +4426,16 @@ public:
         return *this;
     }
 
-<<<<<<< HEAD:third_party/opencl/cl.hpp
     /*! \brief Copy constructor to forward copy to the superclass correctly.
      * Required for MSVC.
      */
     ImageGL(const ImageGL& img) : Image(img) {}
-=======
-    __CL_EXPLICIT_CONSTRUCTORS ImageGL(const cl_mem& image) : Image(image) { }
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
 
     /*! \brief Copy assignment to forward copy to the superclass correctly.
      * Required for MSVC.
      */
     ImageGL& operator = (const ImageGL &img)
     {
-<<<<<<< HEAD:third_party/opencl/cl.hpp
         Image::operator=(img);
         return *this;
     }
@@ -5743,10 +4495,6 @@ public:
         detail::errHandler(error, __CREATE_GL_RENDER_BUFFER_ERR);
         if (err != NULL) {
             *err = error;
-=======
-        if (this != &rhs) {
-            Image::operator=(rhs);
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
         }
     }
 
@@ -5797,7 +4545,6 @@ public:
     */
     BufferRenderGL& operator = (const BufferRenderGL &rhs)
     {
-<<<<<<< HEAD:third_party/opencl/cl.hpp
 #if defined(CL_VERSION_1_2)
         ImageGL::operator=(rhs);
 #else // #if defined(CL_VERSION_1_2)
@@ -5828,9 +4575,6 @@ public:
         Image2DGL::operator=(std::move(buf));
 #endif //#if defined(CL_VERSION_1_2)
 
-=======
-        Image::operator=(rhs);
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
         return *this;
     }
 #endif // #if defined(CL_HPP_RVALUE_REFERENCES_SUPPORTED)
@@ -5852,24 +4596,11 @@ public:
  *        to the same underlying cl_sampler as the original.  For details, see
  *        clRetainSampler() and clReleaseSampler().
  *
-<<<<<<< HEAD:third_party/opencl/cl.hpp
  *  \see cl_sampler
-=======
- *  \see cl_sampler 
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
  */
 class Sampler : public detail::Wrapper<cl_sampler>
 {
 public:
-<<<<<<< HEAD:third_party/opencl/cl.hpp
-=======
-    /*! \brief Destructor.
-     *
-     *  This calls clReleaseSampler() on the value held by this instance.
-     */
-    ~Sampler() { }
-
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
     //! \brief Default constructor - initializes to NULL.
     Sampler() { }
 
@@ -5898,7 +4629,6 @@ public:
         }
     }
 
-<<<<<<< HEAD:third_party/opencl/cl.hpp
     /*! \brief Constructor from cl_sampler - takes ownership.
      *
      *  This effectively transfers ownership of a refcount on the cl_sampler
@@ -5926,33 +4656,11 @@ public:
      * Required for MSVC.
      */
     Sampler& operator = (const Sampler &sam)
-=======
-    /*! \brief Copy constructor - performs shallow copy.
-     * 
-     *  This calls clRetainSampler() on the parameter's cl_sampler.
-     */
-    Sampler(const Sampler& sampler) : detail::Wrapper<cl_type>(sampler) { }
-
-    /*! \brief Constructor from cl_sampler - takes ownership.
-     * 
-     *  This effectively transfers ownership of a refcount on the cl_sampler
-     *  into the new Sampler object.
-     */
-    Sampler(const cl_sampler& sampler) : detail::Wrapper<cl_type>(sampler) { }
-
-    /*! \brief Assignment operator from Sampler.
-     * 
-     *  This calls clRetainSampler() on the parameter and clReleaseSampler()
-     *  on the previous value held by this instance.
-     */
-    Sampler& operator = (const Sampler& rhs)
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
     {
         detail::Wrapper<cl_type>::operator=(sam);
         return *this;
     }
 
-<<<<<<< HEAD:third_party/opencl/cl.hpp
 #if defined(CL_HPP_RVALUE_REFERENCES_SUPPORTED)
     /*! \brief Move constructor to forward move to the superclass correctly.
      * Required for MSVC.
@@ -5963,14 +4671,6 @@ public:
      * Required for MSVC.
      */
     Sampler& operator = (Sampler &&sam)
-=======
-    /*! \brief Assignment operator from cl_sampler - takes ownership.
-     *
-     *  This effectively transfers ownership of a refcount on the rhs and calls
-     *  clReleaseSampler() on the value previously held by this instance.
-     */
-    Sampler& operator = (const cl_sampler& rhs)
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
     {
         detail::Wrapper<cl_type>::operator=(std::move(sam));
         return *this;
@@ -6043,19 +4743,11 @@ public:
     }
 
     /*! \brief Conversion operator to const ::size_t *.
-<<<<<<< HEAD:third_party/opencl/cl.hpp
      *
      *  \returns a pointer to the size of the first dimension.
      */
     operator const ::size_t*() const {
         return (const ::size_t*) sizes_;
-=======
-     *  
-     *  \returns a pointer to the size of the first dimension.
-     */
-    operator const ::size_t*() const { 
-        return (const ::size_t*) sizes_; 
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
     }
 
     //! \brief Queries the number of dimensions in the range.
@@ -6128,7 +4820,6 @@ class Kernel : public detail::Wrapper<cl_kernel>
 public:
     inline Kernel(const Program& program, const char* name, cl_int* err = NULL);
 
-<<<<<<< HEAD:third_party/opencl/cl.hpp
     //! \brief Default constructor - initializes to NULL.
     Kernel() { }
 
@@ -6159,42 +4850,11 @@ public:
      * Required for MSVC.
      */
     Kernel& operator = (const Kernel &kernel)
-=======
-    /*! \brief Destructor.
-     *
-     *  This calls clReleaseKernel() on the value held by this instance.
-     */
-    ~Kernel() { }
-
-    //! \brief Default constructor - initializes to NULL.
-    Kernel() { }
-
-    /*! \brief Copy constructor - performs shallow copy.
-     * 
-     *  This calls clRetainKernel() on the parameter's cl_kernel.
-     */
-    Kernel(const Kernel& kernel) : detail::Wrapper<cl_type>(kernel) { }
-
-    /*! \brief Constructor from cl_kernel - takes ownership.
-     * 
-     *  This effectively transfers ownership of a refcount on the cl_kernel
-     *  into the new Kernel object.
-     */
-    __CL_EXPLICIT_CONSTRUCTORS Kernel(const cl_kernel& kernel) : detail::Wrapper<cl_type>(kernel) { }
-
-    /*! \brief Assignment operator from Kernel.
-     * 
-     *  This calls clRetainKernel() on the parameter and clReleaseKernel()
-     *  on the previous value held by this instance.
-     */
-    Kernel& operator = (const Kernel& rhs)
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
     {
         detail::Wrapper<cl_type>::operator=(kernel);
         return *this;
     }
 
-<<<<<<< HEAD:third_party/opencl/cl.hpp
 #if defined(CL_HPP_RVALUE_REFERENCES_SUPPORTED)
     /*! \brief Move constructor to forward move to the superclass correctly.
      * Required for MSVC.
@@ -6205,14 +4865,6 @@ public:
      * Required for MSVC.
      */
     Kernel& operator = (Kernel &&kernel)
-=======
-    /*! \brief Assignment operator from cl_kernel - takes ownership.
-     *
-     *  This effectively transfers ownership of a refcount on the rhs and calls
-     *  clReleaseKernel() on the value previously held by this instance.
-     */
-    Kernel& operator = (const cl_kernel& rhs)
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
     {
         detail::Wrapper<cl_type>::operator=(std::move(kernel));
         return *this;
@@ -6317,11 +4969,7 @@ public:
 
     Program(
         const STRING_CLASS& source,
-<<<<<<< HEAD:third_party/opencl/cl.hpp
         bool build = false,
-=======
-		bool build = false,
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
         cl_int* err = NULL)
     {
         cl_int error;
@@ -6426,11 +5074,7 @@ public:
      *   Set to CL_INVALID_BINARY if the binary provided is not valid for the matching device.
      * \param err if non-NULL will be set to CL_SUCCESS on successful operation or one of the following errors:
      *   CL_INVALID_CONTEXT if context is not a valid context.
-<<<<<<< HEAD:third_party/opencl/cl.hpp
      *   CL_INVALID_VALUE if the length of devices is zero; or if the length of binaries does not match the length of devices;
-=======
-     *   CL_INVALID_VALUE if the length of devices is zero; or if the length of binaries does not match the length of devices; 
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
      *     or if any entry in binaries is NULL or has length 0.
      *   CL_INVALID_DEVICE if OpenCL devices listed in devices are not in the list of devices associated with context.
      *   CL_INVALID_BINARY if an invalid program binary was encountered for any device. binaryStatus will return specific status for each device.
@@ -6444,7 +5088,6 @@ public:
         cl_int* err = NULL)
     {
         cl_int error;
-<<<<<<< HEAD:third_party/opencl/cl.hpp
 
         const ::size_t numDevices = devices.size();
 
@@ -6458,21 +5101,6 @@ public:
             return;
         }
 
-=======
-        
-        const ::size_t numDevices = devices.size();
-        
-        // Catch size mismatch early and return
-        if(binaries.size() != numDevices) {
-            error = CL_INVALID_VALUE;
-            detail::errHandler(error, __CREATE_PROGRAM_WITH_BINARY_ERR);
-            if (err != NULL) {
-                *err = error;
-            }
-            return;
-        }
-
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
         ::size_t* lengths = (::size_t*) alloca(numDevices * sizeof(::size_t));
         const unsigned char** images = (const unsigned char**) alloca(numDevices * sizeof(const unsigned char**));
 
@@ -6489,19 +5117,11 @@ public:
         if(binaryStatus) {
             binaryStatus->resize(numDevices);
         }
-<<<<<<< HEAD:third_party/opencl/cl.hpp
 
         object_ = ::clCreateProgramWithBinary(
             context(), (cl_uint) devices.size(),
             deviceIDs,
             lengths, images, (binaryStatus != NULL && numDevices > 0)
-=======
-        
-        object_ = ::clCreateProgramWithBinary(
-            context(), (cl_uint) devices.size(),
-            deviceIDs,
-            lengths, images, binaryStatus != NULL
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
                ? &binaryStatus->front()
                : NULL, &error);
 
@@ -6531,20 +5151,12 @@ public:
         for( ::size_t deviceIndex = 0; deviceIndex < numDevices; ++deviceIndex ) {
             deviceIDs[deviceIndex] = (devices[deviceIndex])();
         }
-<<<<<<< HEAD:third_party/opencl/cl.hpp
 
-=======
-        
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
         object_ = ::clCreateProgramWithBuiltInKernels(
             context(),
             (cl_uint) devices.size(),
             deviceIDs,
-<<<<<<< HEAD:third_party/opencl/cl.hpp
             kernelNames.c_str(),
-=======
-            kernelNames.c_str(), 
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
             &error);
 
         detail::errHandler(error, __CREATE_PROGRAM_WITH_BUILT_IN_KERNELS_ERR);
@@ -6564,14 +5176,10 @@ public:
         return *this;
     }
 
-<<<<<<< HEAD:third_party/opencl/cl.hpp
     /*! \brief Copy constructor to forward copy to the superclass correctly.
      * Required for MSVC.
      */
     Program(const Program& program) : detail::Wrapper<cl_type>(program) {}
-=======
-    __CL_EXPLICIT_CONSTRUCTORS Program(const cl_program& program) : detail::Wrapper<cl_type>(program) { }
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
 
     /*! \brief Copy assignment to forward copy to the superclass correctly.
      * Required for MSVC.
@@ -6732,7 +5340,6 @@ inline Program linkProgram(
     void* data = NULL,
     cl_int* err = NULL)
 {
-<<<<<<< HEAD:third_party/opencl/cl.hpp
     cl_int error_local = CL_SUCCESS;
 
     cl_program programs[2] = { input1(), input2() };
@@ -6741,13 +5348,6 @@ inline Program linkProgram(
     if(error_local!=CL_SUCCESS) {
         detail::errHandler(error_local, __LINK_PROGRAM_ERR);
     }
-=======
-    cl_int err_local = CL_SUCCESS;
-
-    cl_program programs[2] = { input1(), input2() };
-
-    Context ctx = input1.getInfo<CL_PROGRAM_CONTEXT>();
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
 
     cl_program prog = ::clLinkProgram(
         ctx(),
@@ -6760,15 +5360,9 @@ inline Program linkProgram(
         data,
         &error_local);
 
-<<<<<<< HEAD:third_party/opencl/cl.hpp
     detail::errHandler(error_local,__COMPILE_PROGRAM_ERR);
     if (err != NULL) {
         *err = error_local;
-=======
-    detail::errHandler(err_local,__COMPILE_PROGRAM_ERR);
-    if (err != NULL) {
-        *err = err_local;
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
     }
 
     return Program(prog);
@@ -6781,11 +5375,7 @@ inline Program linkProgram(
     void* data = NULL,
     cl_int* err = NULL)
 {
-<<<<<<< HEAD:third_party/opencl/cl.hpp
     cl_int error_local = CL_SUCCESS;
-=======
-    cl_int err_local = CL_SUCCESS;
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
 
     cl_program * programs = (cl_program*) alloca(inputPrograms.size() * sizeof(cl_program));
 
@@ -6793,11 +5383,7 @@ inline Program linkProgram(
         for (unsigned int i = 0; i < inputPrograms.size(); i++) {
           programs[i] = inputPrograms[i]();
         }
-<<<<<<< HEAD:third_party/opencl/cl.hpp
     }
-=======
-    } 
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
 
     Context ctx;
     if(inputPrograms.size() > 0) {
@@ -6817,15 +5403,9 @@ inline Program linkProgram(
         data,
         &error_local);
 
-<<<<<<< HEAD:third_party/opencl/cl.hpp
     detail::errHandler(error_local,__COMPILE_PROGRAM_ERR);
     if (err != NULL) {
         *err = error_local;
-=======
-    detail::errHandler(err_local,__COMPILE_PROGRAM_ERR);
-    if (err != NULL) {
-        *err = err_local;
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
     }
 
     return Program(prog);
@@ -6916,7 +5496,6 @@ public:
         cl_int error;
         VECTOR_CLASS<cl::Device> devices;
         error = context.getInfo(CL_CONTEXT_DEVICES, &devices);
-<<<<<<< HEAD:third_party/opencl/cl.hpp
 
         detail::errHandler(error, __CREATE_CONTEXT_ERR);
 
@@ -6932,40 +5511,6 @@ public:
 
         detail::errHandler(error, __CREATE_COMMAND_QUEUE_ERR);
 
-=======
-
-        detail::errHandler(error, __CREATE_COMMAND_QUEUE_ERR);
-
-        if (error != CL_SUCCESS)
-        {
-            if (err != NULL) {
-                *err = error;
-            }
-            return;
-        }
-
-        object_ = ::clCreateCommandQueue(context(), devices[0](), properties, &error);
-
-        detail::errHandler(error, __CREATE_COMMAND_QUEUE_ERR);
-
-        if (err != NULL) {
-            *err = error;
-        }
-
-    }
-
-    CommandQueue(
-        const Context& context,
-        const Device& device,
-        cl_command_queue_properties properties = 0,
-        cl_int* err = NULL)
-    {
-        cl_int error;
-        object_ = ::clCreateCommandQueue(
-            context(), device(), properties, &error);
-
-        detail::errHandler(error, __CREATE_COMMAND_QUEUE_ERR);
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
         if (err != NULL) {
             *err = error;
         }
@@ -7835,13 +6380,8 @@ public:
 /**
  * Deprecated APIs for 1.2
  */
-<<<<<<< HEAD:third_party/opencl/cl.hpp
 #if defined(CL_USE_DEPRECATED_OPENCL_1_1_APIS) || (defined(CL_VERSION_1_1) && !defined(CL_VERSION_1_2))
     CL_EXT_PREFIX__VERSION_1_1_DEPRECATED
-=======
-#if defined(CL_USE_DEPRECATED_OPENCL_1_1_APIS) || (defined(CL_VERSION_1_1) && !defined(CL_VERSION_1_2)) 
-    CL_EXT_PREFIX__VERSION_1_1_DEPRECATED 
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
     cl_int enqueueMarker(Event* event = NULL) const CL_EXT_SUFFIX__VERSION_1_1_DEPRECATED
     {
         cl_event tmp;
@@ -7993,11 +6533,7 @@ typedef CL_API_ENTRY cl_int (CL_API_CALL *PFN_clEnqueueReleaseD3D10ObjectsKHR)(
 /**
  * Deprecated APIs for 1.2
  */
-<<<<<<< HEAD:third_party/opencl/cl.hpp
 #if defined(CL_USE_DEPRECATED_OPENCL_1_1_APIS) || (defined(CL_VERSION_1_1) && !defined(CL_VERSION_1_2))
-=======
-#if defined(CL_USE_DEPRECATED_OPENCL_1_1_APIS) || (defined(CL_VERSION_1_1) && !defined(CL_VERSION_1_2)) 
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
     CL_EXT_PREFIX__VERSION_1_1_DEPRECATED
     cl_int enqueueBarrier() const CL_EXT_SUFFIX__VERSION_1_1_DEPRECATED
     {
@@ -8026,25 +6562,14 @@ __declspec(selectany) volatile int CommandQueue::default_initialized_ = __DEFAUL
 #endif // !CL_HPP_CPP11_ATOMICS_SUPPORTED
 __declspec(selectany) CommandQueue CommandQueue::default_;
 __declspec(selectany) volatile cl_int CommandQueue::default_error_ = CL_SUCCESS;
-<<<<<<< HEAD:third_party/opencl/cl.hpp
 #else // !_WIN32
 #ifdef CL_HPP_CPP11_ATOMICS_SUPPORTED
 __attribute__((weak)) std::atomic<int> CommandQueue::default_initialized_;
 #else // !CL_HPP_CPP11_ATOMICS_SUPPORTED
-=======
-#else
-<<<<<<< HEAD:third_party/opencl/cl.hpp
-
-#if !defined(__PGI) || defined(SHOC_DEFINE_CLHPP_WEAKS)
->>>>>>> 7edd023da... Added support for building SHOC with PGI compiler on x86_64.:src/opencl/common/cl.hpp
-=======
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
 __attribute__((weak)) volatile int CommandQueue::default_initialized_ = __DEFAULT_NOT_INITIALIZED;
 #endif // !CL_HPP_CPP11_ATOMICS_SUPPORTED
 __attribute__((weak)) CommandQueue CommandQueue::default_;
 __attribute__((weak)) volatile cl_int CommandQueue::default_error_ = CL_SUCCESS;
-<<<<<<< HEAD:third_party/opencl/cl.hpp
-<<<<<<< HEAD:third_party/opencl/cl.hpp
 #endif // !_WIN32
 
 template< typename IteratorType >
@@ -8138,63 +6663,6 @@ Buffer::Buffer(
     }
 
     if (!useHostPtr) {
-        error = cl::copy(queue, startIterator, endIterator, *this);
-        detail::errHandler(error, __CREATE_BUFFER_ERR);
-        if (err != NULL) {
-            *err = error;
-        }
-    }
-}
-=======
-#endif // !defined(__PGI) || defined(SHOC_DEFINE_CLHPP_WEAKS)
-=======
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
-#endif
->>>>>>> 7edd023da... Added support for building SHOC with PGI compiler on x86_64.:src/opencl/common/cl.hpp
-
-template< typename IteratorType >
-Buffer::Buffer(
-    const Context &context,
-    IteratorType startIterator,
-    IteratorType endIterator,
-    bool readOnly,
-    bool useHostPtr,
-    cl_int* err)
-{
-    typedef typename std::iterator_traits<IteratorType>::value_type DataType;
-    cl_int error;
-
-    cl_mem_flags flags = 0;
-    if( readOnly ) {
-        flags |= CL_MEM_READ_ONLY;
-    }
-    else {
-        flags |= CL_MEM_READ_WRITE;
-    }
-    if( useHostPtr ) {
-        flags |= CL_MEM_USE_HOST_PTR;
-    }
-    
-    ::size_t size = sizeof(DataType)*(endIterator - startIterator);
-
-    if( useHostPtr ) {
-        object_ = ::clCreateBuffer(context(), flags, size, static_cast<DataType*>(&*startIterator), &error);
-    } else {
-        object_ = ::clCreateBuffer(context(), flags, size, 0, &error);
-    }
-
-    detail::errHandler(error, __CREATE_BUFFER_ERR);
-    if (err != NULL) {
-        *err = error;
-    }
-
-    if( !useHostPtr ) {
-        CommandQueue queue(context, 0, &error);
-        detail::errHandler(error, __CREATE_BUFFER_ERR);
-        if (err != NULL) {
-            *err = error;
-        }
-
         error = cl::copy(queue, startIterator, endIterator, *this);
         detail::errHandler(error, __CREATE_BUFFER_ERR);
         if (err != NULL) {
@@ -8361,19 +6829,11 @@ inline cl_int copy( const CommandQueue &queue, IteratorType startIterator, Itera
 {
     typedef typename std::iterator_traits<IteratorType>::value_type DataType;
     cl_int error;
-<<<<<<< HEAD:third_party/opencl/cl.hpp
 
     ::size_t length = endIterator-startIterator;
     ::size_t byteLength = length*sizeof(DataType);
 
     DataType *pointer =
-=======
-    
-    ::size_t length = endIterator-startIterator;
-    ::size_t byteLength = length*sizeof(DataType);
-
-    DataType *pointer = 
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
         static_cast<DataType*>(queue.enqueueMapBuffer(buffer, CL_TRUE, CL_MAP_WRITE, 0, byteLength, 0, 0, &error));
     // if exceptions enabled, enqueueMapBuffer will throw
     if( error != CL_SUCCESS ) {
@@ -8391,11 +6851,7 @@ inline cl_int copy( const CommandQueue &queue, IteratorType startIterator, Itera
     Event endEvent;
     error = queue.enqueueUnmapMemObject(buffer, pointer, 0, &endEvent);
     // if exceptions enabled, enqueueUnmapMemObject will throw
-<<<<<<< HEAD:third_party/opencl/cl.hpp
     if( error != CL_SUCCESS ) {
-=======
-    if( error != CL_SUCCESS ) { 
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
         return error;
     }
     endEvent.wait();
@@ -8412,19 +6868,11 @@ inline cl_int copy( const CommandQueue &queue, const cl::Buffer &buffer, Iterato
 {
     typedef typename std::iterator_traits<IteratorType>::value_type DataType;
     cl_int error;
-<<<<<<< HEAD:third_party/opencl/cl.hpp
 
     ::size_t length = endIterator-startIterator;
     ::size_t byteLength = length*sizeof(DataType);
 
     DataType *pointer =
-=======
-        
-    ::size_t length = endIterator-startIterator;
-    ::size_t byteLength = length*sizeof(DataType);
-
-    DataType *pointer = 
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
         static_cast<DataType*>(queue.enqueueMapBuffer(buffer, CL_TRUE, CL_MAP_READ, 0, byteLength, 0, 0, &error));
     // if exceptions enabled, enqueueMapBuffer will throw
     if( error != CL_SUCCESS ) {
@@ -8434,11 +6882,7 @@ inline cl_int copy( const CommandQueue &queue, const cl::Buffer &buffer, Iterato
     Event endEvent;
     error = queue.enqueueUnmapMemObject(buffer, pointer, 0, &endEvent);
     // if exceptions enabled, enqueueUnmapMemObject will throw
-<<<<<<< HEAD:third_party/opencl/cl.hpp
     if( error != CL_SUCCESS ) {
-=======
-    if( error != CL_SUCCESS ) { 
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
         return error;
     }
     endEvent.wait();
@@ -8814,68 +7258,7 @@ struct EnqueueArgs
 
     }
 
-<<<<<<< HEAD:third_party/opencl/cl.hpp
     EnqueueArgs(CommandQueue &queue, NDRange global) :
-=======
-    EnqueueArgs(Event e, NDRange global) : 
-      queue_(CommandQueue::getDefault()),
-      offset_(NullRange), 
-      global_(global),
-      local_(NullRange)
-    {
-        events_.push_back(e);
-    }
-
-    EnqueueArgs(Event e, NDRange global, NDRange local) : 
-      queue_(CommandQueue::getDefault()),
-      offset_(NullRange), 
-      global_(global),
-      local_(local)
-    {
-        events_.push_back(e);
-    }
-
-    EnqueueArgs(Event e, NDRange offset, NDRange global, NDRange local) : 
-      queue_(CommandQueue::getDefault()),
-      offset_(offset), 
-      global_(global),
-      local_(local)
-    {
-        events_.push_back(e);
-    }
-
-    EnqueueArgs(const VECTOR_CLASS<Event> &events, NDRange global) : 
-      queue_(CommandQueue::getDefault()),
-      offset_(NullRange), 
-      global_(global),
-      local_(NullRange),
-      events_(events)
-    {
-
-    }
-
-    EnqueueArgs(const VECTOR_CLASS<Event> &events, NDRange global, NDRange local) : 
-      queue_(CommandQueue::getDefault()),
-      offset_(NullRange), 
-      global_(global),
-      local_(local),
-      events_(events)
-    {
-
-    }
-
-    EnqueueArgs(const VECTOR_CLASS<Event> &events, NDRange offset, NDRange global, NDRange local) : 
-      queue_(CommandQueue::getDefault()),
-      offset_(offset), 
-      global_(global),
-      local_(local),
-      events_(events)
-    {
-
-    }
-
-    EnqueueArgs(CommandQueue &queue, NDRange global) : 
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
       queue_(queue),
       offset_(NullRange),
       global_(global),
@@ -8958,63 +7341,6 @@ struct EnqueueArgs
     {
 
     }
-
-    EnqueueArgs(CommandQueue &queue, Event e, NDRange global) : 
-      queue_(queue),
-      offset_(NullRange), 
-      global_(global),
-      local_(NullRange)
-    {
-        events_.push_back(e);
-    }
-
-    EnqueueArgs(CommandQueue &queue, Event e, NDRange global, NDRange local) : 
-      queue_(queue),
-      offset_(NullRange), 
-      global_(global),
-      local_(local)
-    {
-        events_.push_back(e);
-    }
-
-    EnqueueArgs(CommandQueue &queue, Event e, NDRange offset, NDRange global, NDRange local) : 
-      queue_(queue),
-      offset_(offset), 
-      global_(global),
-      local_(local)
-    {
-        events_.push_back(e);
-    }
-
-    EnqueueArgs(CommandQueue &queue, const VECTOR_CLASS<Event> &events, NDRange global) : 
-      queue_(queue),
-      offset_(NullRange), 
-      global_(global),
-      local_(NullRange),
-      events_(events)
-    {
-
-    }
-
-    EnqueueArgs(CommandQueue &queue, const VECTOR_CLASS<Event> &events, NDRange global, NDRange local) : 
-      queue_(queue),
-      offset_(NullRange), 
-      global_(global),
-      local_(local),
-      events_(events)
-    {
-
-    }
-
-    EnqueueArgs(CommandQueue &queue, const VECTOR_CLASS<Event> &events, NDRange offset, NDRange global, NDRange local) : 
-      queue_(queue),
-      offset_(offset), 
-      global_(global),
-      local_(local),
-      events_(events)
-    {
-
-    }
 };
 
 namespace detail {
@@ -9028,11 +7354,7 @@ struct SetArg
     {
         kernel.setArg(index, arg);
     }
-<<<<<<< HEAD:third_party/opencl/cl.hpp
 };
-=======
-};  
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
 
 template<int index>
 struct SetArg<index, NullType>
@@ -9139,11 +7461,7 @@ public:
         SetArg<29, T29>::set(kernel_, t29);
         SetArg<30, T30>::set(kernel_, t30);
         SetArg<31, T31>::set(kernel_, t31);
-<<<<<<< HEAD:third_party/opencl/cl.hpp
 
-=======
-        
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
         args.queue_.enqueueNDRangeKernel(
             kernel_,
             args.offset_,
@@ -9151,11 +7469,7 @@ public:
             args.local_,
             &args.events_,
             &event);
-<<<<<<< HEAD:third_party/opencl/cl.hpp
 
-=======
-        
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
         return event;
     }
 
@@ -9238,11 +7552,7 @@ struct functionImplementation_
     functionImplementation_(const FunctorType &functor) :
         functor_(functor)
     {
-<<<<<<< HEAD:third_party/opencl/cl.hpp
 
-=======
-    
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
         #if (defined(_WIN32) && defined(_VARIADIC_MAX) && (_VARIADIC_MAX < 32))
         // Fail variadic expansion for dev11
         static_assert(0, "Visual Studio has a hard limit of argument count for a std::function expansion. Please define _VARIADIC_MAX to be 10. If you need more arguments than that VC12 and below cannot support it.");
@@ -9291,8 +7601,6 @@ struct functionImplementation_
 
 	Event operator()(
 		const EnqueueArgs& enqueueArgs,
-<<<<<<< HEAD:third_party/opencl/cl.hpp
-=======
 		T0 arg0,
 		T1 arg1,
 		T2 arg2,
@@ -9470,677 +7778,8 @@ struct functionImplementation_
     functionImplementation_(const FunctorType &functor) :
         functor_(functor)
     {
-    
-        #if (defined(_WIN32) && defined(_VARIADIC_MAX) && (_VARIADIC_MAX < 31))
-        // Fail variadic expansion for dev11
-        static_assert(0, "Visual Studio has a hard limit of argument count for a std::function expansion. Please define _VARIADIC_MAX to be 10. If you need more arguments than that VC12 and below cannot support it.");
-        #endif
-            
-    }
-
-	//! \brief Return type of the functor
-	typedef Event result_type;
-
-	//! \brief Function signature of kernel functor with no event dependency.
-	typedef Event type_(
-		const EnqueueArgs&,
-		T0,
-		T1,
-		T2,
-		T3,
-		T4,
-		T5,
-		T6,
-		T7,
-		T8,
-		T9,
-		T10,
-		T11,
-		T12,
-		T13,
-		T14,
-		T15,
-		T16,
-		T17,
-		T18,
-		T19,
-		T20,
-		T21,
-		T22,
-		T23,
-		T24,
-		T25,
-		T26,
-		T27,
-		T28,
-		T29,
-		T30);
-
-	Event operator()(
-		const EnqueueArgs& enqueueArgs,
-		T0 arg0,
-		T1 arg1,
-		T2 arg2,
-		T3 arg3,
-		T4 arg4,
-		T5 arg5,
-		T6 arg6,
-		T7 arg7,
-		T8 arg8,
-		T9 arg9,
-		T10 arg10,
-		T11 arg11,
-		T12 arg12,
-		T13 arg13,
-		T14 arg14,
-		T15 arg15,
-		T16 arg16,
-		T17 arg17,
-		T18 arg18,
-		T19 arg19,
-		T20 arg20,
-		T21 arg21,
-		T22 arg22,
-		T23 arg23,
-		T24 arg24,
-		T25 arg25,
-		T26 arg26,
-		T27 arg27,
-		T28 arg28,
-		T29 arg29,
-		T30 arg30)
-	{
-		return functor_(
-			enqueueArgs,
-			arg0,
-			arg1,
-			arg2,
-			arg3,
-			arg4,
-			arg5,
-			arg6,
-			arg7,
-			arg8,
-			arg9,
-			arg10,
-			arg11,
-			arg12,
-			arg13,
-			arg14,
-			arg15,
-			arg16,
-			arg17,
-			arg18,
-			arg19,
-			arg20,
-			arg21,
-			arg22,
-			arg23,
-			arg24,
-			arg25,
-			arg26,
-			arg27,
-			arg28,
-			arg29,
-			arg30);
-	}
-
-
-};
-
-template<
-	typename T0,
-	typename T1,
-	typename T2,
-	typename T3,
-	typename T4,
-	typename T5,
-	typename T6,
-	typename T7,
-	typename T8,
-	typename T9,
-	typename T10,
-	typename T11,
-	typename T12,
-	typename T13,
-	typename T14,
-	typename T15,
-	typename T16,
-	typename T17,
-	typename T18,
-	typename T19,
-	typename T20,
-	typename T21,
-	typename T22,
-	typename T23,
-	typename T24,
-	typename T25,
-	typename T26,
-	typename T27,
-	typename T28,
-	typename T29>
-struct functionImplementation_
-<	T0,
-	T1,
-	T2,
-	T3,
-	T4,
-	T5,
-	T6,
-	T7,
-	T8,
-	T9,
-	T10,
-	T11,
-	T12,
-	T13,
-	T14,
-	T15,
-	T16,
-	T17,
-	T18,
-	T19,
-	T20,
-	T21,
-	T22,
-	T23,
-	T24,
-	T25,
-	T26,
-	T27,
-	T28,
-	T29,
-	NullType,
-	NullType>
-{
-	typedef detail::KernelFunctorGlobal<
-		T0,
-		T1,
-		T2,
-		T3,
-		T4,
-		T5,
-		T6,
-		T7,
-		T8,
-		T9,
-		T10,
-		T11,
-		T12,
-		T13,
-		T14,
-		T15,
-		T16,
-		T17,
-		T18,
-		T19,
-		T20,
-		T21,
-		T22,
-		T23,
-		T24,
-		T25,
-		T26,
-		T27,
-		T28,
-		T29,
-		NullType,
-		NullType> FunctorType;
-
-    FunctorType functor_;
-
-    functionImplementation_(const FunctorType &functor) :
-        functor_(functor)
-    {
-    
-        #if (defined(_WIN32) && defined(_VARIADIC_MAX) && (_VARIADIC_MAX < 30))
-        // Fail variadic expansion for dev11
-        static_assert(0, "Visual Studio has a hard limit of argument count for a std::function expansion. Please define _VARIADIC_MAX to be 10. If you need more arguments than that VC12 and below cannot support it.");
-        #endif
-            
-    }
-
-	//! \brief Return type of the functor
-	typedef Event result_type;
-
-	//! \brief Function signature of kernel functor with no event dependency.
-	typedef Event type_(
-		const EnqueueArgs&,
-		T0,
-		T1,
-		T2,
-		T3,
-		T4,
-		T5,
-		T6,
-		T7,
-		T8,
-		T9,
-		T10,
-		T11,
-		T12,
-		T13,
-		T14,
-		T15,
-		T16,
-		T17,
-		T18,
-		T19,
-		T20,
-		T21,
-		T22,
-		T23,
-		T24,
-		T25,
-		T26,
-		T27,
-		T28,
-		T29);
-
-	Event operator()(
-		const EnqueueArgs& enqueueArgs,
-		T0 arg0,
-		T1 arg1,
-		T2 arg2,
-		T3 arg3,
-		T4 arg4,
-		T5 arg5,
-		T6 arg6,
-		T7 arg7,
-		T8 arg8,
-		T9 arg9,
-		T10 arg10,
-		T11 arg11,
-		T12 arg12,
-		T13 arg13,
-		T14 arg14,
-		T15 arg15,
-		T16 arg16,
-		T17 arg17,
-		T18 arg18,
-		T19 arg19,
-		T20 arg20,
-		T21 arg21,
-		T22 arg22,
-		T23 arg23,
-		T24 arg24,
-		T25 arg25,
-		T26 arg26,
-		T27 arg27,
-		T28 arg28,
-		T29 arg29)
-	{
-		return functor_(
-			enqueueArgs,
-			arg0,
-			arg1,
-			arg2,
-			arg3,
-			arg4,
-			arg5,
-			arg6,
-			arg7,
-			arg8,
-			arg9,
-			arg10,
-			arg11,
-			arg12,
-			arg13,
-			arg14,
-			arg15,
-			arg16,
-			arg17,
-			arg18,
-			arg19,
-			arg20,
-			arg21,
-			arg22,
-			arg23,
-			arg24,
-			arg25,
-			arg26,
-			arg27,
-			arg28,
-			arg29);
-	}
-
-
-};
-
-template<
-	typename T0,
-	typename T1,
-	typename T2,
-	typename T3,
-	typename T4,
-	typename T5,
-	typename T6,
-	typename T7,
-	typename T8,
-	typename T9,
-	typename T10,
-	typename T11,
-	typename T12,
-	typename T13,
-	typename T14,
-	typename T15,
-	typename T16,
-	typename T17,
-	typename T18,
-	typename T19,
-	typename T20,
-	typename T21,
-	typename T22,
-	typename T23,
-	typename T24,
-	typename T25,
-	typename T26,
-	typename T27,
-	typename T28>
-struct functionImplementation_
-<	T0,
-	T1,
-	T2,
-	T3,
-	T4,
-	T5,
-	T6,
-	T7,
-	T8,
-	T9,
-	T10,
-	T11,
-	T12,
-	T13,
-	T14,
-	T15,
-	T16,
-	T17,
-	T18,
-	T19,
-	T20,
-	T21,
-	T22,
-	T23,
-	T24,
-	T25,
-	T26,
-	T27,
-	T28,
-	NullType,
-	NullType,
-	NullType>
-{
-	typedef detail::KernelFunctorGlobal<
-		T0,
-		T1,
-		T2,
-		T3,
-		T4,
-		T5,
-		T6,
-		T7,
-		T8,
-		T9,
-		T10,
-		T11,
-		T12,
-		T13,
-		T14,
-		T15,
-		T16,
-		T17,
-		T18,
-		T19,
-		T20,
-		T21,
-		T22,
-		T23,
-		T24,
-		T25,
-		T26,
-		T27,
-		T28,
-		NullType,
-		NullType,
-		NullType> FunctorType;
-
-    FunctorType functor_;
-
-    functionImplementation_(const FunctorType &functor) :
-        functor_(functor)
-    {
-    
-        #if (defined(_WIN32) && defined(_VARIADIC_MAX) && (_VARIADIC_MAX < 29))
-        // Fail variadic expansion for dev11
-        static_assert(0, "Visual Studio has a hard limit of argument count for a std::function expansion. Please define _VARIADIC_MAX to be 10. If you need more arguments than that VC12 and below cannot support it.");
-        #endif
-            
-    }
-
-	//! \brief Return type of the functor
-	typedef Event result_type;
-
-	//! \brief Function signature of kernel functor with no event dependency.
-	typedef Event type_(
-		const EnqueueArgs&,
-		T0,
-		T1,
-		T2,
-		T3,
-		T4,
-		T5,
-		T6,
-		T7,
-		T8,
-		T9,
-		T10,
-		T11,
-		T12,
-		T13,
-		T14,
-		T15,
-		T16,
-		T17,
-		T18,
-		T19,
-		T20,
-		T21,
-		T22,
-		T23,
-		T24,
-		T25,
-		T26,
-		T27,
-		T28);
-
-	Event operator()(
-		const EnqueueArgs& enqueueArgs,
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
-		T0 arg0,
-		T1 arg1,
-		T2 arg2,
-		T3 arg3,
-		T4 arg4,
-		T5 arg5,
-		T6 arg6,
-		T7 arg7,
-		T8 arg8,
-		T9 arg9,
-		T10 arg10,
-		T11 arg11,
-		T12 arg12,
-		T13 arg13,
-		T14 arg14,
-		T15 arg15,
-		T16 arg16,
-		T17 arg17,
-		T18 arg18,
-		T19 arg19,
-		T20 arg20,
-		T21 arg21,
-		T22 arg22,
-		T23 arg23,
-		T24 arg24,
-		T25 arg25,
-		T26 arg26,
-		T27 arg27,
-		T28 arg28,
-		T29 arg29,
-		T30 arg30,
-		T31 arg31)
-	{
-		return functor_(
-			enqueueArgs,
-			arg0,
-			arg1,
-			arg2,
-			arg3,
-			arg4,
-			arg5,
-			arg6,
-			arg7,
-			arg8,
-			arg9,
-			arg10,
-			arg11,
-			arg12,
-			arg13,
-			arg14,
-			arg15,
-			arg16,
-			arg17,
-			arg18,
-			arg19,
-			arg20,
-			arg21,
-			arg22,
-			arg23,
-			arg24,
-			arg25,
-			arg26,
-			arg27,
-			arg28,
-			arg29,
-			arg30,
-			arg31);
-	}
-
-
-};
-
-template<
-	typename T0,
-	typename T1,
-	typename T2,
-	typename T3,
-	typename T4,
-	typename T5,
-	typename T6,
-	typename T7,
-	typename T8,
-	typename T9,
-	typename T10,
-	typename T11,
-	typename T12,
-	typename T13,
-	typename T14,
-	typename T15,
-	typename T16,
-	typename T17,
-	typename T18,
-	typename T19,
-	typename T20,
-	typename T21,
-	typename T22,
-	typename T23,
-	typename T24,
-	typename T25,
-	typename T26,
-	typename T27,
-	typename T28,
-	typename T29,
-	typename T30>
-struct functionImplementation_
-<	T0,
-	T1,
-	T2,
-	T3,
-	T4,
-	T5,
-	T6,
-	T7,
-	T8,
-	T9,
-	T10,
-	T11,
-	T12,
-	T13,
-	T14,
-	T15,
-	T16,
-	T17,
-	T18,
-	T19,
-	T20,
-	T21,
-	T22,
-	T23,
-	T24,
-	T25,
-	T26,
-	T27,
-	T28,
-	T29,
-	T30,
-	NullType>
-{
-	typedef detail::KernelFunctorGlobal<
-		T0,
-		T1,
-		T2,
-		T3,
-		T4,
-		T5,
-		T6,
-		T7,
-		T8,
-		T9,
-		T10,
-		T11,
-		T12,
-		T13,
-		T14,
-		T15,
-		T16,
-		T17,
-		T18,
-		T19,
-		T20,
-		T21,
-		T22,
-		T23,
-		T24,
-		T25,
-		T26,
-		T27,
-		T28,
-		T29,
-		T30,
-		NullType> FunctorType;
-
-    FunctorType functor_;
-
-    functionImplementation_(const FunctorType &functor) :
-        functor_(functor)
-    {
-<<<<<<< HEAD:third_party/opencl/cl.hpp
 
         #if (defined(_WIN32) && defined(_VARIADIC_MAX) && (_VARIADIC_MAX < 31))
-=======
-    
-        #if (defined(_WIN32) && defined(_VARIADIC_MAX) && (_VARIADIC_MAX < 28))
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
         // Fail variadic expansion for dev11
         static_assert(0, "Visual Studio has a hard limit of argument count for a std::function expansion. Please define _VARIADIC_MAX to be 10. If you need more arguments than that VC12 and below cannot support it.");
         #endif
@@ -10180,7 +7819,6 @@ struct functionImplementation_
 		T24,
 		T25,
 		T26,
-<<<<<<< HEAD:third_party/opencl/cl.hpp
 		T27,
 		T28,
 		T29,
@@ -10409,12 +8047,6 @@ struct functionImplementation_
 
 	Event operator()(
 		const EnqueueArgs& enqueueArgs,
-=======
-		T27);
-
-	Event operator()(
-		const EnqueueArgs& enqueueArgs,
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
 		T0 arg0,
 		T1 arg1,
 		T2 arg2,
@@ -10586,13 +8218,8 @@ struct functionImplementation_
     functionImplementation_(const FunctorType &functor) :
         functor_(functor)
     {
-<<<<<<< HEAD:third_party/opencl/cl.hpp
 
         #if (defined(_WIN32) && defined(_VARIADIC_MAX) && (_VARIADIC_MAX < 29))
-=======
-    
-        #if (defined(_WIN32) && defined(_VARIADIC_MAX) && (_VARIADIC_MAX < 27))
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
         // Fail variadic expansion for dev11
         static_assert(0, "Visual Studio has a hard limit of argument count for a std::function expansion. Please define _VARIADIC_MAX to be 10. If you need more arguments than that VC12 and below cannot support it.");
         #endif
@@ -10631,7 +8258,6 @@ struct functionImplementation_
 		T23,
 		T24,
 		T25,
-<<<<<<< HEAD:third_party/opencl/cl.hpp
 		T26,
 		T27,
 		T28);
@@ -10851,12 +8477,6 @@ struct functionImplementation_
 
 	Event operator()(
 		const EnqueueArgs& enqueueArgs,
-=======
-		T26);
-
-	Event operator()(
-		const EnqueueArgs& enqueueArgs,
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
 		T0 arg0,
 		T1 arg1,
 		T2 arg2,
@@ -11022,13 +8642,8 @@ struct functionImplementation_
     functionImplementation_(const FunctorType &functor) :
         functor_(functor)
     {
-<<<<<<< HEAD:third_party/opencl/cl.hpp
 
         #if (defined(_WIN32) && defined(_VARIADIC_MAX) && (_VARIADIC_MAX < 27))
-=======
-    
-        #if (defined(_WIN32) && defined(_VARIADIC_MAX) && (_VARIADIC_MAX < 26))
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
         // Fail variadic expansion for dev11
         static_assert(0, "Visual Studio has a hard limit of argument count for a std::function expansion. Please define _VARIADIC_MAX to be 10. If you need more arguments than that VC12 and below cannot support it.");
         #endif
@@ -11066,12 +8681,8 @@ struct functionImplementation_
 		T22,
 		T23,
 		T24,
-<<<<<<< HEAD:third_party/opencl/cl.hpp
 		T25,
 		T26);
-=======
-		T25);
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
 
 	Event operator()(
 		const EnqueueArgs& enqueueArgs,
@@ -11100,12 +8711,8 @@ struct functionImplementation_
 		T22 arg22,
 		T23 arg23,
 		T24 arg24,
-<<<<<<< HEAD:third_party/opencl/cl.hpp
 		T25 arg25,
 		T26 arg26)
-=======
-		T25 arg25)
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
 	{
 		return functor_(
 			enqueueArgs,
@@ -11241,13 +8848,8 @@ struct functionImplementation_
     functionImplementation_(const FunctorType &functor) :
         functor_(functor)
     {
-<<<<<<< HEAD:third_party/opencl/cl.hpp
 
         #if (defined(_WIN32) && defined(_VARIADIC_MAX) && (_VARIADIC_MAX < 26))
-=======
-    
-        #if (defined(_WIN32) && defined(_VARIADIC_MAX) && (_VARIADIC_MAX < 25))
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
         // Fail variadic expansion for dev11
         static_assert(0, "Visual Studio has a hard limit of argument count for a std::function expansion. Please define _VARIADIC_MAX to be 10. If you need more arguments than that VC12 and below cannot support it.");
         #endif
@@ -11284,12 +8886,8 @@ struct functionImplementation_
 		T21,
 		T22,
 		T23,
-<<<<<<< HEAD:third_party/opencl/cl.hpp
 		T24,
 		T25);
-=======
-		T24);
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
 
 	Event operator()(
 		const EnqueueArgs& enqueueArgs,
@@ -11452,13 +9050,8 @@ struct functionImplementation_
     functionImplementation_(const FunctorType &functor) :
         functor_(functor)
     {
-<<<<<<< HEAD:third_party/opencl/cl.hpp
 
         #if (defined(_WIN32) && defined(_VARIADIC_MAX) && (_VARIADIC_MAX < 25))
-=======
-    
-        #if (defined(_WIN32) && defined(_VARIADIC_MAX) && (_VARIADIC_MAX < 24))
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
         // Fail variadic expansion for dev11
         static_assert(0, "Visual Studio has a hard limit of argument count for a std::function expansion. Please define _VARIADIC_MAX to be 10. If you need more arguments than that VC12 and below cannot support it.");
         #endif
@@ -11494,12 +9087,8 @@ struct functionImplementation_
 		T20,
 		T21,
 		T22,
-<<<<<<< HEAD:third_party/opencl/cl.hpp
 		T23,
 		T24);
-=======
-		T23);
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
 
 	Event operator()(
 		const EnqueueArgs& enqueueArgs,
@@ -11659,13 +9248,8 @@ struct functionImplementation_
     functionImplementation_(const FunctorType &functor) :
         functor_(functor)
     {
-<<<<<<< HEAD:third_party/opencl/cl.hpp
 
         #if (defined(_WIN32) && defined(_VARIADIC_MAX) && (_VARIADIC_MAX < 24))
-=======
-    
-        #if (defined(_WIN32) && defined(_VARIADIC_MAX) && (_VARIADIC_MAX < 23))
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
         // Fail variadic expansion for dev11
         static_assert(0, "Visual Studio has a hard limit of argument count for a std::function expansion. Please define _VARIADIC_MAX to be 10. If you need more arguments than that VC12 and below cannot support it.");
         #endif
@@ -11700,12 +9284,8 @@ struct functionImplementation_
 		T19,
 		T20,
 		T21,
-<<<<<<< HEAD:third_party/opencl/cl.hpp
 		T22,
 		T23);
-=======
-		T22);
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
 
 	Event operator()(
 		const EnqueueArgs& enqueueArgs,
@@ -11862,13 +9442,8 @@ struct functionImplementation_
     functionImplementation_(const FunctorType &functor) :
         functor_(functor)
     {
-<<<<<<< HEAD:third_party/opencl/cl.hpp
 
         #if (defined(_WIN32) && defined(_VARIADIC_MAX) && (_VARIADIC_MAX < 23))
-=======
-    
-        #if (defined(_WIN32) && defined(_VARIADIC_MAX) && (_VARIADIC_MAX < 22))
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
         // Fail variadic expansion for dev11
         static_assert(0, "Visual Studio has a hard limit of argument count for a std::function expansion. Please define _VARIADIC_MAX to be 10. If you need more arguments than that VC12 and below cannot support it.");
         #endif
@@ -11902,12 +9477,8 @@ struct functionImplementation_
 		T18,
 		T19,
 		T20,
-<<<<<<< HEAD:third_party/opencl/cl.hpp
 		T21,
 		T22);
-=======
-		T21);
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
 
 	Event operator()(
 		const EnqueueArgs& enqueueArgs,
@@ -12061,13 +9632,8 @@ struct functionImplementation_
     functionImplementation_(const FunctorType &functor) :
         functor_(functor)
     {
-<<<<<<< HEAD:third_party/opencl/cl.hpp
 
         #if (defined(_WIN32) && defined(_VARIADIC_MAX) && (_VARIADIC_MAX < 22))
-=======
-    
-        #if (defined(_WIN32) && defined(_VARIADIC_MAX) && (_VARIADIC_MAX < 21))
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
         // Fail variadic expansion for dev11
         static_assert(0, "Visual Studio has a hard limit of argument count for a std::function expansion. Please define _VARIADIC_MAX to be 10. If you need more arguments than that VC12 and below cannot support it.");
         #endif
@@ -12100,12 +9666,8 @@ struct functionImplementation_
 		T17,
 		T18,
 		T19,
-<<<<<<< HEAD:third_party/opencl/cl.hpp
 		T20,
 		T21);
-=======
-		T20);
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
 
 	Event operator()(
 		const EnqueueArgs& enqueueArgs,
@@ -12256,13 +9818,8 @@ struct functionImplementation_
     functionImplementation_(const FunctorType &functor) :
         functor_(functor)
     {
-<<<<<<< HEAD:third_party/opencl/cl.hpp
 
         #if (defined(_WIN32) && defined(_VARIADIC_MAX) && (_VARIADIC_MAX < 21))
-=======
-    
-        #if (defined(_WIN32) && defined(_VARIADIC_MAX) && (_VARIADIC_MAX < 20))
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
         // Fail variadic expansion for dev11
         static_assert(0, "Visual Studio has a hard limit of argument count for a std::function expansion. Please define _VARIADIC_MAX to be 10. If you need more arguments than that VC12 and below cannot support it.");
         #endif
@@ -12294,12 +9851,8 @@ struct functionImplementation_
 		T16,
 		T17,
 		T18,
-<<<<<<< HEAD:third_party/opencl/cl.hpp
 		T19,
 		T20);
-=======
-		T19);
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
 
 	Event operator()(
 		const EnqueueArgs& enqueueArgs,
@@ -12440,10 +9993,6 @@ struct functionImplementation_
 		NullType,
 		NullType,
 		NullType,
-<<<<<<< HEAD:third_party/opencl/cl.hpp
-=======
-		NullType,
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
 		NullType> FunctorType;
 
     FunctorType functor_;
@@ -12451,21 +10000,12 @@ struct functionImplementation_
     functionImplementation_(const FunctorType &functor) :
         functor_(functor)
     {
-<<<<<<< HEAD:third_party/opencl/cl.hpp
 
         #if (defined(_WIN32) && defined(_VARIADIC_MAX) && (_VARIADIC_MAX < 20))
         // Fail variadic expansion for dev11
         static_assert(0, "Visual Studio has a hard limit of argument count for a std::function expansion. Please define _VARIADIC_MAX to be 10. If you need more arguments than that VC12 and below cannot support it.");
         #endif
 
-=======
-    
-        #if (defined(_WIN32) && defined(_VARIADIC_MAX) && (_VARIADIC_MAX < 19))
-        // Fail variadic expansion for dev11
-        static_assert(0, "Visual Studio has a hard limit of argument count for a std::function expansion. Please define _VARIADIC_MAX to be 10. If you need more arguments than that VC12 and below cannot support it.");
-        #endif
-            
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
     }
 
 	//! \brief Return type of the functor
@@ -12492,12 +10032,8 @@ struct functionImplementation_
 		T15,
 		T16,
 		T17,
-<<<<<<< HEAD:third_party/opencl/cl.hpp
 		T18,
 		T19);
-=======
-		T18);
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
 
 	Event operator()(
 		const EnqueueArgs& enqueueArgs,
@@ -12642,13 +10178,8 @@ struct functionImplementation_
     functionImplementation_(const FunctorType &functor) :
         functor_(functor)
     {
-<<<<<<< HEAD:third_party/opencl/cl.hpp
 
         #if (defined(_WIN32) && defined(_VARIADIC_MAX) && (_VARIADIC_MAX < 19))
-=======
-    
-        #if (defined(_WIN32) && defined(_VARIADIC_MAX) && (_VARIADIC_MAX < 18))
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
         // Fail variadic expansion for dev11
         static_assert(0, "Visual Studio has a hard limit of argument count for a std::function expansion. Please define _VARIADIC_MAX to be 10. If you need more arguments than that VC12 and below cannot support it.");
         #endif
@@ -12678,12 +10209,8 @@ struct functionImplementation_
 		T14,
 		T15,
 		T16,
-<<<<<<< HEAD:third_party/opencl/cl.hpp
 		T17,
 		T18);
-=======
-		T17);
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
 
 	Event operator()(
 		const EnqueueArgs& enqueueArgs,
@@ -12825,7 +10352,6 @@ struct functionImplementation_
     functionImplementation_(const FunctorType &functor) :
         functor_(functor)
     {
-<<<<<<< HEAD:third_party/opencl/cl.hpp
 
         #if (defined(_WIN32) && defined(_VARIADIC_MAX) && (_VARIADIC_MAX < 18))
         // Fail variadic expansion for dev11
@@ -12834,16 +10360,6 @@ struct functionImplementation_
 
     }
 
-=======
-    
-        #if (defined(_WIN32) && defined(_VARIADIC_MAX) && (_VARIADIC_MAX < 17))
-        // Fail variadic expansion for dev11
-        static_assert(0, "Visual Studio has a hard limit of argument count for a std::function expansion. Please define _VARIADIC_MAX to be 10. If you need more arguments than that VC12 and below cannot support it.");
-        #endif
-            
-    }
-
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
 	//! \brief Return type of the functor
 	typedef Event result_type;
 
@@ -12866,12 +10382,8 @@ struct functionImplementation_
 		T13,
 		T14,
 		T15,
-<<<<<<< HEAD:third_party/opencl/cl.hpp
 		T16,
 		T17);
-=======
-		T16);
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
 
 	Event operator()(
 		const EnqueueArgs& enqueueArgs,
@@ -13010,13 +10522,8 @@ struct functionImplementation_
     functionImplementation_(const FunctorType &functor) :
         functor_(functor)
     {
-<<<<<<< HEAD:third_party/opencl/cl.hpp
 
         #if (defined(_WIN32) && defined(_VARIADIC_MAX) && (_VARIADIC_MAX < 17))
-=======
-    
-        #if (defined(_WIN32) && defined(_VARIADIC_MAX) && (_VARIADIC_MAX < 16))
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
         // Fail variadic expansion for dev11
         static_assert(0, "Visual Studio has a hard limit of argument count for a std::function expansion. Please define _VARIADIC_MAX to be 10. If you need more arguments than that VC12 and below cannot support it.");
         #endif
@@ -13044,12 +10551,8 @@ struct functionImplementation_
 		T12,
 		T13,
 		T14,
-<<<<<<< HEAD:third_party/opencl/cl.hpp
 		T15,
 		T16);
-=======
-		T15);
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
 
 	Event operator()(
 		const EnqueueArgs& enqueueArgs,
@@ -13185,13 +10688,8 @@ struct functionImplementation_
     functionImplementation_(const FunctorType &functor) :
         functor_(functor)
     {
-<<<<<<< HEAD:third_party/opencl/cl.hpp
 
         #if (defined(_WIN32) && defined(_VARIADIC_MAX) && (_VARIADIC_MAX < 16))
-=======
-    
-        #if (defined(_WIN32) && defined(_VARIADIC_MAX) && (_VARIADIC_MAX < 15))
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
         // Fail variadic expansion for dev11
         static_assert(0, "Visual Studio has a hard limit of argument count for a std::function expansion. Please define _VARIADIC_MAX to be 10. If you need more arguments than that VC12 and below cannot support it.");
         #endif
@@ -13218,7 +10716,6 @@ struct functionImplementation_
 		T11,
 		T12,
 		T13,
-<<<<<<< HEAD:third_party/opencl/cl.hpp
 		T14,
 		T15);
 
@@ -13385,12 +10882,6 @@ struct functionImplementation_
 
 	Event operator()(
 		const EnqueueArgs& enqueueArgs,
-=======
-		T14);
-
-	Event operator()(
-		const EnqueueArgs& enqueueArgs,
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
 		T0 arg0,
 		T1 arg1,
 		T2 arg2,
@@ -13517,11 +11008,7 @@ struct functionImplementation_
     functionImplementation_(const FunctorType &functor) :
         functor_(functor)
     {
-<<<<<<< HEAD:third_party/opencl/cl.hpp
 
-=======
-    
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
         #if (defined(_WIN32) && defined(_VARIADIC_MAX) && (_VARIADIC_MAX < 14))
         // Fail variadic expansion for dev11
         static_assert(0, "Visual Studio has a hard limit of argument count for a std::function expansion. Please define _VARIADIC_MAX to be 10. If you need more arguments than that VC12 and below cannot support it.");
@@ -13675,20 +11162,12 @@ struct functionImplementation_
     functionImplementation_(const FunctorType &functor) :
         functor_(functor)
     {
-<<<<<<< HEAD:third_party/opencl/cl.hpp
 
-=======
-    
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
         #if (defined(_WIN32) && defined(_VARIADIC_MAX) && (_VARIADIC_MAX < 13))
         // Fail variadic expansion for dev11
         static_assert(0, "Visual Studio has a hard limit of argument count for a std::function expansion. Please define _VARIADIC_MAX to be 10. If you need more arguments than that VC12 and below cannot support it.");
         #endif
-<<<<<<< HEAD:third_party/opencl/cl.hpp
 
-=======
-            
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
     }
 
 	//! \brief Return type of the functor
@@ -13833,20 +11312,12 @@ struct functionImplementation_
     functionImplementation_(const FunctorType &functor) :
         functor_(functor)
     {
-<<<<<<< HEAD:third_party/opencl/cl.hpp
 
-=======
-    
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
         #if (defined(_WIN32) && defined(_VARIADIC_MAX) && (_VARIADIC_MAX < 12))
         // Fail variadic expansion for dev11
         static_assert(0, "Visual Studio has a hard limit of argument count for a std::function expansion. Please define _VARIADIC_MAX to be 10. If you need more arguments than that VC12 and below cannot support it.");
         #endif
-<<<<<<< HEAD:third_party/opencl/cl.hpp
 
-=======
-            
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
     }
 
 	//! \brief Return type of the functor
@@ -13987,11 +11458,7 @@ struct functionImplementation_
     functionImplementation_(const FunctorType &functor) :
         functor_(functor)
     {
-<<<<<<< HEAD:third_party/opencl/cl.hpp
 
-=======
-    
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
         #if (defined(_WIN32) && defined(_VARIADIC_MAX) && (_VARIADIC_MAX < 11))
         // Fail variadic expansion for dev11
         static_assert(0, "Visual Studio has a hard limit of argument count for a std::function expansion. Please define _VARIADIC_MAX to be 10. If you need more arguments than that VC12 and below cannot support it.");
@@ -14133,11 +11600,7 @@ struct functionImplementation_
     functionImplementation_(const FunctorType &functor) :
         functor_(functor)
     {
-<<<<<<< HEAD:third_party/opencl/cl.hpp
 
-=======
-    
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
         #if (defined(_WIN32) && defined(_VARIADIC_MAX) && (_VARIADIC_MAX < 10))
         // Fail variadic expansion for dev11
         static_assert(0, "Visual Studio has a hard limit of argument count for a std::function expansion. Please define _VARIADIC_MAX to be 10. If you need more arguments than that VC12 and below cannot support it.");
@@ -14275,11 +11738,7 @@ struct functionImplementation_
     functionImplementation_(const FunctorType &functor) :
         functor_(functor)
     {
-<<<<<<< HEAD:third_party/opencl/cl.hpp
 
-=======
-    
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
         #if (defined(_WIN32) && defined(_VARIADIC_MAX) && (_VARIADIC_MAX < 9))
         // Fail variadic expansion for dev11
         static_assert(0, "Visual Studio has a hard limit of argument count for a std::function expansion. Please define _VARIADIC_MAX to be 10. If you need more arguments than that VC12 and below cannot support it.");
@@ -14413,20 +11872,12 @@ struct functionImplementation_
     functionImplementation_(const FunctorType &functor) :
         functor_(functor)
     {
-<<<<<<< HEAD:third_party/opencl/cl.hpp
 
-=======
-    
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
         #if (defined(_WIN32) && defined(_VARIADIC_MAX) && (_VARIADIC_MAX < 8))
         // Fail variadic expansion for dev11
         static_assert(0, "Visual Studio has a hard limit of argument count for a std::function expansion. Please define _VARIADIC_MAX to be 10. If you need more arguments than that VC12 and below cannot support it.");
         #endif
-<<<<<<< HEAD:third_party/opencl/cl.hpp
 
-=======
-            
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
     }
 
 	//! \brief Return type of the functor
@@ -14551,11 +12002,7 @@ struct functionImplementation_
     functionImplementation_(const FunctorType &functor) :
         functor_(functor)
     {
-<<<<<<< HEAD:third_party/opencl/cl.hpp
 
-=======
-    
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
         #if (defined(_WIN32) && defined(_VARIADIC_MAX) && (_VARIADIC_MAX < 7))
         // Fail variadic expansion for dev11
         static_assert(0, "Visual Studio has a hard limit of argument count for a std::function expansion. Please define _VARIADIC_MAX to be 10. If you need more arguments than that VC12 and below cannot support it.");
@@ -14681,11 +12128,7 @@ struct functionImplementation_
     functionImplementation_(const FunctorType &functor) :
         functor_(functor)
     {
-<<<<<<< HEAD:third_party/opencl/cl.hpp
 
-=======
-    
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
         #if (defined(_WIN32) && defined(_VARIADIC_MAX) && (_VARIADIC_MAX < 6))
         // Fail variadic expansion for dev11
         static_assert(0, "Visual Studio has a hard limit of argument count for a std::function expansion. Please define _VARIADIC_MAX to be 10. If you need more arguments than that VC12 and below cannot support it.");
@@ -14807,11 +12250,7 @@ struct functionImplementation_
     functionImplementation_(const FunctorType &functor) :
         functor_(functor)
     {
-<<<<<<< HEAD:third_party/opencl/cl.hpp
 
-=======
-    
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
         #if (defined(_WIN32) && defined(_VARIADIC_MAX) && (_VARIADIC_MAX < 5))
         // Fail variadic expansion for dev11
         static_assert(0, "Visual Studio has a hard limit of argument count for a std::function expansion. Please define _VARIADIC_MAX to be 10. If you need more arguments than that VC12 and below cannot support it.");
@@ -14929,11 +12368,7 @@ struct functionImplementation_
     functionImplementation_(const FunctorType &functor) :
         functor_(functor)
     {
-<<<<<<< HEAD:third_party/opencl/cl.hpp
 
-=======
-    
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
         #if (defined(_WIN32) && defined(_VARIADIC_MAX) && (_VARIADIC_MAX < 4))
         // Fail variadic expansion for dev11
         static_assert(0, "Visual Studio has a hard limit of argument count for a std::function expansion. Please define _VARIADIC_MAX to be 10. If you need more arguments than that VC12 and below cannot support it.");
@@ -15047,11 +12482,7 @@ struct functionImplementation_
     functionImplementation_(const FunctorType &functor) :
         functor_(functor)
     {
-<<<<<<< HEAD:third_party/opencl/cl.hpp
 
-=======
-    
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
         #if (defined(_WIN32) && defined(_VARIADIC_MAX) && (_VARIADIC_MAX < 3))
         // Fail variadic expansion for dev11
         static_assert(0, "Visual Studio has a hard limit of argument count for a std::function expansion. Please define _VARIADIC_MAX to be 10. If you need more arguments than that VC12 and below cannot support it.");
@@ -15161,11 +12592,7 @@ struct functionImplementation_
     functionImplementation_(const FunctorType &functor) :
         functor_(functor)
     {
-<<<<<<< HEAD:third_party/opencl/cl.hpp
 
-=======
-    
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
         #if (defined(_WIN32) && defined(_VARIADIC_MAX) && (_VARIADIC_MAX < 2))
         // Fail variadic expansion for dev11
         static_assert(0, "Visual Studio has a hard limit of argument count for a std::function expansion. Please define _VARIADIC_MAX to be 10. If you need more arguments than that VC12 and below cannot support it.");
@@ -15271,11 +12698,7 @@ struct functionImplementation_
     functionImplementation_(const FunctorType &functor) :
         functor_(functor)
     {
-<<<<<<< HEAD:third_party/opencl/cl.hpp
 
-=======
-    
->>>>>>> 42be09424... update opencl header:src/opencl/common/cl.hpp
         #if (defined(_WIN32) && defined(_VARIADIC_MAX) && (_VARIADIC_MAX < 1))
         // Fail variadic expansion for dev11
         static_assert(0, "Visual Studio has a hard limit of argument count for a std::function expansion. Please define _VARIADIC_MAX to be 10. If you need more arguments than that VC12 and below cannot support it.");
