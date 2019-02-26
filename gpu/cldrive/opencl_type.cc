@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 // Copyright (c) 2016, 2017, 2018, 2019 Chris Cummins.
 // This file is part of cldrive.
 //
@@ -934,3 +935,6 @@ string ToString(const cl_half16& value) {
 
 }  // namespace cldrive
 }  // namespace gpu
+=======
+#include "gpu/cldrive/opencl_type.h"
+>>>>>>> 8b16e8e86... Work in progress on cldrive vector args.
