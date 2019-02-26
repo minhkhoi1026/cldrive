@@ -47,12 +47,34 @@ GPU|NVIDIA|GeForce_GTX_1080|396.37|1.2
 CPU|Intel|Intel_Xeon_CPU_E5-2620_v4_@_2.10GHz|1.2.0.25|2.0
 ```
 
-To run the kernel on both devices:
+To run the kernel 5 times on both devices using 4096 work items divided into
+work groups of size 1024:
 
 ```sh
-$ bazel run //gpu/cldrive -- --srcs=$PWD/kernel.cl \
+$ bazel run //gpu/cldrive -- --srcs=$PWD/kernel.cl --num_runs=5 \
+    --gsize=4096 --lsize=1024 \
     --envs='GPU|NVIDIA|GeForce_GTX_1080|396.37|1.2','CPU|Intel|Intel_Xeon_CPU_E5-2620_v4_@_2.10GHz|1.2.0.25|2.0'
+OpenCL Device, Kernel Name, Global Size, Local Size, Transferred Bytes, Runtime (ns)
+I 2019-02-26 09:54:10 [gpu/cldrive/libcldrive.cc:59] clBuildProgram() with options '-cl-kernel-arg-info' completed in 1851 ms
+GPU|NVIDIA|GeForce_GTX_1080|396.37|1.2, my_kernel, 4096, 1024, 65536, 113344
+GPU|NVIDIA|GeForce_GTX_1080|396.37|1.2, my_kernel, 4096, 1024, 65536, 57984
+GPU|NVIDIA|GeForce_GTX_1080|396.37|1.2, my_kernel, 4096, 1024, 65536, 64096
+GPU|NVIDIA|GeForce_GTX_1080|396.37|1.2, my_kernel, 4096, 1024, 65536, 73696
+GPU|NVIDIA|GeForce_GTX_1080|396.37|1.2, my_kernel, 4096, 1024, 65536, 73632
+I 2019-02-26 09:54:11 [gpu/cldrive/libcldrive.cc:59] clBuildProgram() with options '-cl-kernel-arg-info' completed in 76 ms
+CPU|Intel|Intel_Xeon_CPU_E5-2620_v4_@_2.10GHz|1.2.0.25|2.0, my_kernel, 4096, 1024, 65536, 105440
+CPU|Intel|Intel_Xeon_CPU_E5-2620_v4_@_2.10GHz|1.2.0.25|2.0, my_kernel, 4096, 1024, 65536, 55936
+CPU|Intel|Intel_Xeon_CPU_E5-2620_v4_@_2.10GHz|1.2.0.25|2.0, my_kernel, 4096, 1024, 65536, 63296
+CPU|Intel|Intel_Xeon_CPU_E5-2620_v4_@_2.10GHz|1.2.0.25|2.0, my_kernel, 4096, 1024, 65536, 56192
+CPU|Intel|Intel_Xeon_CPU_E5-2620_v4_@_2.10GHz|1.2.0.25|2.0, my_kernel, 4096, 1024, 65536, 55680
 ```
+
+By default, cldrive prints a CSV summary of kernel stats and runtimes to
+stdout, and logging information to stderr. The raw information produced by
+cldrive is described in a set of protocol buffers
+[//gpu/cldrive/proto:cldrive.proto](/gpu/cldrive/proto/cldrive.proto). To print
+`cldrive.Instances` protos to stdout, use argumet `--output_format=pbtxt`
+to print text format protos, or `--output_format=pb` for binary format.
 
 
 ## License
