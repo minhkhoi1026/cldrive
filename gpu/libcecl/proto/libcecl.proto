@@ -1,0 +1,43 @@
+// This file is part of libcecl.
+//
+// Copyright (c) 2016, 2017, 2018, 2019 Chris Cummins.
+//
+// libcecl is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// libcecl is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with libcecl.  If not, see <https://www.gnu.org/licenses/>.
+syntax = "proto2";
+
+import "gpu/clinfo/proto/clinfo.proto";
+
+package gpu.libcecl;
+
+// Recording of a libcecl executable execution.
+message LibceclExecutableRun {
+  required int64 ms_since_unix_epoch = 1;
+  required int32 returncode = 5;
+  required string cecl_log = 6;
+  required string stdout = 7;
+  required string stderr = 8;
+  required gpu.clinfo.OpenClDevice device = 9;
+  repeated OpenClKernelInvocation kernel_invocation = 11;
+  required int64 elapsed_time_ms = 12;
+  repeated string opencl_program_source = 13;
+}
+
+// A single kernel invocation event.
+message OpenClKernelInvocation {
+  required string kernel_name = 1;
+  required int64 global_size = 2;
+  required int64 local_size = 3;
+  required double runtime_ms = 4;
+  required int64 transferred_bytes = 5;
+}
