@@ -16,35 +16,15 @@
 #pragma once
 
 #include "gpu/cldrive/kernel_arg_value.h"
+#include "gpu/cldrive/opencl_type.h"
 #include "gpu/cldrive/proto/cldrive.pb.h"
+#include "opencl_type.h"
 #include "phd/status.h"
 #include "phd/statusor.h"
 #include "third_party/opencl/cl.hpp"
 
 namespace gpu {
 namespace cldrive {
-
-// A list of OpenCL types. Each item corresponds to an element in the table at:
-// https://www.khronos.org/registry/OpenCL/sdk/1.2/docs/man/xhtml/scalarDataTypes.html
-enum OpenClArgType {
-  DEFAULT_UNKNOWN,  // Used as default constructor value.
-  BOOL,
-  CHAR,
-  UCHAR,
-  SHORT,
-  USHORT,
-  INT,
-  UINT,
-  LONG,
-  ULONG,
-  FLOAT,
-  DOUBLE,
-  HALF
-};
-
-// Look up a string type name and return the OpenClArgType. If not found,
-// an error status is returned.
-phd::StatusOr<OpenClArgType> OpenClArgTypeFromString(const string &type_name);
 
 class KernelArg {
  public:
@@ -55,12 +35,12 @@ class KernelArg {
   // Create a random value for this argument. If the argument is not supported,
   // returns nullptr.
   std::unique_ptr<KernelArgValue> TryToCreateRandomValue(
-      const cl::Context &context, const DynamicParams &dynamic_params);
+      const cl::Context &context, const DynamicParams &dynamic_params) const;
 
   // Create a "ones" value for this argument. If the argument is not supported,
   // returns nullptr.
   std::unique_ptr<KernelArgValue> TryToCreateOnesValue(
-      const cl::Context &context, const DynamicParams &dynamic_params);
+      const cl::Context &context, const DynamicParams &dynamic_params) const;
 
   // Address qualifier accessors.
 
@@ -74,16 +54,18 @@ class KernelArg {
 
   bool IsPointer() const;
 
+  const OpenClType &type() const;
+
  private:
   std::unique_ptr<KernelArgValue> TryToCreateKernelArgValue(
       const cl::Context &context, const DynamicParams &dynamic_params,
-      bool rand_values);
+      bool rand_values) const;
 
   cl::Kernel *kernel_;
   size_t arg_index_;
+  OpenClType type_;
 
   cl_kernel_arg_address_qualifier address_;
-  OpenClArgType type_;
   bool is_pointer_;
 };
 

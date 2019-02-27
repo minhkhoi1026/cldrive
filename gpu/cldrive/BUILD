@@ -37,6 +37,7 @@ py_test(
 
 cc_library(
     name = "array_kernel_arg_value",
+    srcs = ["array_kernel_arg_value.cc"],
     hdrs = ["array_kernel_arg_value.h"],
     deps = [
         ":kernel_arg_value",
@@ -94,7 +95,9 @@ cc_library(
     hdrs = ["kernel_arg.h"],
     deps = [
         ":array_kernel_arg_value",
+        ":kernel_arg_util",
         ":kernel_arg_value",
+        ":opencl_type",
         ":scalar_kernel_arg_value",
         "//gpu/cldrive/proto:cldrive_cc_pb2",
         "//phd:status",
@@ -156,10 +159,23 @@ cc_test(
 )
 
 cc_library(
+    name = "kernel_arg_util",
+    srcs = ["kernel_arg_util.cc"],
+    hdrs = ["kernel_arg_util.h"],
+    deps = [
+        ":array_kernel_arg_value",
+        ":kernel_arg_value",
+        ":scalar_kernel_arg_value",
+        "//third_party/opencl",
+    ],
+)
+
+cc_library(
     name = "kernel_arg_value",
     srcs = ["kernel_arg_value.cc"],
     hdrs = ["kernel_arg_value.h"],
     deps = [
+        ":opencl_type",
         ":opencl_util",
         ":profiling_data",
         "//phd:logging",
@@ -296,10 +312,26 @@ cc_binary(
 )
 
 cc_library(
+    name = "opencl_type",
+    srcs = ["opencl_type.cc"],
+    hdrs = ["opencl_type.h"],
+    deps = [
+        "//phd:logging",
+        "//phd:status_macros",
+        "//phd:statusor",
+        "//phd:string",
+        "//third_party/opencl",
+        "@boost//:variant",
+        "@com_google_absl//absl/strings",
+    ],
+)
+
+cc_library(
     name = "opencl_util",
     hdrs = ["opencl_util.h"],
     deps = [
         ":profiling_data",
+        "//phd:logging",
         "//third_party/opencl",
     ],
 )

@@ -16,6 +16,7 @@
 #pragma once
 
 #include "gpu/cldrive/kernel_arg_value.h"
+#include "gpu/cldrive/opencl_type.h"
 
 #include "third_party/opencl/cl.hpp"
 
@@ -33,17 +34,17 @@ class ArrayKernelArgValue : public KernelArgValue {
   ArrayKernelArgValue(size_t size, Args &&... args) : vector_(size, args...) {}
 
   virtual bool operator==(const KernelArgValue *const rhs) const override {
-    auto rhs_ptr = dynamic_cast<const ArrayKernelArgValue *const>(rhs);
-    if (!rhs_ptr) {
+    auto array_ptr = dynamic_cast<const ArrayKernelArgValue *const>(rhs);
+    if (!array_ptr) {
       return false;
     }
 
-    if (vector().size() != rhs_ptr->vector().size()) {
+    if (vector().size() != array_ptr->vector().size()) {
       return false;
     }
 
     for (size_t i = 0; i < vector().size(); ++i) {
-      if (vector()[i] != rhs_ptr->vector()[i]) {
+      if (!opencl_type::Equal(vector()[i], array_ptr->vector()[i])) {
         return false;
       }
     }
@@ -79,11 +80,11 @@ class ArrayKernelArgValue : public KernelArgValue {
   virtual string ToString() const override {
     string s = "";
     for (auto &value : vector()) {
-      absl::StrAppend(&s, value);
-      absl::StrAppend(&s, ", ");
+      absl::StrAppend(&s, opencl_type::ToString(value));
+      absl::StrAppend(&s, ",");
     }
     return s;
-  }
+  };
 
  protected:
   std::vector<T> vector_;
@@ -114,8 +115,7 @@ class ArrayKernelArgValueWithBuffer : public ArrayKernelArgValue<T> {
 
   virtual std::unique_ptr<KernelArgValue> CopyFromDevice(
       const cl::CommandQueue &queue, ProfilingData *profiling) override {
-    auto new_arg =
-        std::make_unique<ArrayKernelArgValue<T>>(this->size());
+    auto new_arg = std::make_unique<ArrayKernelArgValue<T>>(this->size());
     CopyDeviceToHost(queue, buffer(), new_arg->vector().begin(),
                      new_arg->vector().end(), profiling);
     return std::move(new_arg);
