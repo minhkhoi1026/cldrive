@@ -21,8 +21,7 @@
 namespace gpu {
 namespace cldrive {
 
-KernelArgSet::KernelArgSet(const cl::Context& context, cl::Kernel* kernel)
-    : context_(context), kernel_(kernel) {}
+KernelArgSet::KernelArgSet(cl::Kernel* kernel) : kernel_(kernel) {}
 
 CldriveKernelInstance::KernelInstanceOutcome KernelArgSet::Init() {
   size_t num_args = kernel_->getInfo<CL_KERNEL_NUM_ARGS>();
@@ -35,8 +34,8 @@ CldriveKernelInstance::KernelInstanceOutcome KernelArgSet::Init() {
   // Create args.
   int num_mutable_args = 0;
   for (size_t i = 0; i < num_args; ++i) {
-    auto arg_driver = KernelArg(kernel_, i);
-    if (!arg_driver.Init().ok()) {
+    KernelArg arg_driver;
+    if (!arg_driver.Init(kernel_, i).ok()) {
       LOG(ERROR) << "Kernel '" << kernel_->getInfo<CL_KERNEL_FUNCTION_NAME>()
                  << "' has unsupported arguments";
       return CldriveKernelInstance::UNSUPPORTED_ARGUMENTS;
@@ -56,11 +55,12 @@ CldriveKernelInstance::KernelInstanceOutcome KernelArgSet::Init() {
   return CldriveKernelInstance::PASS;
 }
 
-phd::Status KernelArgSet::SetRandom(const DynamicParams& dynamic_params,
+phd::Status KernelArgSet::SetRandom(const cl::Context& context,
+                                    const DynamicParams& dynamic_params,
                                     KernelArgValuesSet* values) {
   values->Clear();
   for (auto& arg : args_) {
-    auto value = arg.TryToCreateRandomValue(context_, dynamic_params);
+    auto value = arg.TryToCreateRandomValue(context, dynamic_params);
     if (value) {
       values->AddKernelArgValue(std::move(value));
     } else {
@@ -72,11 +72,12 @@ phd::Status KernelArgSet::SetRandom(const DynamicParams& dynamic_params,
   return phd::Status::OK;
 }
 
-phd::Status KernelArgSet::SetOnes(const DynamicParams& dynamic_params,
+phd::Status KernelArgSet::SetOnes(const cl::Context& context,
+                                  const DynamicParams& dynamic_params,
                                   KernelArgValuesSet* values) {
   values->Clear();
   for (auto& arg : args_) {
-    auto value = arg.TryToCreateOnesValue(context_, dynamic_params);
+    auto value = arg.TryToCreateOnesValue(context, dynamic_params);
     if (value) {
       values->AddKernelArgValue(std::move(value));
     } else {

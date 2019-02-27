@@ -28,9 +28,9 @@ namespace cldrive {
 
 class KernelArg {
  public:
-  KernelArg(cl::Kernel *kernel, size_t arg_index);
+  KernelArg() : type_(OpenClType::DEFAULT_UNKNOWN) {}
 
-  phd::Status Init();
+  phd::Status Init(cl::Kernel *kernel, size_t arg_index);
 
   // Create a random value for this argument. If the argument is not supported,
   // returns nullptr.
@@ -61,10 +61,7 @@ class KernelArg {
       const cl::Context &context, const DynamicParams &dynamic_params,
       bool rand_values) const;
 
-  cl::Kernel *kernel_;
-  size_t arg_index_;
   OpenClType type_;
-
   cl_kernel_arg_address_qualifier address_;
   bool is_pointer_;
 };
