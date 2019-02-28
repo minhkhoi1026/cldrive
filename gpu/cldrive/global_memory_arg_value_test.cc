@@ -1,4 +1,4 @@
-// Copyright (c) 2016-2020 Chris Cummins.
+// Copyright (c) 2016, 2017, 2018, 2019 Chris Cummins.
 // This file is part of cldrive.
 //
 // cldrive is free software: you can redistribute it and/or modify
@@ -15,38 +15,38 @@
 // along with cldrive.  If not, see <https://www.gnu.org/licenses/>.
 #include "gpu/cldrive/global_memory_arg_value.h"
 
-#include "labm8/cpp/port.h"
-#include "labm8/cpp/test.h"
+#include "phd/port.h"
+#include "phd/test.h"
 
 namespace gpu {
 namespace cldrive {
 namespace {
 
 TEST(GlobalMemoryArgValue, IntValuesAreEqual) {
-  GlobalMemoryArgValue<labm8::int32> a(5, 0);
-  GlobalMemoryArgValue<labm8::int32> b(5, 0);
+  GlobalMemoryArgValue<phd::int32> a(5, 0);
+  GlobalMemoryArgValue<phd::int32> b(5, 0);
   EXPECT_EQ(a, &b);
 }
 
 TEST(GlobalMemoryArgValue, DifferentIntValuesAreNotEqual) {
-  GlobalMemoryArgValue<labm8::int32> a(5, 0);
-  GlobalMemoryArgValue<labm8::int32> b(5, -1);
+  GlobalMemoryArgValue<phd::int32> a(5, 0);
+  GlobalMemoryArgValue<phd::int32> b(5, -1);
   EXPECT_NE(a, &b);
 }
 
 TEST(GlobalMemoryArgValue, DifferentSizeArraysAreNotEqual) {
-  GlobalMemoryArgValue<labm8::int32> a(5, 0);
-  GlobalMemoryArgValue<labm8::int32> b(4, 0);
+  GlobalMemoryArgValue<phd::int32> a(5, 0);
+  GlobalMemoryArgValue<phd::int32> b(4, 0);
   EXPECT_NE(a, &b);
 }
 
 TEST(GlobalMemoryArgValue, VectorSizeFive) {
-  GlobalMemoryArgValue<labm8::int32> a(5, 0);
+  GlobalMemoryArgValue<phd::int32> a(5, 0);
   EXPECT_EQ(a.size(), 5);
 }
 
 TEST(GlobalMemoryArgValue, VectorSizeTen) {
-  GlobalMemoryArgValue<labm8::int32> a(10, 0);
+  GlobalMemoryArgValue<phd::int32> a(10, 0);
   EXPECT_EQ(a.size(), 10);
 }
 
