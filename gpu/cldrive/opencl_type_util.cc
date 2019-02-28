@@ -20,7 +20,7 @@
 =======
 #pragma once
 
-#include "gpu/cldrive/array_kernel_arg_value.h"
+#include "gpu/cldrive/global_memory_arg_value.h"
 #include "gpu/cldrive/kernel_arg_value.h"
 >>>>>>> 80854d25b... Fix local memory arg support.:gpu/cldrive/kernel_arg_util.h
 #include "gpu/cldrive/local_memory_arg_value.h"
@@ -33,7 +33,11 @@ namespace util {
 namespace {
 
 template <typename T>
+<<<<<<< HEAD:gpu/cldrive/opencl_type_util.cc
 std::unique_ptr<GlobalMemoryArgValueWithBuffer<T>> CreateGlobalMemoryArgValue(
+=======
+std::unique_ptr<GlobalMemoryArgValueWithBuffer<T>> CreateArrayArgValue(
+>>>>>>> 25d2642be... Continue with rename.:gpu/cldrive/kernel_arg_util.h
     const cl::Context& context, size_t size, const int& value,
     bool rand_values) {
   auto arg_value = std::make_unique<GlobalMemoryArgValueWithBuffer<T>>(
