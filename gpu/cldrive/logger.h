@@ -1,4 +1,4 @@
-// Copyright (c) 2016-2020 Chris Cummins.
+// Copyright (c) 2016, 2017, 2018, 2019 Chris Cummins.
 // This file is part of cldrive.
 //
 // cldrive is free software: you can redistribute it and/or modify
@@ -15,73 +15,43 @@
 // along with cldrive.  If not, see <https://www.gnu.org/licenses/>.
 #pragma once
 
-#include "gpu/cldrive/csv_log.h"
+#include "phd/status.h"
+
 #include "gpu/cldrive/proto/cldrive.pb.h"
 
-#include "labm8/cpp/status.h"
-
 #include <iostream>
-#include <sstream>
-
-namespace gpu {
-namespace cldrive {
 
 // Abstract logging interface for producing consumable output.
 class Logger {
  public:
-  Logger(std::ostream& ostream, const CldriveInstances* const instances);
+  Logger(std::ostream& ostream);
 
-  virtual ~Logger() {}
+  virtual phd::Status Init(const ClDriveInstances* const instances);
 
-  virtual labm8::Status StartNewInstance();
+  virtual phd::Status StartNewInstance();
 
-  // If flush is false, don't emit the log immediately, but instead store the
-  // log in a buffer that is emmitted only on a call to PrintAndClearBuffer().
-  virtual labm8::Status RecordLog(
-      const CldriveInstance* const instance,
-      const CldriveKernelInstance* const kernel_instance,
-      const CldriveKernelRun* const run,
-      const gpu::libcecl::OpenClKernelInvocation* const log, bool flush = true);
+  virtual phd::Status RecordLog(CldriveInstance* instance);
 
-  void PrintAndClearBuffer();
-  void ClearBuffer();
+  virtual phd::Status End();
 
  protected:
-  const CldriveInstances* instances();
-  std::ostream& ostream(bool flush);
+  ClDriveInstances* instances();
+  std::ostream& ostream();
   int instance_num() const;
 
  private:
   std::ostream& ostream_;
-  std::stringstream buffer_;
-  const CldriveInstances* const instances_;
+  const ClDriveInstances* const instances_;
   int instance_num_;
 };
 
 // Logging interface for producing protocol buffers.
 class ProtocolBufferLogger : public Logger {
  public:
-  ProtocolBufferLogger(std::ostream& ostream,
-                       const CldriveInstances* const instances,
-                       bool text_format);
+  ProtocolBufferLogger(std::ostream& ostream, bool text_format);
 
-  virtual ~ProtocolBufferLogger();
+  virtual phd::Status End() override;
 
  private:
   bool text_format_ = text_format_;
 };
-
-class CsvLogger : public Logger {
- public:
-  CsvLogger(std::ostream& ostream, const CldriveInstances* const instances);
-
-  virtual labm8::Status RecordLog(
-      const CldriveInstance* const instance,
-      const CldriveKernelInstance* const kernel_instance,
-      const CldriveKernelRun* const run,
-      const gpu::libcecl::OpenClKernelInvocation* const log,
-      bool flush) override;
-};
-
-}  // namespace cldrive
-}  // namespace gpu
