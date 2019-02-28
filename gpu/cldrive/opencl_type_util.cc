@@ -15,7 +15,14 @@
 // along with cldrive.  If not, see <https://www.gnu.org/licenses/>.
 #include "gpu/cldrive/opencl_type_util.h"
 
+<<<<<<< HEAD:gpu/cldrive/opencl_type_util.cc
 #include "gpu/cldrive/global_memory_arg_value.h"
+=======
+#pragma once
+
+#include "gpu/cldrive/array_kernel_arg_value.h"
+#include "gpu/cldrive/kernel_arg_value.h"
+>>>>>>> 80854d25b... Fix local memory arg support.:gpu/cldrive/kernel_arg_util.h
 #include "gpu/cldrive/local_memory_arg_value.h"
 #include "gpu/cldrive/scalar_kernel_arg_value.h"
 
