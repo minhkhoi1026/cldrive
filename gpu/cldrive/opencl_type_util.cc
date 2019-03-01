@@ -1,11 +1,4 @@
-<<<<<<< HEAD:gpu/cldrive/opencl_type_util.cc
-// Copyright (c) 2016-2020 Chris Cummins.
-=======
-// This file performs the translation from OpenClType enum value to templated
-// classes.
-//
 // Copyright (c) 2016, 2017, 2018, 2019 Chris Cummins.
->>>>>>> feef28f99... Add missing license headers.:gpu/cldrive/kernel_arg_util.h
 // This file is part of cldrive.
 //
 // cldrive is free software: you can redistribute it and/or modify
@@ -20,28 +13,11 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with cldrive.  If not, see <https://www.gnu.org/licenses/>.
-<<<<<<< HEAD:gpu/cldrive/opencl_type_util.cc
 #include "gpu/cldrive/opencl_type_util.h"
-=======
->>>>>>> feef28f99... Add missing license headers.:gpu/cldrive/kernel_arg_util.h
 
-<<<<<<< HEAD:gpu/cldrive/opencl_type_util.cc
 #include "gpu/cldrive/global_memory_arg_value.h"
-=======
-#pragma once
-
-#include "gpu/cldrive/kernel_arg_value.h"
-<<<<<<< HEAD:gpu/cldrive/opencl_type_util.cc
->>>>>>> 80854d25b... Fix local memory arg support.:gpu/cldrive/kernel_arg_util.h
 #include "gpu/cldrive/local_memory_arg_value.h"
 #include "gpu/cldrive/scalar_kernel_arg_value.h"
-=======
-#include "gpu/cldrive/opencl_type.h"
-
-#include "third_party/opencl/cl.hpp"
-
-#include <cstdlib>
->>>>>>> fd149baa5... Move definitions into implementation file.:gpu/cldrive/kernel_arg_util.h
 
 namespace gpu {
 namespace cldrive {
@@ -49,17 +25,8 @@ namespace util {
 
 namespace {
 
-<<<<<<< HEAD:gpu/cldrive/opencl_type_util.cc
 template <typename T>
-<<<<<<< HEAD:gpu/cldrive/opencl_type_util.cc
-<<<<<<< HEAD:gpu/cldrive/opencl_type_util.cc
 std::unique_ptr<GlobalMemoryArgValueWithBuffer<T>> CreateGlobalMemoryArgValue(
-=======
-std::unique_ptr<GlobalMemoryArgValueWithBuffer<T>> CreateArrayArgValue(
->>>>>>> 25d2642be... Continue with rename.:gpu/cldrive/kernel_arg_util.h
-=======
-std::unique_ptr<GlobalMemoryArgValueWithBuffer<T>> CreateGlobalMemoryArgValue(
->>>>>>> c02ba0d93... Update function names.:gpu/cldrive/kernel_arg_util.h
     const cl::Context& context, size_t size, const int& value,
     bool rand_values) {
   auto arg_value = std::make_unique<GlobalMemoryArgValueWithBuffer<T>>(
@@ -72,7 +39,6 @@ std::unique_ptr<GlobalMemoryArgValueWithBuffer<T>> CreateGlobalMemoryArgValue(
   return arg_value;
 }
 
-<<<<<<< HEAD:gpu/cldrive/opencl_type_util.cc
 template <typename T>
 std::unique_ptr<KernelArgValue> CreateScalarArgValue(const int& value) {
   return std::make_unique<ScalarKernelArgValue<T>>(
@@ -81,23 +47,14 @@ std::unique_ptr<KernelArgValue> CreateScalarArgValue(const int& value) {
 
 }  // namespace
 
-=======
->>>>>>> c02ba0d93... Update function names.:gpu/cldrive/kernel_arg_util.h
 std::unique_ptr<KernelArgValue> CreateGlobalMemoryArgValue(
     const OpenClType& type, const cl::Context& context, size_t size,
     const int& value, bool rand_values) {
   DCHECK(size) << "Cannot create array with 0 elements";
   switch (type) {
     case OpenClType::BOOL: {
-<<<<<<< HEAD:gpu/cldrive/opencl_type_util.cc
-      // Use cl_bool here because std::vector<bool> has a funny bitmask
-      // specialization in some STL implementations.
-      return CreateGlobalMemoryArgValue<cl_bool>(context, size, value,
-                                                 rand_values);
-=======
       return CreateGlobalMemoryArgValue<bool>(context, size, value,
                                               rand_values);
->>>>>>> c02ba0d93... Update function names.:gpu/cldrive/kernel_arg_util.h
     }
     case OpenClType::CHAR: {
       return CreateGlobalMemoryArgValue<cl_char>(context, size, value,
@@ -378,7 +335,7 @@ std::unique_ptr<KernelArgValue> CreateLocalMemoryArgValue(
   DCHECK(size) << "Cannot create array with 0 elements";
   switch (type) {
     case OpenClType::BOOL: {
-      return std::make_unique<LocalMemoryArgValue<cl_bool>>(size);
+      return std::make_unique<LocalMemoryArgValue<bool>>(size);
     }
     case OpenClType::CHAR: {
       return std::make_unique<LocalMemoryArgValue<cl_char>>(size);
@@ -592,7 +549,7 @@ std::unique_ptr<KernelArgValue> CreateScalarArgValue(const OpenClType& type,
                                                      const int& value) {
   switch (type) {
     case OpenClType::BOOL: {
-      return CreateScalarArgValue<cl_bool>(value);
+      return CreateScalarArgValue<bool>(value);
     }
     case OpenClType::CHAR: {
       return CreateScalarArgValue<cl_char>(value);
@@ -801,17 +758,6 @@ std::unique_ptr<KernelArgValue> CreateScalarArgValue(const OpenClType& type,
   }
   return nullptr;  // Unreachable so long as switch covers all enum values.
 }
-=======
-std::unique_ptr<KernelArgValue> CreateGlobalMemoryArgValue(
-    const OpenClType& type, const cl::Context& context, size_t size,
-    const int& value, bool rand_values);
-
-std::unique_ptr<KernelArgValue> CreateLocalMemoryArgValue(
-    const OpenClType& type, size_t size);
-
-std::unique_ptr<KernelArgValue> CreateScalarArgValue(const OpenClType& type,
-                                                     const int& value);
->>>>>>> fd149baa5... Move definitions into implementation file.:gpu/cldrive/kernel_arg_util.h
 
 }  // namespace util
 }  // namespace cldrive
