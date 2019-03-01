@@ -13,31 +13,18 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with cldrive.  If not, see <https://www.gnu.org/licenses/>.
-#pragma once
+#include "gpu/cldrive/kernel_arg_set.h"
 
-#include "gpu/cldrive/logger.h"
-#include "gpu/cldrive/proto/cldrive.pb.h"
-
-#include "third_party/opencl/cl.hpp"
+#include "phd/test.h"
 
 namespace gpu {
 namespace cldrive {
+namespace {
 
-class Cldrive {
- public:
-  Cldrive(CldriveInstance* instance, int instance_num = 0);
+TEST(TODO, TODO) { EXPECT_EQ(1, 1); }
 
-  void RunOrDie(Logger& logger);
-
- private:
-  void DoRunOrDie(Logger& logger);
-
-  CldriveInstance* instance_;
-  int instance_num_;
-  cl::Device device_;
-};
-
-void ProcessCldriveInstancesOrDie(CldriveInstances* instance);
-
+}  // anonymous namespace
 }  // namespace cldrive
 }  // namespace gpu
+
+TEST_MAIN();

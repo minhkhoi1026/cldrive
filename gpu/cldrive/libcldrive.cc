@@ -59,17 +59,33 @@ phd::StatusOr<cl::Program> BuildOpenClProgram(const std::string& opencl_kernel,
               << "' completed in " << duration << " ms";
     return program;
   } catch (cl::Error e) {
-    LOG_CL_ERROR(ERROR, e);
-    return phd::Status::UNKNOWN;
+    LOG_CL_ERROR(WARNING, e);
+    return phd::Status(phd::error::Code::INVALID_ARGUMENT,
+                       "clBuildProgram failed");
   }
 }
 
 }  // namespace
 
-Cldrive::Cldrive(CldriveInstance* instance, const cl::Device& device)
-    : instance_(instance), device_(device) {}
+Cldrive::Cldrive(CldriveInstance* instance, int instance_num)
+    : instance_(instance),
+      instance_num_(instance_num),
+      device_(phd::gpu::clinfo::GetOpenClDeviceOrDie(instance->device())) {}
 
-void Cldrive::RunOrDie(const bool streaming_csv_output) {
+void Cldrive::RunOrDie(Logger& logger) {
+  try {
+    DoRunOrDie(logger);
+  } catch (cl::Error error) {
+    LOG(FATAL) << "Unhandled OpenCL exception.\n"
+               << "    Raised by:  " << error.what() << '\n'
+               << "    Error code: " << error.err() << " ("
+               << phd::gpu::clinfo::OpenClErrorString(error.err()) << ")\n"
+               << "This is a bug! Please report to "
+               << "<https://github.com/ChrisCummins/cldrive/issues>.";
+  }
+}
+
+void Cldrive::DoRunOrDie(Logger& logger) {
   cl::Context context(device_);
   cl::CommandQueue queue(context,
                          /*devices=*/context.getInfo<CL_CONTEXT_DEVICES>()[0],
@@ -81,6 +97,8 @@ void Cldrive::RunOrDie(const bool streaming_csv_output) {
   if (!program_or.ok()) {
     LOG(ERROR) << "OpenCL program compilation failed!";
     instance_->set_outcome(CldriveInstance::PROGRAM_COMPILATION_FAILURE);
+    logger.RecordLog(instance_, /*kernel_instance=*/nullptr, /*run=*/nullptr,
+                     /*log=*/nullptr);
     return;
   }
   cl::Program program = program_or.ValueOrDie();
@@ -95,20 +113,11 @@ void Cldrive::RunOrDie(const bool streaming_csv_output) {
   }
 
   for (auto& kernel : kernels) {
-    KernelDriver(context, queue, kernel, instance_)
-        .RunOrDie(streaming_csv_output);
+    KernelDriver(context, queue, kernel, instance_, instance_num_)
+        .RunOrDie(logger);
   }
 
   instance_->set_outcome(CldriveInstance::PASS);
-}
-
-void ProcessCldriveInstanceOrDie(CldriveInstance* instance) {
-  try {
-    auto device = phd::gpu::clinfo::GetOpenClDeviceOrDie(instance->device());
-    Cldrive(instance, device).RunOrDie();
-  } catch (cl::Error error) {
-    LOG_CL_ERROR(FATAL, error);
-  }
 }
 
 }  // namespace cldrive

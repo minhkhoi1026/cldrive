@@ -10,7 +10,17 @@ import sys
 # The subset of bazel targets that are supported in this WORKSPACE.
 EXPORTED_TARGETS = [
     '//gpu/cldrive',
-  '//gpu/cldrive:cldrive'
+  '//gpu/cldrive:cldrive',
+  '//gpu/cldrive:global_memory_arg_value_test',
+  '//gpu/cldrive:kernel_arg_set_test',
+  '//gpu/cldrive:kernel_arg_test',
+  '//gpu/cldrive:kernel_arg_values_set_test',
+  '//gpu/cldrive:kernel_arg_values_test',
+  '//gpu/cldrive:kernel_driver_test',
+  '//gpu/cldrive:libcldrive_test',
+  '//gpu/cldrive:opencl_util_test',
+  '//gpu/cldrive:profiling_data_test',
+  '//gpu/cldrive:scalar_kernel_arg_value_test'
 ]
 
 

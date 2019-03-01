@@ -40,6 +40,13 @@ StatusOr<::gpu::clinfo::OpenClDevice> GetOpenClDeviceProto(const string& name);
 // std::invalid_argument if not found.
 cl::Device GetOpenClDevice(const ::gpu::clinfo::OpenClDevice& device);
 
+// Return a "default" OpenCL device, where "default" will attempt to pick some
+// safe device. If available, Oclgrind will be used. Else, the first device
+// as it appears in the enumerated list.
+// TODO(cec): It would be nice if we could link against oclgrind to ensure that
+// this function could always return the oclgrind device.
+cl::Device GetDefaultOpenClDeviceOrDie();
+
 // Same as above, but abort if device is not available.
 cl::Device GetOpenClDeviceOrDie(const ::gpu::clinfo::OpenClDevice& device);
 

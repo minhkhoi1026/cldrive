@@ -15,15 +15,15 @@
 // along with cldrive.  If not, see <https://www.gnu.org/licenses/>.
 #include "gpu/cldrive/kernel_arg.h"
 
-#include "gpu/cldrive/array_kernel_arg_value.h"
-#include "gpu/cldrive/kernel_arg_util.h"
+#include "gpu/cldrive/global_memory_arg_value.h"
+#include "gpu/cldrive/opencl_type.h"
+#include "gpu/cldrive/opencl_type_util.h"
+#include "gpu/cldrive/opencl_util.h"
 #include "gpu/cldrive/scalar_kernel_arg_value.h"
 
-#include <cstdlib>
-
-#include "gpu/cldrive/array_kernel_arg_value.h"
-#include "gpu/cldrive/opencl_type.h"
 #include "phd/status_macros.h"
+
+#include <cstdlib>
 
 namespace gpu {
 namespace cldrive {
@@ -32,7 +32,7 @@ phd::Status KernelArg::Init(cl::Kernel* kernel, size_t arg_index) {
   address_ = kernel->getArgInfo<CL_KERNEL_ARG_ADDRESS_QUALIFIER>(arg_index);
   CHECK(IsGlobal() || IsLocal() || IsConstant() || IsPrivate());
 
-  // Address qualifier is one of:
+  // Access qualifier is one of:
   //   CL_KERNEL_ARG_ACCESS_READ_ONLY
   //   CL_KERNEL_ARG_ACCESS_WRITE_ONLY
   //   CL_KERNEL_ARG_ACCESS_READ_WRITE
@@ -44,33 +44,35 @@ phd::Status KernelArg::Init(cl::Kernel* kernel, size_t arg_index) {
   auto access_qualifier =
       kernel->getArgInfo<CL_KERNEL_ARG_ACCESS_QUALIFIER>(arg_index);
   if (access_qualifier != CL_KERNEL_ARG_ACCESS_NONE) {
-    LOG(ERROR) << "Argument " << arg_index << " is an unsupported image type";
-    return phd::Status::UNKNOWN;
+    LOG(WARNING) << "Argument " << arg_index << " is an unsupported image type";
+    return phd::Status(phd::error::Code::INVALID_ARGUMENT,
+                       "Unsupported argument");
   }
 
-  string full_type_name =
-      kernel->getArgInfo<CL_KERNEL_ARG_TYPE_NAME>(arg_index);
-  CHECK(full_type_name.size());
+  string type_name = util::GetKernelArgTypeName(*kernel, arg_index);
 
-  is_pointer_ = full_type_name[full_type_name.size() - 2] == '*';
+  is_pointer_ = type_name.back() == '*';
 
-  // Strip the trailing '*' on pointer types, and the trailing null char on
-  // both.
-  string type_name = full_type_name;
+  // Strip the trailing '*' on pointer types.
   if (is_pointer_) {
-    type_name = full_type_name.substr(0, full_type_name.size() - 2);
-  } else {
-    type_name = full_type_name.substr(0, full_type_name.size() - 1);
+    type_name.resize(type_name.size() - 1);
   }
 
   auto type_or = OpenClTypeFromString(type_name);
   if (!type_or.ok()) {
-    LOG(ERROR) << "Argument " << arg_index << " of kernel '"
-               << kernel->getInfo<CL_KERNEL_FUNCTION_NAME>()
-               << "' is of unknown type: " << full_type_name;
+    LOG(WARNING) << "Argument " << arg_index << " of kernel '"
+                 << util::GetOpenClKernelName(*kernel)
+                 << "' is of unknown type: " << type_name;
     return type_or.status();
   }
   type_ = type_or.ValueOrDie();
+
+  // Check for invalid private pointer arguments.
+  if (is_pointer_ && IsPrivate()) {
+    LOG(WARNING) << "Pointer to private argument is not allowed";
+    return phd::Status(phd::error::Code::INVALID_ARGUMENT,
+                       "Unsupported argument");
+  }
 
   return phd::Status::OK;
 }
@@ -113,12 +115,17 @@ std::unique_ptr<KernelArgValue> KernelArg::TryToCreateKernelArgValue(
   CHECK(type() != OpenClType::DEFAULT_UNKNOWN);
 
   if (IsPointer() && IsGlobal()) {
-    return CreateArrayArgValue(type(), context,
-                               /*size=*/dynamic_params.global_size_x(),
-                               /*value=*/1, rand_values);
+    return util::CreateGlobalMemoryArgValue(
+        type(), context,
+        /*size=*/dynamic_params.global_size_x(),
+        /*value=*/1, rand_values);
+  } else if (IsPointer() && IsLocal()) {
+    return util::CreateLocalMemoryArgValue(
+        type(),
+        /*size=*/dynamic_params.global_size_x());
   } else if (!IsPointer()) {
-    return CreateScalarArgValue(type(),
-                                /*value=*/dynamic_params.global_size_x());
+    return util::CreateScalarArgValue(type(),
+                                      /*value=*/dynamic_params.global_size_x());
   } else {
     return std::unique_ptr<KernelArgValue>(nullptr);
   }

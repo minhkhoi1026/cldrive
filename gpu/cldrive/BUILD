@@ -21,6 +21,7 @@ py_library(
         "//labm8:bazelutil",
         "//labm8:pbutil",
         "//third_party/py/absl",
+        "//third_party/py/pandas",
     ],
 )
 
@@ -35,40 +36,14 @@ py_test(
     ],
 )
 
-cc_library(
-    name = "array_kernel_arg_value",
-    srcs = ["array_kernel_arg_value.cc"],
-    hdrs = ["array_kernel_arg_value.h"],
-    deps = [
-        ":kernel_arg_value",
-        "//phd:logging",
-        "//phd:string",
-        "//third_party/opencl",
-    ],
-)
-
-cc_test(
-    name = "array_kernel_arg_value_test",
-    srcs = ["array_kernel_arg_value_test.cc"],
-    linkopts = ["-ldl"] + select({
-        "//:darwin": ["-framework OpenCL"],
-        "//conditions:default": [],
-    }),
-    deps = [
-        ":array_kernel_arg_value",
-        "//phd:test",
-    ] + select({
-        "//:darwin": [],
-        "//conditions:default": ["@libopencl//:libOpenCL"],
-    }),
-)
-
 cc_binary(
     name = "cldrive",
     srcs = ["cldrive.cc"],
     deps = [
+        ":csv_log",
         ":libcldrive",
         "//gpu/clinfo:libclinfo",
+        "//phd:app",
         "//phd:logging",
         "@boost//:filesystem",
         "@com_github_gflags_gflags//:gflags",
@@ -81,11 +56,50 @@ cc_image(
     srcs = ["cldrive.cc"],
     base = "@base//image",
     deps = [
+        # TODO(cec): This is a duplicate of the dependencies of :cldrive.
+        ":csv_log",
         ":libcldrive",
         "//gpu/clinfo:libclinfo",
+        "//phd:app",
         "//phd:logging",
         "@boost//:filesystem",
         "@com_github_gflags_gflags//:gflags",
+        "@com_google_absl//absl/strings",
+    ],
+)
+
+cc_library(
+    name = "csv_log",
+    srcs = ["csv_log.cc"],
+    hdrs = ["csv_log.h"],
+    deps = [
+        "//gpu/cldrive/proto:cldrive_cc_pb2",
+        "//phd:logging",
+        "//phd:port",
+        "//phd:string",
+        "@com_google_absl//absl/strings",
+    ],
+)
+
+cc_library(
+    name = "global_memory_arg_value",
+    hdrs = ["global_memory_arg_value.h"],
+    deps = [
+        ":kernel_arg_value",
+        "//phd:logging",
+        "//phd:string",
+        "//third_party/opencl",
+    ],
+)
+
+cc_test(
+    name = "global_memory_arg_value_test",
+    srcs = ["global_memory_arg_value_test.cc"],
+    deps = [
+        ":global_memory_arg_value",
+        ":testutil",
+        "//phd:port",
+        "//phd:test",
     ],
 )
 
@@ -94,10 +108,11 @@ cc_library(
     srcs = ["kernel_arg.cc"],
     hdrs = ["kernel_arg.h"],
     deps = [
-        ":array_kernel_arg_value",
-        ":kernel_arg_util",
+        ":global_memory_arg_value",
         ":kernel_arg_value",
         ":opencl_type",
+        ":opencl_type_util",
+        ":opencl_util",
         ":scalar_kernel_arg_value",
         "//gpu/cldrive/proto:cldrive_cc_pb2",
         "//phd:status",
@@ -115,7 +130,7 @@ cc_test(
         "//conditions:default": [],
     }),
     deps = [
-        ":array_kernel_arg_value",
+        ":global_memory_arg_value",
         ":kernel_arg",
         ":testutil",
         "//gpu/cldrive/proto:cldrive_cc_pb2",
@@ -134,6 +149,7 @@ cc_library(
     deps = [
         ":kernel_arg",
         ":kernel_arg_values_set",
+        ":opencl_util",
         "//gpu/cldrive/proto:cldrive_cc_pb2",
         "//phd:logging",
         "//phd:status",
@@ -156,18 +172,6 @@ cc_test(
         "//:darwin": [],
         "//conditions:default": ["@libopencl//:libOpenCL"],
     }),
-)
-
-cc_library(
-    name = "kernel_arg_util",
-    srcs = ["kernel_arg_util.cc"],
-    hdrs = ["kernel_arg_util.h"],
-    deps = [
-        ":array_kernel_arg_value",
-        ":kernel_arg_value",
-        ":scalar_kernel_arg_value",
-        "//third_party/opencl",
-    ],
 )
 
 cc_library(
@@ -238,7 +242,10 @@ cc_library(
     hdrs = ["kernel_driver.h"],
     deps = [
         ":kernel_arg_set",
+        ":logger",
+        ":opencl_util",
         "//gpu/cldrive/proto:cldrive_cc_pb2",
+        "//gpu/clinfo:libclinfo",
         "//phd:logging",
         "//phd:status_macros",
         "//phd:statusor",
@@ -272,6 +279,7 @@ cc_library(
         ":kernel_arg_value",
         ":kernel_arg_values_set",
         ":kernel_driver",
+        ":logger",
         "//gpu/cldrive/proto:cldrive_cc_pb2",
         "//gpu/clinfo:libclinfo",
         "//phd:common",
@@ -301,6 +309,29 @@ cc_test(
     }),
 )
 
+cc_library(
+    name = "local_memory_arg_value",
+    hdrs = ["local_memory_arg_value.h"],
+    deps = [
+        ":kernel_arg_value",
+        ":profiling_data",
+        "//phd:string",
+        "//third_party/opencl",
+    ],
+)
+
+cc_library(
+    name = "logger",
+    srcs = ["logger.cc"],
+    hdrs = ["logger.h"],
+    deps = [
+        ":csv_log",
+        "//gpu/cldrive/proto:cldrive_cc_pb2",
+        "//phd:logging",
+        "//phd:status",
+    ],
+)
+
 cc_binary(
     name = "native_driver",
     srcs = ["native_driver.cc"],
@@ -328,7 +359,21 @@ cc_library(
 )
 
 cc_library(
+    name = "opencl_type_util",
+    srcs = ["opencl_type_util.cc"],
+    hdrs = ["opencl_type_util.h"],
+    deps = [
+        ":global_memory_arg_value",
+        ":kernel_arg_value",
+        ":local_memory_arg_value",
+        ":scalar_kernel_arg_value",
+        "//third_party/opencl",
+    ],
+)
+
+cc_library(
     name = "opencl_util",
+    srcs = ["opencl_util.cc"],
     hdrs = ["opencl_util.h"],
     deps = [
         ":profiling_data",
@@ -340,17 +385,11 @@ cc_library(
 cc_test(
     name = "opencl_util_test",
     srcs = ["opencl_util_test.cc"],
-    linkopts = ["-ldl"] + select({
-        "//:darwin": ["-framework OpenCL"],
-        "//conditions:default": [],
-    }),
     deps = [
         ":opencl_util",
+        ":testutil",
         "//phd:test",
-    ] + select({
-        "//:darwin": [],
-        "//conditions:default": ["@libopencl//:libOpenCL"],
-    }),
+    ],
 )
 
 cc_library(
@@ -412,11 +451,18 @@ cc_library(
     testonly = 1,
     srcs = ["testutil.cc"],
     hdrs = ["testutil.h"],
+    linkopts = ["-ldl"] + select({
+        "//:darwin": ["-framework OpenCL"],
+        "//conditions:default": [],
+    }),
     deps = [
-        ":array_kernel_arg_value",
+        ":global_memory_arg_value",
         ":kernel_arg_value",
         ":scalar_kernel_arg_value",
         "//gpu/cldrive/proto:cldrive_cc_pb2",
         "//third_party/opencl",
-    ],
+    ] + select({
+        "//:darwin": [],
+        "//conditions:default": ["@libopencl//:libOpenCL"],
+    }),
 )

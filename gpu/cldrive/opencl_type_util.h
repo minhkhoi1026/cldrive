@@ -1,3 +1,6 @@
+// This file performs the translation from OpenClType enum value to templated
+// classes.
+//
 // Copyright (c) 2016, 2017, 2018, 2019 Chris Cummins.
 // This file is part of cldrive.
 //
@@ -13,31 +16,30 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with cldrive.  If not, see <https://www.gnu.org/licenses/>.
+
 #pragma once
 
-#include "gpu/cldrive/logger.h"
-#include "gpu/cldrive/proto/cldrive.pb.h"
+#include "gpu/cldrive/kernel_arg_value.h"
+#include "gpu/cldrive/opencl_type.h"
 
 #include "third_party/opencl/cl.hpp"
 
+#include <cstdlib>
+
 namespace gpu {
 namespace cldrive {
+namespace util {
 
-class Cldrive {
- public:
-  Cldrive(CldriveInstance* instance, int instance_num = 0);
+std::unique_ptr<KernelArgValue> CreateGlobalMemoryArgValue(
+    const OpenClType& type, const cl::Context& context, size_t size,
+    const int& value, bool rand_values);
 
-  void RunOrDie(Logger& logger);
+std::unique_ptr<KernelArgValue> CreateLocalMemoryArgValue(
+    const OpenClType& type, size_t size);
 
- private:
-  void DoRunOrDie(Logger& logger);
+std::unique_ptr<KernelArgValue> CreateScalarArgValue(const OpenClType& type,
+                                                     const int& value);
 
-  CldriveInstance* instance_;
-  int instance_num_;
-  cl::Device device_;
-};
-
-void ProcessCldriveInstancesOrDie(CldriveInstances* instance);
-
+}  // namespace util
 }  // namespace cldrive
 }  // namespace gpu

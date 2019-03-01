@@ -1,8 +1,33 @@
+// Main entry point for cldrive command line executable.
+//
+// Usage summary:
+//   cldrive --srcs=<opencl_sources> --envs=<opencl_devices>
+//       --gsize=<gsize> --lsize=<lsize> --output_format=(txt|pb|pbtxt)
+//
+// Run with `--help` argument to see full usage options.
+//
+// Copyright (c) 2016, 2017, 2018, 2019 Chris Cummins.
+// This file is part of cldrive.
+//
+// cldrive is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// cldrive is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with cldrive.  If not, see <https://www.gnu.org/licenses/>.
 #include "gpu/cldrive/libcldrive.h"
 
+#include "gpu/cldrive/logger.h"
 #include "gpu/cldrive/proto/cldrive.pb.h"
 #include "gpu/clinfo/libclinfo.h"
 
+#include "phd/app.h"
 #include "phd/logging.h"
 
 #include "absl/strings/str_split.h"
@@ -23,7 +48,22 @@ std::vector<string> SplitCommaSeparated(const string& str) {
   return std::vector<string>(str_paths.begin(), str_paths.end());
 }
 
+// Read the entire contents of a file to string or abort.
+string ReadFileOrDie(const string& path) {
+  const boost::filesystem::path fs_path(path);
+  CHECK(boost::filesystem::is_regular_file(fs_path)) << "Not a regular file: '"
+                                                     << path << "'";
+  boost::filesystem::ifstream istream(fs_path);
+  CHECK(istream.is_open()) << "Failed to open: '" << path << "'";
+
+  std::stringstream buffer;
+  buffer << istream.rdbuf();
+  return buffer.str();
+}
+
 }  // anonymous namespace
+
+// Flag definitions ------------------------------------
 
 DEFINE_string(srcs, "", "A comma separated list of OpenCL source files.");
 static bool ValidateSrcs(const char* flagname, const string& value) {
@@ -79,26 +119,34 @@ DEFINE_string(cl_build_opt, "", "Build options passed to clBuildProgram().");
 DEFINE_int32(num_runs, 30, "The number of runs per kernel.");
 DEFINE_bool(clinfo, false, "List the available devices and exit.");
 
-namespace {
+// End flag definitions ------------------------------------
 
-// Read file to string or abort.
-string ReadFileOrDie(const string& path) {
-  const boost::filesystem::path fs_path(path);
-  boost::filesystem::is_regular_file(fs_path);
-  boost::filesystem::ifstream istream(fs_path);
-  CHECK(istream.is_open());
+namespace gpu {
+namespace cldrive {
 
-  std::stringstream buffer;
-  buffer << istream.rdbuf();
-  return buffer.str();
+std::unique_ptr<Logger> MakeLoggerFromFlags(
+    std::ostream& ostream, const CldriveInstances* const instances) {
+  if (!FLAGS_output_format.compare("pb")) {
+    return std::make_unique<ProtocolBufferLogger>(std::cout, instances,
+                                                  /*text_format=*/false);
+  } else if (!FLAGS_output_format.compare("pbtxt")) {
+    return std::make_unique<ProtocolBufferLogger>(std::cout, instances,
+                                                  /*text_format=*/true);
+  } else if (!FLAGS_output_format.compare("csv")) {
+    return std::make_unique<CsvLogger>(std::cout, instances);
+  } else {
+    CHECK(false) << "unreachable!";
+  }
 }
 
-}  // anonymous namespace
+}  // namespace cldrive
+}  // namespace gpu
 
 int main(int argc, char** argv) {
-  gflags::SetUsageMessage("Drive arbitrary OpenCL kernels.");
-  gflags::ParseCommandLineFlags(&argc, &argv, true);
+  phd::InitApp(&argc, &argv, "Drive arbitrary OpenCL kernels.");
 
+  // Special case handling for --clinfo argument which prints to stdout then
+  // quits.
   if (FLAGS_clinfo) {
     auto devices = phd::gpu::clinfo::GetOpenClDevices();
     for (int i = 0; i < devices.device_size(); ++i) {
@@ -107,6 +155,9 @@ int main(int argc, char** argv) {
     return 0;
   }
 
+  // Check that required flags are set. We can't check this in the flag
+  // validator functions as they are only required if the early-exit flags
+  // above are not set.
   if (FLAGS_envs.empty()) {
     LOG(FATAL) << "Flag --envs must be set";
   }
@@ -115,25 +166,13 @@ int main(int argc, char** argv) {
     LOG(FATAL) << "Flag --srcs must be set";
   }
 
-  std::vector<cl::Device> devices;
-  std::vector<::gpu::clinfo::OpenClDevice> device_protos;
+  std::vector<::gpu::clinfo::OpenClDevice> devices;
   for (auto device_name : SplitCommaSeparated(FLAGS_envs)) {
-    devices.push_back(phd::gpu::clinfo::GetOpenClDeviceOrDie(device_name));
-    device_protos.push_back(
+    devices.push_back(
         phd::gpu::clinfo::GetOpenClDeviceProto(device_name).ValueOrDie());
   }
 
-  // Print output headers.
-  bool csv = !FLAGS_output_format.compare("csv");
-  if (csv) {
-    std::cout << "OpenCL Device, Kernel Name, Global Size, Local Size, "
-              << "Transferred Bytes, Runtime (ns)\n";
-  } else if (!FLAGS_output_format.compare("pbtxt")) {
-    std::cout << "# File: //gpu/cldrive/proto/cldrive.proto\n"
-              << "# Proto: gpu.cldrive.CldriveInstances\n";
-  }
-
-  // Setup instance proto.
+  // Create instances proto.
   gpu::cldrive::CldriveInstances instances;
   gpu::cldrive::CldriveInstance* instance = instances.add_instance();
   instance->set_build_opts(FLAGS_cl_build_opt);
@@ -142,7 +181,13 @@ int main(int argc, char** argv) {
   dp->set_local_size_x(FLAGS_lsize);
   instance->set_min_runs_per_kernel(FLAGS_num_runs);
 
+  // Parse logger flag.
+  std::unique_ptr<gpu::cldrive::Logger> logger =
+      gpu::cldrive::MakeLoggerFromFlags(std::cout, &instances);
+
+  int instance_num = 0;
   for (auto path : SplitCommaSeparated(FLAGS_srcs)) {
+    logger->StartNewInstance();
     instance->set_opencl_src(ReadFileOrDie(path));
 
     for (size_t i = 0; i < devices.size(); ++i) {
@@ -150,26 +195,12 @@ int main(int argc, char** argv) {
       instance->clear_outcome();
       instance->clear_kernel();
 
-      instance->mutable_device()->CopyFrom(device_protos[i]);
+      *instance->mutable_device() = devices[i];
 
-      try {
-        gpu::cldrive::Cldrive(instance, devices[i]).RunOrDie(csv);
-      } catch (cl::Error e) {
-        LOG(FATAL) << "Unhandled OpenCL exception "
-                   << phd::gpu::clinfo::OpenClErrorString(e.err())
-                   << " raised by " << e.what();
-      }
-
-      if (!FLAGS_output_format.compare("pb")) {
-        instances.SerializeToOstream(&std::cout);
-      } else if (!FLAGS_output_format.compare("pbtxt")) {
-        std::cout << instances.DebugString();
-      } else if (csv) {
-        // Already handled
-      } else {
-        CHECK(false) << "unreachable!";
-      }
+      gpu::cldrive::Cldrive(instance, instance_num).RunOrDie(*logger);
     }
+
+    ++instance_num;
   }
 
   return 0;

@@ -17,28 +17,23 @@
 
 #include "gpu/cldrive/kernel_arg_value.h"
 
-#include "third_party/opencl/cl.hpp"
+#include "gpu/cldrive/profiling_data.h"
 
-#include "gpu/cldrive/opencl_type.h"
-#include "phd/logging.h"
 #include "phd/string.h"
+#include "third_party/opencl/cl.hpp"
 
 namespace gpu {
 namespace cldrive {
 
-// A scalar argument.
 template <typename T>
-class ScalarKernelArgValue : public KernelArgValue {
+class LocalMemoryArgValue : public KernelArgValue {
  public:
-  explicit ScalarKernelArgValue(const T &value) : value_(value) {}
+  LocalMemoryArgValue(size_t size) : size_(size){};
 
   virtual bool operator==(const KernelArgValue *const rhs) const override {
-    auto rhs_ptr = dynamic_cast<const ScalarKernelArgValue *const>(rhs);
-    if (!rhs_ptr) {
-      return false;
-    }
-
-    return opencl_type::Equal(value(), rhs_ptr->value());
+    auto rhs_ptr = dynamic_cast<const LocalMemoryArgValue *const>(rhs);
+    // We can't check the concrete values of local memory.
+    return rhs_ptr->SizeInBytes() == SizeInBytes();
   }
 
   virtual bool operator!=(const KernelArgValue *const rhs) const override {
@@ -46,7 +41,7 @@ class ScalarKernelArgValue : public KernelArgValue {
   };
 
   virtual void SetAsArg(cl::Kernel *kernel, size_t arg_index) override {
-    kernel->setArg(arg_index, value());
+    kernel->setArg(arg_index, SizeInBytes(), nullptr);
   };
 
   virtual void CopyToDevice(const cl::CommandQueue &queue,
@@ -54,21 +49,15 @@ class ScalarKernelArgValue : public KernelArgValue {
 
   virtual std::unique_ptr<KernelArgValue> CopyFromDevice(
       const cl::CommandQueue &queue, ProfilingData *profiling) override {
-    return std::make_unique<ScalarKernelArgValue>(value());
+    return std::make_unique<LocalMemoryArgValue<T>>(size_);
   }
 
-  virtual string ToString() const override {
-    return opencl_type::ToString(value());
-  }
+  virtual string ToString() const override { return "[local memory]"; }
 
-  virtual size_t SizeInBytes() const override { return sizeof(T); }
-
-  const T &value() const { return value_; }
-  T &value() { return value_; }
+  virtual size_t SizeInBytes() const override { return sizeof(T) * size_; }
 
  private:
-  T value_;
+  const size_t size_;
 };
-
 }  // namespace cldrive
 }  // namespace gpu

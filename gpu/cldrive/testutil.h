@@ -15,29 +15,36 @@
 // along with cldrive.  If not, see <https://www.gnu.org/licenses/>.
 #pragma once
 
-#include "gpu/cldrive/logger.h"
+#include "gpu/cldrive/global_memory_arg_value.h"
+#include "gpu/cldrive/kernel_arg_value.h"
 #include "gpu/cldrive/proto/cldrive.pb.h"
+#include "gpu/cldrive/scalar_kernel_arg_value.h"
 
 #include "third_party/opencl/cl.hpp"
 
 namespace gpu {
 namespace cldrive {
+namespace test {
 
-class Cldrive {
- public:
-  Cldrive(CldriveInstance* instance, int instance_num = 0);
+// Create an OpenCL kernel from the given string else abort.
+//
+// The string must contain the OpenCL source for a single kernel,
+// e.g. cl::Kernel kernel = CreateClKernel("kernel void A() {}");
+cl::Kernel CreateClKernel(const string& opencl_kernel);
 
-  void RunOrDie(Logger& logger);
+// Downcast a KernelArgValue to the given type.
+//
+// If the cast cannot be made, test aborts.
+template <typename T>
+T* Downcast(KernelArgValue* t) {
+  CHECK(t) << "KernelArgValue pointer is null";
+  auto pointer = dynamic_cast<T*>(t);
+  CHECK(pointer) << "Failed to cast KernelArgValue pointer";
+  return pointer;
+}
 
- private:
-  void DoRunOrDie(Logger& logger);
+DynamicParams MakeParams(size_t global_size, size_t local_size = 1);
 
-  CldriveInstance* instance_;
-  int instance_num_;
-  cl::Device device_;
-};
-
-void ProcessCldriveInstancesOrDie(CldriveInstances* instance);
-
+}  // namespace test
 }  // namespace cldrive
 }  // namespace gpu
