@@ -20,62 +20,47 @@ namespace cldrive {
 namespace util {
 
 string GetOpenClKernelName(const cl::Kernel& kernel) {
-  // Deliberately use the long-form C API.
-  // While the C++ API provides a kernel.getInfo<>() method, I've received a
-  // report that it doesn't work on at least one platform, and the
-  // implementation has other defects when handling char* parameters, e.g.:
-  // https://github.com/KhronosGroup/OpenCL-CLHPP/issues/8
+  // Rather than determine the size of the character array needed to store the
+  // string, allocate a buffer that *should be* large enough. This is a
+  // workaround for a bug in an OpenCL implementation.
+  size_t buffer_size = 512;
+  char* chars = new char[buffer_size];
 
-  // Get the size of the name.
-  size_t name_size;
-  CHECK(clGetKernelInfo(
-      kernel(), CL_KERNEL_FUNCTION_NAME, /*param_value_size=*/0,
-      /*param_value=*/nullptr, &name_size) == CL_SUCCESS);
-  CHECK(name_size) << "Size of CL_KERNEL_FUNCTION_NAME is zero";
+  size_t actual_size;
+  CHECK(clGetKernelInfo(kernel(), CL_KERNEL_FUNCTION_NAME, buffer_size, chars,
+                        /*param_value_size_ret=*/&actual_size) == CL_SUCCESS);
 
-  // Allocate a temporary buffer and read the name to it.
-  char *chars = new char[name_size];
-  CHECK(clGetKernelInfo(
-      kernel(), CL_KERNEL_FUNCTION_NAME, name_size, chars,
-      /*param_value_size_ret=*/nullptr) == CL_SUCCESS);
+  CHECK(actual_size <= buffer_size) << "OpenCL kernel name exceeds "
+                                    << buffer_size << " characters";
 
   // Construct a string from the buffer.
   string name(chars);
-  // name_size includes trailing '\0', name.size() does not.
-  CHECK(name.size() == name_size - 1);
-
-  // Free the buffer.
+  // name_size includes trailing '\0' character, name.size() does not.
+  CHECK(name.size() == actual_size - 1);
   delete[] chars;
 
   return name;
 }
 
 string GetKernelArgTypeName(const cl::Kernel& kernel, size_t arg_index) {
-  // Deliberately use the long-form C API.
-  // While the C++ API provides a kernel.getInfo<>() method, I've received a
-  // report that it doesn't work on at least one platform, and the
-  // implementation has other defects when handling char* parameters, e.g.:
-  // https://github.com/KhronosGroup/OpenCL-CLHPP/issues/8
+  // Rather than determine the size of the character array needed to store the
+  // string, allocate a buffer that *should be* large enough. This is a
+  // workaround for a bug in an OpenCL implementation.
+  size_t buffer_size = 512;
+  char* chars = new char[buffer_size];
 
-  // Get the size of the name.
-  size_t name_size;
+  size_t actual_size;
   CHECK(clGetKernelArgInfo(
-      kernel(), arg_index, CL_KERNEL_ARG_TYPE_NAME, /*param_value_size=*/0,
-      /*param_value=*/nullptr, &name_size) == CL_SUCCESS);
-  CHECK(name_size) << "Size of CL_KERNEL_ARG_TYPE_NAME is zero";
+            kernel(), arg_index, CL_KERNEL_ARG_TYPE_NAME, buffer_size, chars,
+            /*param_value_size_ret=*/&actual_size) == CL_SUCCESS);
 
-  // Allocate a temporary buffer and read the name to it.
-  char *chars = new char[name_size];
-  CHECK(clGetKernelArgInfo(
-      kernel(), arg_index, CL_KERNEL_ARG_TYPE_NAME, name_size, chars,
-      /*param_value_size_ret=*/nullptr) == CL_SUCCESS);
+  CHECK(actual_size <= buffer_size) << "OpenCL kernel name exceeds "
+                                    << buffer_size << " characters";
 
   // Construct a string from the buffer.
   string name(chars);
-  // name_size includes trailing '\0', name.size() does not.
-  CHECK(name.size() == name_size - 1);
-
-  // Free the buffer.
+  // name_size includes trailing '\0' character, name.size() does not.
+  CHECK(name.size() == actual_size - 1);
   delete[] chars;
 
   return name;
