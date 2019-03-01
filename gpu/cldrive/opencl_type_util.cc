@@ -1,4 +1,11 @@
+<<<<<<< HEAD:gpu/cldrive/opencl_type_util.cc
 // Copyright (c) 2016-2020 Chris Cummins.
+=======
+// This file performs the translation from OpenClType enum value to templated
+// classes.
+//
+// Copyright (c) 2016, 2017, 2018, 2019 Chris Cummins.
+>>>>>>> feef28f99... Add missing license headers.:gpu/cldrive/kernel_arg_util.h
 // This file is part of cldrive.
 //
 // cldrive is free software: you can redistribute it and/or modify
@@ -13,7 +20,10 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with cldrive.  If not, see <https://www.gnu.org/licenses/>.
+<<<<<<< HEAD:gpu/cldrive/opencl_type_util.cc
 #include "gpu/cldrive/opencl_type_util.h"
+=======
+>>>>>>> feef28f99... Add missing license headers.:gpu/cldrive/kernel_arg_util.h
 
 <<<<<<< HEAD:gpu/cldrive/opencl_type_util.cc
 #include "gpu/cldrive/global_memory_arg_value.h"
