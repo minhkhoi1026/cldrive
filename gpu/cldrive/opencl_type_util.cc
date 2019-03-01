@@ -44,10 +44,14 @@ namespace {
 
 template <typename T>
 <<<<<<< HEAD:gpu/cldrive/opencl_type_util.cc
+<<<<<<< HEAD:gpu/cldrive/opencl_type_util.cc
 std::unique_ptr<GlobalMemoryArgValueWithBuffer<T>> CreateGlobalMemoryArgValue(
 =======
 std::unique_ptr<GlobalMemoryArgValueWithBuffer<T>> CreateArrayArgValue(
 >>>>>>> 25d2642be... Continue with rename.:gpu/cldrive/kernel_arg_util.h
+=======
+std::unique_ptr<GlobalMemoryArgValueWithBuffer<T>> CreateGlobalMemoryArgValue(
+>>>>>>> c02ba0d93... Update function names.:gpu/cldrive/kernel_arg_util.h
     const cl::Context& context, size_t size, const int& value,
     bool rand_values) {
   auto arg_value = std::make_unique<GlobalMemoryArgValueWithBuffer<T>>(
@@ -60,6 +64,7 @@ std::unique_ptr<GlobalMemoryArgValueWithBuffer<T>> CreateArrayArgValue(
   return arg_value;
 }
 
+<<<<<<< HEAD:gpu/cldrive/opencl_type_util.cc
 template <typename T>
 std::unique_ptr<KernelArgValue> CreateScalarArgValue(const int& value) {
   return std::make_unique<ScalarKernelArgValue<T>>(
@@ -68,16 +73,23 @@ std::unique_ptr<KernelArgValue> CreateScalarArgValue(const int& value) {
 
 }  // namespace
 
+=======
+>>>>>>> c02ba0d93... Update function names.:gpu/cldrive/kernel_arg_util.h
 std::unique_ptr<KernelArgValue> CreateGlobalMemoryArgValue(
     const OpenClType& type, const cl::Context& context, size_t size,
     const int& value, bool rand_values) {
   DCHECK(size) << "Cannot create array with 0 elements";
   switch (type) {
     case OpenClType::BOOL: {
+<<<<<<< HEAD:gpu/cldrive/opencl_type_util.cc
       // Use cl_bool here because std::vector<bool> has a funny bitmask
       // specialization in some STL implementations.
       return CreateGlobalMemoryArgValue<cl_bool>(context, size, value,
                                                  rand_values);
+=======
+      return CreateGlobalMemoryArgValue<bool>(context, size, value,
+                                              rand_values);
+>>>>>>> c02ba0d93... Update function names.:gpu/cldrive/kernel_arg_util.h
     }
     case OpenClType::CHAR: {
       return CreateGlobalMemoryArgValue<cl_char>(context, size, value,
