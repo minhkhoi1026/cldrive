@@ -19,12 +19,13 @@
 #include "gpu/cldrive/opencl_util.h"
 #include "gpu/cldrive/profiling_data.h"
 
+#include "phd/string.h"
 #include "third_party/opencl/cl.hpp"
+
+#include <memory>
 
 #include "absl/strings/str_cat.h"
 #include "absl/strings/str_format.h"
-#include "opencl_type.h"
-#include "phd/string.h"
 
 namespace gpu {
 namespace cldrive {
