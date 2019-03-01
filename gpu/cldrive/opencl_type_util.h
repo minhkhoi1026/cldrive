@@ -30,7 +30,6 @@ namespace gpu {
 namespace cldrive {
 namespace util {
 
-<<<<<<< HEAD:gpu/cldrive/opencl_type_util.h
 std::unique_ptr<KernelArgValue> CreateGlobalMemoryArgValue(
     const OpenClType& type, const cl::Context& context, size_t size,
     const int& value, bool rand_values);
@@ -42,7 +41,5 @@ std::unique_ptr<KernelArgValue> CreateScalarArgValue(const OpenClType& type,
                                                      const int& value);
 
 }  // namespace util
-=======
->>>>>>> ac755253f... Remove commented out code.:gpu/cldrive/array_kernel_arg_value.cc
 }  // namespace cldrive
 }  // namespace gpu
