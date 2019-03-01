@@ -30,11 +30,18 @@
 =======
 #pragma once
 
-#include "gpu/cldrive/global_memory_arg_value.h"
 #include "gpu/cldrive/kernel_arg_value.h"
+<<<<<<< HEAD:gpu/cldrive/opencl_type_util.cc
 >>>>>>> 80854d25b... Fix local memory arg support.:gpu/cldrive/kernel_arg_util.h
 #include "gpu/cldrive/local_memory_arg_value.h"
 #include "gpu/cldrive/scalar_kernel_arg_value.h"
+=======
+#include "gpu/cldrive/opencl_type.h"
+
+#include "third_party/opencl/cl.hpp"
+
+#include <cstdlib>
+>>>>>>> fd149baa5... Move definitions into implementation file.:gpu/cldrive/kernel_arg_util.h
 
 namespace gpu {
 namespace cldrive {
@@ -42,6 +49,7 @@ namespace util {
 
 namespace {
 
+<<<<<<< HEAD:gpu/cldrive/opencl_type_util.cc
 template <typename T>
 <<<<<<< HEAD:gpu/cldrive/opencl_type_util.cc
 <<<<<<< HEAD:gpu/cldrive/opencl_type_util.cc
@@ -793,6 +801,17 @@ std::unique_ptr<KernelArgValue> CreateScalarArgValue(const OpenClType& type,
   }
   return nullptr;  // Unreachable so long as switch covers all enum values.
 }
+=======
+std::unique_ptr<KernelArgValue> CreateGlobalMemoryArgValue(
+    const OpenClType& type, const cl::Context& context, size_t size,
+    const int& value, bool rand_values);
+
+std::unique_ptr<KernelArgValue> CreateLocalMemoryArgValue(
+    const OpenClType& type, size_t size);
+
+std::unique_ptr<KernelArgValue> CreateScalarArgValue(const OpenClType& type,
+                                                     const int& value);
+>>>>>>> fd149baa5... Move definitions into implementation file.:gpu/cldrive/kernel_arg_util.h
 
 }  // namespace util
 }  // namespace cldrive
