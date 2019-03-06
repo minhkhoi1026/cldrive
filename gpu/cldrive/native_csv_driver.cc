@@ -1,4 +1,4 @@
-// Copyright (c) 2016-2020 Chris Cummins.
+// Copyright (c) 2016, 2017, 2018, 2019 Chris Cummins.
 // This file is part of cldrive.
 //
 // cldrive is free software: you can redistribute it and/or modify
@@ -15,62 +15,24 @@
 // along with cldrive.  If not, see <https://www.gnu.org/licenses/>.
 #include "gpu/cldrive/libcldrive.h"
 
-<<<<<<< HEAD:gpu/cldrive/native_csv_driver.cc
-#include "labm8/cpp/logging.h"
-=======
-#include "gpu/cldrive/kernel_arg_value.h"
-
-#include "third_party/opencl/cl.hpp"
-
 #include "phd/logging.h"
-#include "phd/string.h"
->>>>>>> 10c24c393... Move opencl headers into top dir.:gpu/cldrive/array_kernel_arg_value.cc
 
 namespace gpu {
 namespace cldrive {
 
-<<<<<<< HEAD:gpu/cldrive/native_csv_driver.cc
-<<<<<<< HEAD:gpu/cldrive/native_csv_driver.cc
 void ProcessCldriveInstancesOrDie(CldriveInstances* instances) {
   CsvLogger logger(std::cout, instances);
   for (int i = 0; i < instances->instance_size(); ++i) {
     logger.StartNewInstance();
     Cldrive(instances->mutable_instance(i), i).RunOrDie(logger);
   }
-=======
-namespace {
-
-// TODO(cldrive): Work in progress!
-
-template <typename T>
-bool Vec2Equality(const T& lhs, const T& rhs) {
-  return true;
-  // TODO: return (l[0] == r[0]) && (l[1] == r[1]);
 }
-
-}  // anonymous namespace
-
-template <>
-/*virtual*/ string ArrayKernelArgValue<cl_char2>::ToString() const {
-  string s = "";
-  return s;
-}
-
-template <>
-/*virtual*/ bool ArrayKernelArgValue<cl_char2>::ElementEquality(
-    const cl_char2& lhs, const cl_char2& rhs) const {
-  return Vec2Equality(lhs, rhs);
->>>>>>> 8b16e8e86... Work in progress on cldrive vector args.:gpu/cldrive/array_kernel_arg_value.cc
-}
-=======
-namespace {}
->>>>>>> 36b52bcfa... Work in progress cldrive args.:gpu/cldrive/array_kernel_arg_value.cc
 
 }  // namespace cldrive
 }  // namespace gpu
 
 int main(int argc, char** argv) {
-  DCHECK(argc == 1) << "No command line arguments allowed";
+  CHECK(argc == 1) << "No command line arguments allowed";
 
   gpu::cldrive::CldriveInstances instances;
   CHECK(instances.ParseFromIstream(&std::cin));
