@@ -1,5 +1,4 @@
-<<<<<<< HEAD
-# Copyright (c) 2016-2020 Chris Cummins.
+# Copyright (c) 2016, 2017, 2018, 2019 Chris Cummins.
 # This file is part of cldrive.
 #
 # cldrive is free software: you can redistribute it and/or modify
@@ -14,28 +13,6 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with cldrive.  If not, see <https://www.gnu.org/licenses/>.
-load("@build_stack_rules_proto//python:python_proto_library.bzl", "python_proto_library")
-
-package(default_visibility = ["//visibility:public"])
-
-proto_library(
-    name = "cldrive_pb",
-    srcs = ["cldrive.proto"],
-    deps = [
-        "//gpu/clinfo/proto:clinfo_pb",
-        "//gpu/libcecl/proto:libcecl_pb",
-    ],
-)
-
-cc_proto_library(
-    name = "cldrive_py_cc",
-    deps = [":cldrive_pb"],
-)
-
-python_proto_library(
-    name = "cldrive_pb_py",
-    deps = [":cldrive_pb"],
-=======
 load("@org_pubref_rules_protobuf//cpp:rules.bzl", "cc_proto_library")
 load("@org_pubref_rules_protobuf//python:rules.bzl", "py_proto_library")
 
@@ -57,5 +34,4 @@ py_proto_library(
         "//gpu/libcecl/proto:libcecl_py_pb2",
     ],
     protos = ["cldrive.proto"],
->>>>>>> c0eda32ea... Begin native implementation of cldrive.
 )
