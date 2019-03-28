@@ -1,4 +1,18 @@
 // Get information about available OpenCL devices.
+//
+// Copyright 2017, 2018, 2019 Chris Cummins <chrisc.101@gmail.com>.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 #include <algorithm>
 #include <cstdio>
@@ -325,6 +339,19 @@ StatusOr<::gpu::clinfo::OpenClDevice> GetOpenClDeviceProto(const string& name) {
                      "OpenCL device not found");
 }
 
+namespace {
+
+// Workaround for a defect in which getInfo<>() methods return strings
+// including terminating '\0' character. See discussion at:
+// https://github.com/KhronosGroup/OpenCL-CLHPP/issues/8
+void StripTrailingNullCharacter(string* str) {
+  if (!str->empty() && str->back() == '\0') {
+    str->resize(str->size() - 1);
+  }
+}
+
+}  // anonymous namespace
+
 cl::Device GetOpenClDevice(const ::gpu::clinfo::OpenClDevice& device_proto) {
   string platform_name, device_name, driver_version, opencl_version;
 
@@ -332,9 +359,8 @@ cl::Device GetOpenClDevice(const ::gpu::clinfo::OpenClDevice& device_proto) {
   cl::Platform::get(&platforms);
   for (const auto& platform : platforms) {
     platform.getInfo(CL_PLATFORM_NAME, &platform_name);
-    if (!platform_name.compare(device_proto.platform_name())) {
-      LOG(DEBUG) << "Platform " << platform_name
-                 << " != " << device_proto.platform_name();
+    StripTrailingNullCharacter(&platform_name);
+    if (platform_name.compare(device_proto.platform_name())) {
       continue;
     }
 
@@ -342,16 +368,14 @@ cl::Device GetOpenClDevice(const ::gpu::clinfo::OpenClDevice& device_proto) {
     platform.getDevices(CL_DEVICE_TYPE_ALL, &devices);
     for (const auto& device : devices) {
       device.getInfo(CL_DEVICE_NAME, &device_name);
-      if (!device_name.compare(device_proto.device_name())) {
-        LOG(DEBUG) << "Device " << device_name
-                   << " != " << device_proto.device_name();
+      StripTrailingNullCharacter(&device_name);
+      if (device_name.compare(device_proto.device_name())) {
         continue;
       }
 
       device.getInfo(CL_DRIVER_VERSION, &driver_version);
-      if (!driver_version.compare(device_proto.driver_version())) {
-        LOG(DEBUG) << "Driver " << driver_version
-                   << " != " << device_proto.driver_version();
+      StripTrailingNullCharacter(&driver_version);
+      if (driver_version.compare(device_proto.driver_version())) {
         continue;
       }
 
@@ -410,4 +434,4 @@ cl::Device GetOpenClDeviceOrDie(const string& name) {
 
 }  // namespace gpu
 
-}  // phd
+}  // namespace phd

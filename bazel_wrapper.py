@@ -7,11 +7,11 @@ import os
 import subprocess
 import sys
 
+
 # The subset of bazel targets that are supported in this WORKSPACE.
 EXPORTED_TARGETS = [
     '//gpu/cldrive',
   '//gpu/cldrive:cldrive',
-  '//gpu/cldrive:global_memory_arg_value_test',
   '//gpu/cldrive:kernel_arg_set_test',
   '//gpu/cldrive:kernel_arg_test',
   '//gpu/cldrive:kernel_arg_values_set_test',

@@ -356,10 +356,13 @@ maven_jar(
 
 # Python requirements.
 
+# FIXME(https://github.com/bazelbuild/rules_python/issues/71): Tensorflow
+# doesn't work with the current rules python implementation. Use @jkinkead's
+# fork which has a workaround.
 git_repository(
     name = "io_bazel_rules_python",
-    commit = "a558949cce478e537c6474c3bc5848a7d90e42c0",
-    remote = "https://github.com/bazelbuild/rules_python.git",
+    commit = "220c1133af2bb5c37f20c87b4c2ccfeee596ecda",
+    remote = "https://github.com/jkinkead/rules_python.git",
 )
 
 load(
@@ -388,6 +391,14 @@ load(
 )
 
 pip_grpcio_install()
+
+# Support for standalone python binaries using par_binary().
+
+git_repository(
+    name = "subpar",
+    remote = "https://github.com/google/subpar",
+    tag = "1.0.0",
+)
 
 # Needed by rules_docker.
 # See: https://github.com/bazelbuild/bazel-skylib
@@ -436,7 +447,7 @@ container_repositories()
 
 container_pull(
     name = "base",
-    digest = "sha256:deb55c72eeb13f4d567a7ffced9c1fcc6e955e9cf43f132b44af7fab75f811cf",
+    digest = "sha256:db2dfcac7d72ea693670ffc741c11634e906a59a03e6f28897e111784bcf4291",
     registry = "index.docker.io",
     repository = "chriscummins/phd_base",
 )

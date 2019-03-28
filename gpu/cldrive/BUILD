@@ -1,4 +1,20 @@
 # Cldrive drives arbitrary OpenCL kernels.
+#
+# Copyright (c) 2016, 2017, 2018, 2019 Chris Cummins.
+# This file is part of cldrive.
+#
+# cldrive is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# cldrive is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with cldrive.  If not, see <https://www.gnu.org/licenses/>.
 
 load("@io_bazel_rules_docker//cc:image.bzl", "cc_image")
 
@@ -12,15 +28,19 @@ exports_files([
 py_library(
     name = "api",
     srcs = ["api.py"],
-    data = [":native_driver"],
+    data = [
+        ":native_csv_driver",
+        ":native_driver",
+    ],
     visibility = ["//visibility:public"],
     deps = [
         "//gpu/cldrive/legacy:env",
         "//gpu/cldrive/proto:cldrive_py_pb2",
         "//gpu/oclgrind",
+        "//labm8:app",
         "//labm8:bazelutil",
         "//labm8:pbutil",
-        "//third_party/py/absl",
+        "//third_party/py/numpy",
         "//third_party/py/pandas",
     ],
 )
@@ -30,8 +50,9 @@ py_test(
     srcs = ["api_test.py"],
     deps = [
         ":api",
+        "//labm8:app",
         "//labm8:test",
-        "//third_party/py/absl",
+        "//third_party/py/numpy",
         "//third_party/py/pytest",
     ],
 )
@@ -39,6 +60,8 @@ py_test(
 cc_binary(
     name = "cldrive",
     srcs = ["cldrive.cc"],
+    linkstatic = False,  # Needed for Oclgrind support.
+    visibility = ["//visibility:public"],
     deps = [
         ":csv_log",
         ":libcldrive",
@@ -54,7 +77,6 @@ cc_binary(
 cc_image(
     name = "cldrive_image",
     srcs = ["cldrive.cc"],
-    base = "@base//image",
     deps = [
         # TODO(cec): This is a duplicate of the dependencies of :cldrive.
         ":csv_log",
@@ -129,6 +151,7 @@ cc_test(
         "//:darwin": ["-framework OpenCL"],
         "//conditions:default": [],
     }),
+    linkstatic = False,  # Needed for oclgrind support.
     deps = [
         ":global_memory_arg_value",
         ":kernel_arg",
@@ -165,6 +188,7 @@ cc_test(
         "//:darwin": ["-framework OpenCL"],
         "//conditions:default": [],
     }),
+    linkstatic = False,  # Needed for oclgrind support.
     deps = [
         ":kernel_arg_set",
         "//phd:test",
@@ -197,6 +221,7 @@ cc_test(
         "//:darwin": ["-framework OpenCL"],
         "//conditions:default": [],
     }),
+    linkstatic = False,  # Needed for oclgrind support.
     deps = [
         ":kernel_arg_value",
         "//phd:port",
@@ -227,6 +252,7 @@ cc_test(
         "//:darwin": ["-framework OpenCL"],
         "//conditions:default": [],
     }),
+    linkstatic = False,  # Needed for oclgrind support.
     deps = [
         ":kernel_arg_values_set",
         "//phd:test",
@@ -261,6 +287,7 @@ cc_test(
         "//:darwin": ["-framework OpenCL"],
         "//conditions:default": [],
     }),
+    linkstatic = False,  # Needed for oclgrind support.
     deps = [
         ":kernel_driver",
         "//phd:test",
@@ -300,6 +327,7 @@ cc_test(
         "//:darwin": ["-framework OpenCL"],
         "//conditions:default": [],
     }),
+    linkstatic = False,  # Needed for oclgrind support.
     deps = [
         ":libcldrive",
         "//phd:test",
@@ -335,10 +363,21 @@ cc_library(
 cc_binary(
     name = "native_driver",
     srcs = ["native_driver.cc"],
+    linkstatic = False,  # Needed for Oclgrind support.
     deps = [
         ":libcldrive",
         "//gpu/cldrive/proto:cldrive_cc_pb2",
         "//phd:pbutil",
+    ],
+)
+
+cc_binary(
+    name = "native_csv_driver",
+    srcs = ["native_csv_driver.cc"],
+    linkstatic = False,  # Needed for Oclgrind support.
+    deps = [
+        ":libcldrive",
+        "//gpu/cldrive/proto:cldrive_cc_pb2",
     ],
 )
 
@@ -409,6 +448,7 @@ cc_test(
         "//:darwin": ["-framework OpenCL"],
         "//conditions:default": [],
     }),
+    linkstatic = False,  # Needed for oclgrind support.
     deps = [
         ":profiling_data",
         "//phd:test",
@@ -437,6 +477,7 @@ cc_test(
         "//:darwin": ["-framework OpenCL"],
         "//conditions:default": [],
     }),
+    linkstatic = False,  # Needed for oclgrind support.
     deps = [
         ":scalar_kernel_arg_value",
         "//phd:test",

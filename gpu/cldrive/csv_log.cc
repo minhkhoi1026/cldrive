@@ -52,8 +52,20 @@ std::ostream& NullIfNegative(std::ostream& stream, const T& value) {
 std::ostream& operator<<(std::ostream& stream, const CsvLogHeader& header) {
   stream << "instance,device,build_opts,kernel,work_item_local_mem_size,"
          << "work_item_private_mem_size,global_size,local_size,outcome,"
-         << "transferred_bytes,runtime_ns\n";
+         << "transferred_bytes,transfer_time_ns,kernel_time_ns\n";
   return stream;
+}
+
+CsvLog::CsvLog(int instance_id)
+    : instance_id_(instance_id),
+      work_item_local_mem_size_(-1),
+      work_item_private_mem_size_(-1),
+      global_size_(-1),
+      local_size_(-1),
+      transferred_bytes_(-1),
+      transfer_time_ns_(-1),
+      kernel_time_ns_(-1) {
+  CHECK(instance_id >= 0) << "Negative instance ID not allowed";
 }
 
 std::ostream& operator<<(std::ostream& stream, const CsvLog& log) {
@@ -62,10 +74,11 @@ std::ostream& operator<<(std::ostream& stream, const CsvLog& log) {
   NullIfEmpty(stream, log.kernel_) << ",";
   NullIfNegative(stream, log.work_item_local_mem_size_) << ",";
   NullIfNegative(stream, log.work_item_private_mem_size_) << ",";
-  NullIfZero(stream, log.global_size_) << ",";
-  NullIfZero(stream, log.local_size_) << "," << log.outcome_ << ",";
-  NullIfZero(stream, log.transferred_bytes_) << ",";
-  NullIfZero(stream, log.runtime_ms_) << std::endl;
+  NullIfNegative(stream, log.global_size_) << ",";
+  NullIfNegative(stream, log.local_size_) << "," << log.outcome_ << ",";
+  NullIfNegative(stream, log.transferred_bytes_) << ",";
+  NullIfNegative(stream, log.transfer_time_ns_) << ",";
+  NullIfNegative(stream, log.kernel_time_ns_) << std::endl;
   return stream;
 }
 
@@ -74,14 +87,11 @@ std::ostream& operator<<(std::ostream& stream, const CsvLog& log) {
     const CldriveKernelInstance* const kernel_instance,
     const CldriveKernelRun* const run,
     const gpu::libcecl::OpenClKernelInvocation* const log) {
-  CsvLog csv;
-  csv.instance_id_ = instance_id;
+  CsvLog csv(instance_id);
 
   CHECK(instance) << "CldriveInstance pointer cannot be null";
   csv.device_ = instance->device().name();
   csv.build_opts_ = instance->build_opts();
-  csv.work_item_local_mem_size_ = -1;
-  csv.work_item_private_mem_size_ = -1;
 
   csv.outcome_ = CldriveInstance::InstanceOutcome_Name(instance->outcome());
   if (kernel_instance) {
@@ -96,11 +106,14 @@ std::ostream& operator<<(std::ostream& stream, const CsvLog& log) {
     if (run) {
       csv.outcome_ = CldriveKernelRun::KernelRunOutcome_Name(run->outcome());
       if (log) {
-        csv.outcome_ = "PASS";
         csv.global_size_ = log->global_size();
         csv.local_size_ = log->local_size();
-        csv.runtime_ms_ = log->runtime_ms();
-        csv.transferred_bytes_ = log->transferred_bytes();
+        if (log->transferred_bytes() >= 0) {
+          csv.outcome_ = "PASS";
+          csv.kernel_time_ns_ = log->kernel_time_ns();
+          csv.transfer_time_ns_ = log->transfer_time_ns();
+          csv.transferred_bytes_ = log->transferred_bytes();
+        }
       }
     }
   }
