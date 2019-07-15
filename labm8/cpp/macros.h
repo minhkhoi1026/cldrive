@@ -143,8 +143,13 @@ struct CompileAssert {};
 #if __cplusplus >= 201103L
 #define COMPILE_ASSERT(expr, msg) static_assert(expr, #msg)
 #else
+<<<<<<< HEAD:labm8/cpp/macros.h
 #define COMPILE_ASSERT(expr, msg)                                          \
   ::labm8::internal::CompileAssert<(bool(expr))> msg[bool(expr) ? 1 : -1]; \
+=======
+#define COMPILE_ASSERT(expr, msg)                                        \
+  ::phd::internal::CompileAssert<(bool(expr))> msg[bool(expr) ? 1 : -1]; \
+>>>>>>> 3394bf845... Add a more verbose assertion macro.:phd/macros.h
   (void)msg
 // Implementation details of COMPILE_ASSERT:
 //
@@ -188,4 +193,8 @@ struct CompileAssert {};
 //   causes ((0.0) ? 1 : -1) to incorrectly evaluate to 1.
 #endif  // __cplusplus >= 201103L
 
+<<<<<<< HEAD:labm8/cpp/macros.h
 }  // namespace labm8
+=======
+}  // namespace phd
+>>>>>>> 3394bf845... Add a more verbose assertion macro.:phd/macros.h
