@@ -72,7 +72,7 @@
 //
 //  StatusOr<Foo*> FooFactory::MakeNewFoo(int arg) {
 //    if (arg <= 0) {
-//      return ::Status(::labm8::error::INVALID_ARGUMENT,
+//      return ::Status(::phd::error::INVALID_ARGUMENT,
 //                            "Arg must be positive");
 //    } else {
 //      return new Foo(arg);
@@ -82,7 +82,6 @@
 #pragma once
 
 #include <new>
-#include <stdexcept>
 #include <string>
 #include <utility>
 
@@ -149,11 +148,6 @@ class StatusOr {
   // If you need to initialize a T object from the stored value,
   // ConsumeValueOrDie() may be more efficient.
   const T &ValueOrDie() const;
-
-  // Returns a reference to our current value, or raises an exception
-  // if !this->ok().
-  template <typename Error = std::runtime_error>
-  const T &ValueOrException() const;
 
  private:
   Status status_;
@@ -248,15 +242,6 @@ template <typename T>
 inline const T &StatusOr<T>::ValueOrDie() const {
   if (!status_.ok()) {
     internal::StatusOrHelper::Crash(status_);
-  }
-  return value_;
-}
-
-template <typename T>
-template <typename Error>
-inline const T &StatusOr<T>::ValueOrException() const {
-  if (!status_.ok()) {
-    throw Error(status_.ToString());
   }
   return value_;
 }

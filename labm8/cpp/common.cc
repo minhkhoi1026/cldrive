@@ -49,11 +49,7 @@
 // #include "labm8/cpp/strutil.h"
 // #include "labm8/cpp/int128.h"
 
-<<<<<<< HEAD:labm8/cpp/common.cc
 namespace labm8 {
-=======
-namespace phd {
->>>>>>> c73575d4e... Remove proto version code.:phd/common.cc
 
 // ===================================================================
 // emulates google3/base/callback.cc

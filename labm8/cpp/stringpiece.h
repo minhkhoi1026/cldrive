@@ -142,10 +142,7 @@
 #pragma once
 
 #include <assert.h>
-<<<<<<< HEAD:labm8/cpp/stringpiece.h
 #include <stddef.h>
-=======
->>>>>>> d8adad645... Add missing stringpiece header.:phd/stringpiece.h
 #include <cstring>
 #include <iosfwd>
 #include <limits>

@@ -68,7 +68,6 @@
 #define PREDICT_TRUE(x) (__builtin_expect(!!(x), 1))
 #else
 #define PREDICT_TRUE(x) (x)
-<<<<<<< HEAD:labm8/cpp/common.h
 #endif
 
 #ifdef __GNUC__
@@ -81,20 +80,6 @@
 namespace std {}
 
 namespace labm8 {
-=======
-#endif
-
-#ifdef __GNUC__
-// Provided at least since GCC 3.0.
-#define PREDICT_FALSE(x) (__builtin_expect(x, 0))
-#else
-#define PREDICT_FALSE(x) (x)
-#endif
-
-namespace std {}
-
-namespace phd {
->>>>>>> c73575d4e... Remove proto version code.:phd/common.h
 
 // ===================================================================
 // from google3/util/utf8/public/unilib.h
