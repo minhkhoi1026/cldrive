@@ -3,18 +3,16 @@ workspace(name = "phd")
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive", "http_file")
 load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
 
-# Workaround for broken python 2 tooling in rules_docker.
-# See: https://github.com/bazelbuild/rules_docker/issues/1022
-git_repository(
-    name = "containerregistry",
-    commit = "c66b149fe6c3566a6e3e39979dc913ded439117b",
-    remote = "https://github.com/ChrisCummins/containerregistry",
-    shallow_since = "1578323818 +0000",
+http_archive(
+    name = "cec_exports_repo",
+    sha256 = "338001b0e2e3cea978b72a456ac201b86042aecbbbdb779694ac4b131e949fc2",
+    strip_prefix = "exports_repo-2020.05.06",
+    urls = ["https://github.com/ChrisCummins/exports_repo/archive/2020.05.06.tar.gz"],
 )
 
-load("@containerregistry//:def.bzl", cr_repositories = "repositories")
+load("@cec_exports_repo//tools/bzl:deps.bzl", "cec_exports_repo_deps")
 
-cr_repositories()
+cec_exports_repo_deps()
 
 http_archive(
     name = "gtest",
@@ -69,11 +67,11 @@ http_archive(
 # Boost C++ library.
 # See: https://github.com/nelhage/rules_boost
 
-http_archive(
+git_repository(
     name = "com_github_nelhage_rules_boost",
-    sha256 = "391c6988d9f7822176fb9cf7da8930ef4474b0b35b4f24c78973cb6075fd17e4",
-    strip_prefix = "rules_boost-417642961150e987bc1ac78c7814c617566ffdaa",
-    url = "https://github.com/nelhage/rules_boost/archive/417642961150e987bc1ac78c7814c617566ffdaa.tar.gz",
+    commit = "4ee400beca08f524e7ea3be3ca41cce34454272f",
+    remote = "https://github.com/nelhage/rules_boost",
+    shallow_since = "1582750641 -0500",
 )
 
 load("@com_github_nelhage_rules_boost//:boost/boost.bzl", "boost_deps")
@@ -170,22 +168,33 @@ http_archive(
 
 # Golang and gazelle.
 
-load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
-
 http_archive(
     name = "io_bazel_rules_go",
-    sha256 = "f04d2373bcaf8aa09bccb08a98a57e721306c8f6043a2a0ee610fd6853dcde3d",
+    sha256 = "142dd33e38b563605f0d20e89d9ef9eda0fc3cb539a14be1bdb1350de2eda659",
     urls = [
-        "https://storage.googleapis.com/bazel-mirror/github.com/bazelbuild/rules_go/releases/download/0.18.6/rules_go-0.18.6.tar.gz",
-        "https://github.com/bazelbuild/rules_go/releases/download/0.18.6/rules_go-0.18.6.tar.gz",
+        "https://mirror.bazel.build/github.com/bazelbuild/rules_go/releases/download/v0.22.2/rules_go-v0.22.2.tar.gz",
+        "https://github.com/bazelbuild/rules_go/releases/download/v0.22.2/rules_go-v0.22.2.tar.gz",
     ],
 )
 
 http_archive(
     name = "bazel_gazelle",
-    sha256 = "3c681998538231a2d24d0c07ed5a7658cb72bfb5fd4bf9911157c0e9ac6a2687",
-    urls = ["https://github.com/bazelbuild/bazel-gazelle/releases/download/0.17.0/bazel-gazelle-0.17.0.tar.gz"],
+    sha256 = "d8c45ee70ec39a57e7a05e5027c32b1576cc7f16d9dd37135b0eddde45cf1b10",
+    urls = [
+        "https://storage.googleapis.com/bazel-mirror/github.com/bazelbuild/bazel-gazelle/releases/download/v0.20.0/bazel-gazelle-v0.20.0.tar.gz",
+        "https://github.com/bazelbuild/bazel-gazelle/releases/download/v0.20.0/bazel-gazelle-v0.20.0.tar.gz",
+    ],
 )
+
+load("@io_bazel_rules_go//go:deps.bzl", "go_register_toolchains", "go_rules_dependencies")
+
+go_rules_dependencies()
+
+go_register_toolchains()
+
+load("@bazel_gazelle//:deps.bzl", "gazelle_dependencies")
+
+gazelle_dependencies()
 
 # Linux sources.
 
@@ -329,19 +338,40 @@ http_archive(
 
 http_archive(
     name = "build_stack_rules_proto",
-    sha256 = "85ccc69a964a9fe3859b1190a7c8246af2a4ead037ee82247378464276d4262a",
-    strip_prefix = "rules_proto-d9a123032f8436dbc34069cfc3207f2810a494ee",
-    urls = ["https://github.com/stackb/rules_proto/archive/d9a123032f8436dbc34069cfc3207f2810a494ee.tar.gz"],
+    sha256 = "e42d83a8484921b243b3ab75a219a607ef503976f89c4fac5cadd6a7831337ca",
+    strip_prefix = "rules_proto-239503b8a8e867d1fbb821293ab5eadcc7cc6622",
+    urls = ["https://github.com/fivosts/rules_proto/archive/239503b8a8e867d1fbb821293ab5eadcc7cc6622.tar.gz"],
+)
+
+# JSON C++ library.
+# https://github.com/nlohmann/json
+
+http_archive(
+    name = "nlohmann_json",
+    build_file = "//:third_party/nlohmann_json.BUILD",
+    sha256 = "87b5884741427220d3a33df1363ae0e8b898099fbc59f1c451113f6732891014",
+    strip_prefix = "single_include",
+    urls = ["https://github.com/nlohmann/json/releases/download/v3.7.3/include.zip"],
+)
+
+# pybind11 bindings for JSON.
+# https://github.com/pybind/pybind11_json
+
+http_archive(
+    name = "pybind11_json",
+    build_file = "//:third_party/pybind11_json.BUILD",
+    sha256 = "45957f8564e921a412a6de49c578ef1faf3b04e531e859464853e26e1c734ea5",
+    strip_prefix = "pybind11_json-0.2.4/include",
+    urls = ["https://github.com/pybind/pybind11_json/archive/0.2.4.tar.gz"],
 )
 
 # Python requirements.
 
-# I use my own rules_python fork which adds a timeout arg to pip_import.
 git_repository(
     name = "rules_python",
-    commit = "2cc99237d0cc767dc53d3137fabb2679c60f5e67",
-    remote = "https://github.com/ChrisCummins/rules_python.git",
-    shallow_since = "1578538415 +0000",
+    commit = "748aa53d7701e71101dfd15d800e100f6ff8e5d1",
+    remote = "https://github.com/bazelbuild/rules_python.git",
+    shallow_since = "1583438240 -0500",
 )
 
 load(
@@ -605,49 +635,35 @@ git_repository(
 # Bazel docker rules.
 # See: https://github.com/bazelbuild/rules_docker
 
+# Download the rules_docker repository at release v0.14.1
 http_archive(
     name = "io_bazel_rules_docker",
-    sha256 = "6706b3979498802672252e77a45674dae0a1036f246a7efe5d3adbe53dcbea31",
-    strip_prefix = "rules_docker-31c38b0f506d8aff07487c274ed045c0017f689f",
-    urls = ["https://github.com/bazelbuild/rules_docker/archive/31c38b0f506d8aff07487c274ed045c0017f689f.tar.gz"],
+    sha256 = "dc97fccceacd4c6be14e800b2a00693d5e8d07f69ee187babfd04a80a9f8e250",
+    strip_prefix = "rules_docker-0.14.1",
+    urls = ["https://github.com/bazelbuild/rules_docker/releases/download/v0.14.1/rules_docker-v0.14.1.tar.gz"],
 )
-
-# Bazel rules for assembling and deploying software distributions.
-# https://github.com/graknlabs/bazel-distribution
-
-http_archive(
-    name = "graknlabs_bazel_distribution",
-    sha256 = "7b771d57dfdb426c511ad95301737027f37c632a627b452d85d01d76e0c8ce17",
-    strip_prefix = "bazel-distribution-8dc6490f819d330361f46201e3390ce5457564a2",
-    urls = ["https://github.com/graknlabs/bazel-distribution/archive/8dc6490f819d330361f46201e3390ce5457564a2.zip"],
-)
-
-pip3_import(
-    name = "graknlabs_bazel_distribution_pip",
-    timeout = 3600,
-    requirements = "@graknlabs_bazel_distribution//pip:requirements.txt",
-)
-
-load(
-    "@graknlabs_bazel_distribution_pip//:requirements.bzl",
-    graknlabs_bazel_distribution_pip_install = "pip_install",
-)
-
-graknlabs_bazel_distribution_pip_install()
-
-# Enable py3_image() rule.
 
 load(
     "@io_bazel_rules_docker//repositories:repositories.bzl",
     container_repositories = "repositories",
 )
-load("@io_bazel_rules_docker//container:container.bzl", "container_pull")
+
+container_repositories()
+
+load("@io_bazel_rules_docker//repositories:deps.bzl", container_deps = "deps")
+
+container_deps()
+
+# Enable py3_image.
+
 load(
-    "@io_bazel_rules_docker//python3:image.bzl",
+    "@io_bazel_rules_docker//python:image.bzl",
     _py_image_repos = "repositories",
 )
 
 _py_image_repos()
+
+# Enable cc_image.
 
 load(
     "@io_bazel_rules_docker//cc:image.bzl",
@@ -656,9 +672,11 @@ load(
 
 _cc_image_repos()
 
-container_repositories()
-
-# My custom base image for bazel-compiled binaries.
+# My custom base images:
+load(
+    "@io_bazel_rules_docker//container:container.bzl",
+    "container_pull",
+)
 
 # Minimal python base image.
 # Defined in //tools/docker/phd_base:Dockerfile
@@ -696,17 +714,32 @@ container_pull(
     repository = "chriscummins/phd_build",
 )
 
+# Bazel rules for assembling and deploying software distributions.
+# https://github.com/graknlabs/bazel-distribution
+
+http_archive(
+    name = "graknlabs_bazel_distribution",
+    sha256 = "7b771d57dfdb426c511ad95301737027f37c632a627b452d85d01d76e0c8ce17",
+    strip_prefix = "bazel-distribution-8dc6490f819d330361f46201e3390ce5457564a2",
+    urls = ["https://github.com/graknlabs/bazel-distribution/archive/8dc6490f819d330361f46201e3390ce5457564a2.zip"],
+)
+
+pip3_import(
+    name = "graknlabs_bazel_distribution_pip",
+    timeout = 3600,
+    requirements = "@graknlabs_bazel_distribution//pip:requirements.txt",
+)
+
+load(
+    "@graknlabs_bazel_distribution_pip//:requirements.bzl",
+    graknlabs_bazel_distribution_pip_install = "pip_install",
+)
+
+graknlabs_bazel_distribution_pip_install()
+
 # Go dependencies.
 
-load("@io_bazel_rules_go//go:deps.bzl", "go_register_toolchains", "go_rules_dependencies")
-
-go_rules_dependencies()
-
-go_register_toolchains()
-
 load("@bazel_gazelle//:deps.bzl", "gazelle_dependencies", "go_repository")
-
-gazelle_dependencies()
 
 go_repository(
     name = "com_github_stretchr_testify",
@@ -861,3 +894,109 @@ load("@org_tensorflow//tensorflow:workspace.bzl", "tf_repositories")
 tf_repositories()
 
 ################################################################################
+
+# A modern C++ formatting library.
+# https://fmt.dev
+
+http_archive(
+    name = "fmt",
+    build_file = "//:third_party/fmt.BUILD",
+    sha256 = "1cafc80701b746085dddf41bd9193e6d35089e1c6ec1940e037fcb9c98f62365",
+    strip_prefix = "fmt-6.1.2",
+    urls = ["https://github.com/fmtlib/fmt/archive/6.1.2.tar.gz"],
+)
+
+# Subprocessing with modern C++.
+# https://github.com/arun11299/cpp-subprocess.git
+
+http_archive(
+    name = "subprocess",
+    build_file = "//:third_party/subprocess.BUILD",
+    sha256 = "886df0a814a7bb7a3fdeead22f75400abd8d3235b81d05817bc8c1125eeebb8f",
+    strip_prefix = "cpp-subprocess-2.0",
+    urls = [
+        "https://github.com/arun11299/cpp-subprocess/archive/v2.0.tar.gz",
+    ],
+)
+
+http_archive(
+    name = "ctpl",
+    build_file = "//:third_party/ctpl.BUILD",
+    sha256 = "8c1cec7c570d6d84be1d29283af5039ea27c3e69703bd446d396424bf619816e",
+    strip_prefix = "CTPL-ctpl_v.0.0.2",
+    urls = ["https://github.com/vit-vit/CTPL/archive/ctpl_v.0.0.2.tar.gz"],
+)
+
+# Build rules for interfacing with "foreign" (non-Bazel) build systems.
+# https://github.com/bazelbuild/rules_foreign_cc
+
+http_archive(
+    name = "rules_foreign_cc",
+    sha256 = "0a2a0099c837ddfc365eca74b54f33790fa2542e4fdfbf50e4ad0f22d4821917",
+    strip_prefix = "rules_foreign_cc-8372f383cf7277a88762efe25d8cfee10ad27929",
+    url = "https://github.com/bazelbuild/rules_foreign_cc/archive/8372f383cf7277a88762efe25d8cfee10ad27929.zip",
+)
+
+all_content = """filegroup(name = "all", srcs = glob(["**"]), visibility = ["//visibility:public"])"""
+
+load("@rules_foreign_cc//:workspace_definitions.bzl", "rules_foreign_cc_dependencies")
+
+rules_foreign_cc_dependencies([])
+
+# The C++ connector for PostgreSQL.
+# https://www.postgresql.org/docs/6.5/libpqplusplus.htm
+
+http_archive(
+    name = "libpqxx",
+    build_file_content = all_content,
+    sha256 = "2280621eee7ec675ed6751abac2273f0ac41395e99be96e06584a54a0cc3985a",
+    strip_prefix = "libpqxx-6.4.6",
+    urls = ["https://github.com/jtv/libpqxx/archive/6.4.6.tar.gz"],
+)
+
+# A flexible ASCII progress-bar for C++.
+# https://github.com/prakhar1989/progress-cpp
+
+http_archive(
+    name = "progress_cpp",
+    build_file = "//:third_party/progress_cpp.BUILD",
+    sha256 = "e5a8804c71a4b86149a00deab62bede041003df7109822805ea8cce015d5373b",
+    strip_prefix = "progress-cpp-06fdda086eb06b462faff7a917984062bc15b61e",
+    urls = ["https://github.com/prakhar1989/progress-cpp/archive/06fdda086eb06b462faff7a917984062bc15b61e.tar.gz"],
+)
+
+# OpenSSL.
+
+http_archive(
+    name = "openssl",
+    build_file_content = all_content,
+    sha256 = "23011a5cc78e53d0dc98dfa608c51e72bcd350aa57df74c5d5574ba4ffb62e74",
+    strip_prefix = "openssl-OpenSSL_1_1_1d",
+    urls = ["https://github.com/openssl/openssl/archive/OpenSSL_1_1_1d.tar.gz"],
+)
+
+# MNIST dataset
+
+http_file(
+    name = "mnist_train_images",
+    sha256 = "440fcabf73cc546fa21475e81ea370265605f56be210a4024d2ca8f203523609",
+    urls = ["http://yann.lecun.com/exdb/mnist/train-images-idx3-ubyte.gz"],
+)
+
+http_file(
+    name = "mnist_train_labels",
+    sha256 = "3552534a0a558bbed6aed32b30c495cca23d567ec52cac8be1a0730e8010255c",
+    urls = ["http://yann.lecun.com/exdb/mnist/train-labels-idx1-ubyte.gz"],
+)
+
+http_file(
+    name = "mnist_test_images",
+    sha256 = "8d422c7b0a1c1c79245a5bcf07fe86e33eeafee792b84584aec276f5a2dbc4e6",
+    urls = ["http://yann.lecun.com/exdb/mnist/t10k-images-idx3-ubyte.gz"],
+)
+
+http_file(
+    name = "mnist_test_labels",
+    sha256 = "f7ae60f92e00ec6debd23a6088c31dbd2371eca3ffa0defaefb259924204aec6",
+    urls = ["http://yann.lecun.com/exdb/mnist/t10k-labels-idx1-ubyte.gz"],
+)
