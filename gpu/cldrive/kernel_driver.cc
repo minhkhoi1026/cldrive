@@ -150,15 +150,15 @@ labm8::Status KernelDriver::RunDynamicParams(
   *run->add_log() = RunOnceOrDie(dynamic_params, inputs, &output_b, run, logger,
                                  /*flush=*/false);
 
-  if (output_a != output_b) {
-    run->clear_log();  // Remove performance logs.
-    LOG(WARNING) << "Skipping non-deterministic kernel: '" << name_ << "'";
-    run->set_outcome(CldriveKernelRun::NONDETERMINISTIC);
-    logger.RecordLog(&instance_, kernel_instance_, run, &log);
-    logger.ClearBuffer();
-    return labm8::Status(labm8::error::Code::INVALID_ARGUMENT,
-                         "non-deterministic");
-  }
+  // if (output_a != output_b) {
+  //   run->clear_log();  // Remove performance logs.
+  //   LOG(WARNING) << "Skipping non-deterministic kernel: '" << name_ << "'";
+  //   run->set_outcome(CldriveKernelRun::NONDETERMINISTIC);
+  //   logger.RecordLog(&instance_, kernel_instance_, run, &log);
+  //   logger.ClearBuffer();
+  //   return labm8::Status(labm8::error::Code::INVALID_ARGUMENT,
+  //                        "non-deterministic");
+  // }
 
   bool maybe_no_output = output_a == inputs;
 
@@ -167,25 +167,25 @@ labm8::Status KernelDriver::RunDynamicParams(
   *run->add_log() = RunOnceOrDie(dynamic_params, inputs, &output_b, run, logger,
                                  /*flush=*/false);
 
-  if (output_a == output_b) {
-    run->clear_log();  // Remove performance logs.
-    LOG(WARNING) << "Skipping input insensitive kernel: '" << name_ << "'";
-    run->set_outcome(CldriveKernelRun::INPUT_INSENSITIVE);
-    logger.RecordLog(&instance_, kernel_instance_, run, &log);
-    logger.ClearBuffer();
-    return labm8::Status(labm8::error::Code::INVALID_ARGUMENT,
-                         "Input insensitive");
-  }
+  // if (output_a == output_b) {
+  //   run->clear_log();  // Remove performance logs.
+  //   LOG(WARNING) << "Skipping input insensitive kernel: '" << name_ << "'";
+  //   run->set_outcome(CldriveKernelRun::INPUT_INSENSITIVE);
+  //   logger.RecordLog(&instance_, kernel_instance_, run, &log);
+  //   logger.ClearBuffer();
+  //   return labm8::Status(labm8::error::Code::INVALID_ARGUMENT,
+  //                        "Input insensitive");
+  // }
 
-  if (maybe_no_output && output_b == inputs) {
-    run->clear_log();  // Remove performance logs.
-    LOG(WARNING) << "Skipping kernel that produces no output: '" << name_
-                 << "'";
-    run->set_outcome(CldriveKernelRun::NO_OUTPUT);
-    logger.RecordLog(&instance_, kernel_instance_, run, &log);
-    logger.ClearBuffer();
-    return labm8::Status(labm8::error::Code::INVALID_ARGUMENT, "No argument");
-  }
+  // if (maybe_no_output && output_b == inputs) {
+  //   run->clear_log();  // Remove performance logs.
+  //   LOG(WARNING) << "Skipping kernel that produces no output: '" << name_
+  //                << "'";
+  //   run->set_outcome(CldriveKernelRun::NO_OUTPUT);
+  //   logger.RecordLog(&instance_, kernel_instance_, run, &log);
+  //   logger.ClearBuffer();
+  //   return labm8::Status(labm8::error::Code::INVALID_ARGUMENT, "No argument");
+  // }
 
   // We've passed the point of rejecting the kernel. Flush the buffered logs
   // from the preliminary runs.
