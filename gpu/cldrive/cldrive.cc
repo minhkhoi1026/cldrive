@@ -101,11 +101,11 @@ static bool ValidateEnvs(const char* flagname, const string& value) {
 DEFINE_validator(envs, &ValidateEnvs);
 
 DEFINE_string(output_format, "csv",
-              "The output format. One of: {csv,pb,pbtxt}.");
+              "The output format. One of: {csv,pb,pbtxt,null}.");
 static bool ValidateOutputFormat(const char* flagname, const string& value) {
-  if (value.compare("csv") && value.compare("pb") && value.compare("pbtxt")) {
+  if (value.compare("csv") && value.compare("pb") && value.compare("pbtxt") && value.compare("null")) {
     LOG(FATAL) << "Illegal value for --" << flagname << ". Must be one of: "
-               << "{csv,pb,pbtxt}";
+               << "{csv,pb,pbtxt,null}";
   }
   return true;
 }
@@ -135,7 +135,10 @@ std::unique_ptr<Logger> MakeLoggerFromFlags(
                                                   /*text_format=*/true);
   } else if (!FLAGS_output_format.compare("csv")) {
     return std::make_unique<CsvLogger>(std::cout, instances);
-  } else {
+  }
+  else if (!FLAGS_output_format.compare("null")) {
+    return std::make_unique<NULLLogger>(std::cout, instances);
+  } else  {
     CHECK(false) << "unreachable!";
     return nullptr;
   }

@@ -83,5 +83,18 @@ class CsvLogger : public Logger {
       bool flush) override;
 };
 
+class NULLLogger : public Logger {
+ public:
+  NULLLogger(std::ostream& ostream, const CldriveInstances* const instances);
+
+  virtual labm8::Status RecordLog(
+      const CldriveInstance* const instance,
+      const CldriveKernelInstance* const kernel_instance,
+      const CldriveKernelRun* const run,
+      const gpu::libcecl::OpenClKernelInvocation* const log,
+      bool flush) override;
+};
+
+
 }  // namespace cldrive
 }  // namespace gpu

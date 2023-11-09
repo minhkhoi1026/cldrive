@@ -117,12 +117,12 @@ std::unique_ptr<KernelArgValue> KernelArg::TryToCreateKernelArgValue(
   if (IsPointer() && IsGlobal()) {
     return util::CreateGlobalMemoryArgValue(
         type(), context,
-        /*size=*/dynamic_params.global_size_x(),
+        /*size=*/1e7, // large number of elements for mem analysis
         /*value=*/1, rand_values);
   } else if (IsPointer() && IsLocal()) {
     return util::CreateLocalMemoryArgValue(
         type(),
-        /*size=*/dynamic_params.global_size_x());
+        /*size=*/1e7); // large number of elements for mem analysis
   } else if (!IsPointer()) {
     return util::CreateScalarArgValue(type(),
                                       /*value=*/dynamic_params.global_size_x());

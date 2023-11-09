@@ -143,12 +143,12 @@ labm8::Status KernelDriver::RunDynamicParams(
   //   }
   // }
 
-  KernelArgValuesSet output_a, output_b;
+  // KernelArgValuesSet output_a, output_b;
 
-  *run->add_log() = RunOnceOrDie(dynamic_params, inputs, &output_a, run, logger,
-                                 /*flush=*/false);
-  *run->add_log() = RunOnceOrDie(dynamic_params, inputs, &output_b, run, logger,
-                                 /*flush=*/false);
+  // *run->add_log() = RunOnceOrDie(dynamic_params, inputs, &output_a, run, logger,
+  //                                /*flush=*/false);
+  // *run->add_log() = RunOnceOrDie(dynamic_params, inputs, &output_b, run, logger,
+  //                                /*flush=*/false);
 
   // if (output_a != output_b) {
   //   run->clear_log();  // Remove performance logs.
@@ -162,6 +162,7 @@ labm8::Status KernelDriver::RunDynamicParams(
 
   // bool maybe_no_output = output_a == inputs;
 
+  KernelArgValuesSet output_b;
   CHECK(args_set_.SetRandom(context_, dynamic_params, &inputs).ok());
   inputs.SetAsArgs(&kernel_);
   *run->add_log() = RunOnceOrDie(dynamic_params, inputs, &output_b, run, logger,
@@ -191,10 +192,10 @@ labm8::Status KernelDriver::RunDynamicParams(
   // from the preliminary runs.
   logger.PrintAndClearBuffer();
 
-  for (int i = 3; i < instance_.min_runs_per_kernel(); ++i) {
-    *run->add_log() =
-        RunOnceOrDie(dynamic_params, inputs, &output_a, run, logger);
-  }
+  // for (int i = 3; i < instance_.min_runs_per_kernel(); ++i) {
+  //   *run->add_log() =
+  //       RunOnceOrDie(dynamic_params, inputs, &output_a, run, logger);
+  // }
 
   run->set_outcome(CldriveKernelRun::PASS);
   return labm8::Status::OK;
