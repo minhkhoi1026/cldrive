@@ -18,11 +18,11 @@ import numpy as np
 import json
 
 
-CLDRIVE = "bazel-bin/gpu/cldrive/cldrive"
+CLDRIVE = "bazel-bin/gpu/clmem/clmem"
 KERNEL_DIR = "kernels-modified"
 BACKUP_DIR = "backup"
-TIMEOUT = 100
-NUM_GPU = 2
+TIMEOUT = 5
+NUM_GPU = 1
 NUM_PROCESS = 16
 verbose_cldrive = False
 device_num_sm = 82  # {"GPU|NVIDIA|NVIDIA_GeForce_RTX_3090|535.86.05|3.0": 82}
@@ -53,8 +53,8 @@ def getOpenCLPlatforms() -> None:
         if stderr:
             raise ValueError(stderr)
     except Exception as e:
-        logging.error(cmd)
-        logging.error(e)
+        logger.error(cmd)
+        logger.error(e)
     CL_PLATFORMS = list(
         platform for platform in stdout.split("\n") if len(platform) > 0
     )
@@ -75,7 +75,7 @@ def RunCLDrive(
     If CLDrive executable exists, run it over provided source code.
     """
     if not CLDRIVE:
-        logging.warn(
+        logger.warn(
             "CLDrive executable has not been found. Skipping CLDrive execution."
         )
         return ""
@@ -180,8 +180,8 @@ def GetCLDriveStdout(
 
 def get_config():
     # including both simple case (multiple of 32) and complex case (not multiple of 32
-    local_sizes = [12, 32, 52, 64]
-    small_wg_sizes = list(range(1, device_num_sm))
+    local_sizes = [4, 16, 24, 32]
+    small_wg_sizes = list(range(1, 80))
     MAX_GSIZE = int(1e5) - 1
 
     def gen_launch_configs():
@@ -306,7 +306,7 @@ class KernelMemoryAnalyzer:
 
 
 def set_cuda_visible():
-    process_number = rng.integers(0, NUM_GPU - 1)
+    process_number = rng.integers(0, NUM_GPU)
     os.environ["CUDA_VISIBLE_DEVICES"] = str(process_number)
 
 
@@ -326,6 +326,7 @@ if __name__ == "__main__":
         
     for kernel in tqdm(need_calculate):
         kernel_path = os.path.join(KERNEL_DIR, kernel)
+        logger.info(f"Analyzing {kernel_path}")
         
         analyzer = KernelMemoryAnalyzer(kernel_path)
         res_dict = analyzer.get_array_bound_relation()

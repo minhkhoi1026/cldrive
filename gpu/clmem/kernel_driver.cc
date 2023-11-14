@@ -1,33 +1,36 @@
 // Copyright (c) 2016-2020 Chris Cummins.
-// This file is part of cldrive.
+// This file is part of clmem.
 //
-// cldrive is free software: you can redistribute it and/or modify
+// clmem is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// cldrive is distributed in the hope that it will be useful,
+// clmem is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with cldrive.  If not, see <https://www.gnu.org/licenses/>.
-#include "gpu/cldrive/kernel_driver.h"
+// along with clmem.  If not, see <https://www.gnu.org/licenses/>.
 
-#include "gpu/cldrive/logger.h"
-#include "gpu/cldrive/opencl_util.h"
+#include "gpu/clmem/kernel_driver.h"
+
+#include "gpu/clmem/logger.h"
+#include "gpu/clmem/opencl_util.h"
 #include "gpu/clinfo/libclinfo.h"
 
 #include "labm8/cpp/logging.h"
 #include "labm8/cpp/status_macros.h"
 
+#define MAX_ARRAY_SIZE 10000000
+
 namespace gpu {
-namespace cldrive {
+namespace clmem {
 
 KernelDriver::KernelDriver(const cl::Context& context,
                            const cl::CommandQueue& queue,
-                           const cl::Kernel& kernel, CldriveInstance* instance,
+                           const cl::Kernel& kernel, ClmemInstance* instance,
                            int instance_num)
     : context_(context),
       queue_(queue),
@@ -47,38 +50,53 @@ void KernelDriver::RunOrDie(Logger& logger) {
       kernel_.getWorkGroupInfo<CL_KERNEL_PRIVATE_MEM_SIZE>(device_));
 
   kernel_instance_->set_outcome(args_set_.Init());
-  if (kernel_instance_->outcome() != CldriveKernelInstance::PASS) {
+  if (kernel_instance_->outcome() != ClmemKernelInstance::PASS) {
     LOG(WARNING) << "Skipping kernel with unsupported arguments: '" << name_
                  << "'";
     logger.RecordLog(&instance_, kernel_instance_, /*run=*/nullptr,
                      /*log=*/nullptr);
     return;
   }
+  // preallocate the buffer for kernel arguments, 
+  // since the size is fixed for all dynamic params 
+  // (we does not know the size of the buffer before analysis)
+  gpu::clmem::DynamicParams temp_dp;
+  temp_dp.set_global_size_x(MAX_ARRAY_SIZE);
+  temp_dp.set_local_size_x(1);
+  KernelArgValuesSet inputs;
+  auto args_status = args_set_.SetRandom(context_, temp_dp, &inputs);
+  if (!args_status.ok()) {
+    LOG(WARNING) << "Unsupported params for kernel: '" << name_ << "'";
+    logger.RecordLog(&instance_, kernel_instance_, /*run=*/nullptr, 
+                    /*log=*/nullptr);
+    return;
+  }
 
+  // run experiment for all dynamic params, record the results
   for (int i = 0; i < instance_.dynamic_params_size(); ++i) {
-    auto run = RunDynamicParams(instance_.dynamic_params(i), logger);
+    auto run = RunDynamicParams(instance_.dynamic_params(i), logger, inputs);
     if (run.ok()) {
       *kernel_instance_->add_run() = run.ValueOrDie();
     } else {
       kernel_instance_->clear_run();
       kernel_instance_->set_outcome(
-          CldriveKernelInstance::UNSUPPORTED_ARGUMENTS);
+          ClmemKernelInstance::UNSUPPORTED_ARGUMENTS);
     }
   }
 }
 
-labm8::StatusOr<CldriveKernelRun> KernelDriver::RunDynamicParams(
-    const DynamicParams& dynamic_params, Logger& logger) {
-  CldriveKernelRun run;
+labm8::StatusOr<ClmemKernelRun> KernelDriver::RunDynamicParams(
+    const DynamicParams& dynamic_params, Logger& logger, KernelArgValuesSet& inputs) {
+  ClmemKernelRun run;
 
   try {
-    RunDynamicParams(dynamic_params, logger, &run);
+    RunDynamicParams(dynamic_params, logger, &run, inputs);
   } catch (cl::Error error) {
     LOG(WARNING) << "Error code " << error.err() << " ("
                  << labm8::gpu::clinfo::OpenClErrorString(error.err()) << ") "
                  << "raised by " << error.what() << "() while driving kernel: '"
                  << name_ << "'";
-    run.set_outcome(CldriveKernelRun::CL_ERROR);
+    run.set_outcome(ClmemKernelRun::CL_ERROR);
     logger.RecordLog(&instance_, kernel_instance_, &run, /*log=*/nullptr);
   }
 
@@ -103,7 +121,7 @@ gpu::libcecl::OpenClKernelInvocation DynamicParamsToLog(
 
 labm8::Status KernelDriver::RunDynamicParams(
     const DynamicParams& dynamic_params, Logger& logger,
-    CldriveKernelRun* run) {
+    ClmemKernelRun* run, KernelArgValuesSet &inputs) {
   // Create a log message with just the dynamic params so that we can log the
   // global and local sizes on error.
   gpu::libcecl::OpenClKernelInvocation log = DynamicParamsToLog(dynamic_params);
@@ -111,7 +129,7 @@ labm8::Status KernelDriver::RunDynamicParams(
   // Check that the dynamic params are within legal range.
   auto max_work_group_size = device_.getInfo<CL_DEVICE_MAX_WORK_GROUP_SIZE>();
   if (static_cast<int>(max_work_group_size) < dynamic_params.local_size_x()) {
-    run->set_outcome(CldriveKernelRun::INVALID_DYNAMIC_PARAMS);
+    run->set_outcome(ClmemKernelRun::INVALID_DYNAMIC_PARAMS);
     LOG(WARNING) << "Unsupported dynamic params to kernel '" << name_
                  << "' (local size " << dynamic_params.local_size_x()
                  << " exceeds maximum device work group size "
@@ -120,91 +138,22 @@ labm8::Status KernelDriver::RunDynamicParams(
     return labm8::Status(labm8::error::Code::INVALID_ARGUMENT,
                          "Unsupported dynamic params");
   }
-
-  KernelArgValuesSet inputs;
-  auto args_status = args_set_.SetOnes(context_, dynamic_params, &inputs);
-  if (!args_status.ok()) {
-    LOG(WARNING) << "Unsupported params for kernel: '" << name_ << "'";
-    logger.RecordLog(&instance_, kernel_instance_, run, &log);
-    return args_status;
-  }
-
-  // TODO(cec): Is this right?
-  // Check that each input is within the device's maximum for parameter sizes.
-  // size_t max_parameter_size =
-  // device_.getInfo<CL_DEVICE_MAX_PARAMETER_SIZE>();
-  // for (const auto& value : inputs.values()) {
-  //   if (value->SizeInBytes() > max_parameter_size) {
-  //     LOG(WARNING) << value->SizeInBytes() << " bytes argument exceeds "
-  //                  << "device max parameter size (" << max_parameter_size
-  //                  << " bytes)";
-  //     return labm8::Status(labm8::error::Code::INVALID_ARGUMENT,
-  //                        "Buffer too large for device");
-  //   }
-  // }
-
-  KernelArgValuesSet output_a, output_b;
-
-  *run->add_log() = RunOnceOrDie(dynamic_params, inputs, &output_a, run, logger,
-                                 /*flush=*/false);
-  *run->add_log() = RunOnceOrDie(dynamic_params, inputs, &output_b, run, logger,
-                                 /*flush=*/false);
-
-  // if (output_a != output_b) {
-  //   run->clear_log();  // Remove performance logs.
-  //   LOG(WARNING) << "Skipping non-deterministic kernel: '" << name_ << "'";
-  //   run->set_outcome(CldriveKernelRun::NONDETERMINISTIC);
-  //   logger.RecordLog(&instance_, kernel_instance_, run, &log);
-  //   logger.ClearBuffer();
-  //   return labm8::Status(labm8::error::Code::INVALID_ARGUMENT,
-  //                        "non-deterministic");
-  // }
-
-  // bool maybe_no_output = output_a == inputs;
-
-  
-
-  CHECK(args_set_.SetRandom(context_, dynamic_params, &inputs).ok());
+  KernelArgValuesSet output_b;
   inputs.SetAsArgs(&kernel_);
   *run->add_log() = RunOnceOrDie(dynamic_params, inputs, &output_b, run, logger,
                                  /*flush=*/false);
-
-  // if (output_a == output_b) {
-  //   run->clear_log();  // Remove performance logs.
-  //   LOG(WARNING) << "Skipping input insensitive kernel: '" << name_ << "'";
-  //   run->set_outcome(CldriveKernelRun::INPUT_INSENSITIVE);
-  //   logger.RecordLog(&instance_, kernel_instance_, run, &log);
-  //   logger.ClearBuffer();
-  //   return labm8::Status(labm8::error::Code::INVALID_ARGUMENT,
-  //                        "Input insensitive");
-  // }
-
-  // if (maybe_no_output && output_b == inputs) {
-  //   run->clear_log();  // Remove performance logs.
-  //   LOG(WARNING) << "Skipping kernel that produces no output: '" << name_
-  //                << "'";
-  //   run->set_outcome(CldriveKernelRun::NO_OUTPUT);
-  //   logger.RecordLog(&instance_, kernel_instance_, run, &log);
-  //   logger.ClearBuffer();
-  //   return labm8::Status(labm8::error::Code::INVALID_ARGUMENT, "No argument");
-  // }
 
   // We've passed the point of rejecting the kernel. Flush the buffered logs
   // from the preliminary runs.
   logger.PrintAndClearBuffer();
 
-  for (int i = 3; i < instance_.min_runs_per_kernel(); ++i) {
-    *run->add_log() =
-        RunOnceOrDie(dynamic_params, inputs, &output_a, run, logger);
-  }
-
-  run->set_outcome(CldriveKernelRun::PASS);
+  run->set_outcome(ClmemKernelRun::PASS);
   return labm8::Status::OK;
 }
 
 gpu::libcecl::OpenClKernelInvocation KernelDriver::RunOnceOrDie(
     const DynamicParams& dynamic_params, KernelArgValuesSet& inputs,
-    KernelArgValuesSet* outputs, const CldriveKernelRun* const run,
+    KernelArgValuesSet* outputs, const ClmemKernelRun* const run,
     Logger& logger, bool flush) {
   gpu::libcecl::OpenClKernelInvocation log;
   ProfilingData profiling;
@@ -238,5 +187,5 @@ gpu::libcecl::OpenClKernelInvocation KernelDriver::RunOnceOrDie(
   return log;
 }
 
-}  // namespace cldrive
+}  // namespace clmem
 }  // namespace gpu

@@ -1,30 +1,30 @@
-// Main entry point for cldrive command line executable.
+// Main entry point for clmem command line executable.
 //
 // Usage summary:
-//   cldrive --srcs=<opencl_sources> --envs=<opencl_devices>
+//   clmem --srcs=<opencl_sources> --envs=<opencl_devices>
 //       --gsize=<gsize> --lsize=<lsize> --output_format=(txt|pb|pbtxt)
 //
 // Run with `--help` argument to see full usage options.
 //
 // Copyright (c) 2016-2020 Chris Cummins.
-// This file is part of cldrive.
+// This file is part of clmem.
 //
-// cldrive is free software: you can redistribute it and/or modify
+// clmem is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// cldrive is distributed in the hope that it will be useful,
+// clmem is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with cldrive.  If not, see <https://www.gnu.org/licenses/>.
-#include "gpu/cldrive/libcldrive.h"
+// along with clmem.  If not, see <https://www.gnu.org/licenses/>.
+#include "gpu/clmem/libclmem.h"
 
-#include "gpu/cldrive/logger.h"
-#include "gpu/cldrive/proto/cldrive.pb.h"
+#include "gpu/clmem/logger.h"
+#include "gpu/clmem/proto/clmem.pb.h"
 #include "gpu/clinfo/libclinfo.h"
 
 #include "labm8/cpp/app.h"
@@ -101,11 +101,11 @@ static bool ValidateEnvs(const char* flagname, const string& value) {
 DEFINE_validator(envs, &ValidateEnvs);
 
 DEFINE_string(output_format, "csv",
-              "The output format. One of: {csv,pb,pbtxt}.");
+              "The output format. One of: {csv,pb,pbtxt,null}.");
 static bool ValidateOutputFormat(const char* flagname, const string& value) {
-  if (value.compare("csv") && value.compare("pb") && value.compare("pbtxt")) {
+  if (value.compare("csv") && value.compare("pb") && value.compare("pbtxt") && value.compare("null")) {
     LOG(FATAL) << "Illegal value for --" << flagname << ". Must be one of: "
-               << "{csv,pb,pbtxt}";
+               << "{csv,pb,pbtxt,null}";
   }
   return true;
 }
@@ -123,10 +123,10 @@ DEFINE_bool(clinfo, false, "List the available devices and exit.");
 // End flag definitions ------------------------------------
 
 namespace gpu {
-namespace cldrive {
+namespace clmem {
 
 std::unique_ptr<Logger> MakeLoggerFromFlags(
-    std::ostream& ostream, const CldriveInstances* const instances) {
+    std::ostream& ostream, const ClmemInstances* const instances) {
   if (!FLAGS_output_format.compare("pb")) {
     return std::make_unique<ProtocolBufferLogger>(std::cout, instances,
                                                   /*text_format=*/false);
@@ -135,13 +135,16 @@ std::unique_ptr<Logger> MakeLoggerFromFlags(
                                                   /*text_format=*/true);
   } else if (!FLAGS_output_format.compare("csv")) {
     return std::make_unique<CsvLogger>(std::cout, instances);
-  } else {
+  }
+  else if (!FLAGS_output_format.compare("null")) {
+    return std::make_unique<NULLLogger>(std::cout, instances);
+  } else  {
     CHECK(false) << "unreachable!";
     return nullptr;
   }
 }
 
-}  // namespace cldrive
+}  // namespace clmem
 }  // namespace gpu
 
 namespace {
@@ -192,8 +195,8 @@ int main(int argc, char** argv) {
   auto devices = GetDevicesFromCommaSeparatedString(FLAGS_envs);
 
   // Create instances proto.
-  gpu::cldrive::CldriveInstances instances;
-  gpu::cldrive::CldriveInstance* instance = instances.add_instance();
+  gpu::clmem::ClmemInstances instances;
+  gpu::clmem::ClmemInstance* instance = instances.add_instance();
   instance->set_build_opts(FLAGS_cl_build_opt);
   auto dp = instance->add_dynamic_params();
   dp->set_global_size_x(FLAGS_gsize);
@@ -201,8 +204,8 @@ int main(int argc, char** argv) {
   instance->set_min_runs_per_kernel(FLAGS_num_runs);
 
   // Parse logger flag.
-  std::unique_ptr<gpu::cldrive::Logger> logger =
-      gpu::cldrive::MakeLoggerFromFlags(std::cout, &instances);
+  std::unique_ptr<gpu::clmem::Logger> logger =
+      gpu::clmem::MakeLoggerFromFlags(std::cout, &instances);
 
   int instance_num = 0;
   for (auto path : SplitCommaSeparated(FLAGS_srcs)) {
@@ -216,7 +219,7 @@ int main(int argc, char** argv) {
 
       *instance->mutable_device() = devices[i];
 
-      gpu::cldrive::Cldrive(instance, instance_num).RunOrDie(*logger);
+      gpu::clmem::Clmem(instance, instance_num).RunOrDie(*logger);
     }
 
     ++instance_num;
