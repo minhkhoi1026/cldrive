@@ -1000,3 +1000,12 @@ http_file(
     sha256 = "f7ae60f92e00ec6debd23a6088c31dbd2371eca3ffa0defaefb259924204aec6",
     urls = ["http://yann.lecun.com/exdb/mnist/t10k-labels-idx1-ubyte.gz"],
 )
+
+http_archive(
+    name = "com_github_jsoncpp",
+    build_file = "//:third_party/jsoncpp.BUILD",
+    strip_prefix = "jsoncpp-1.8.4",
+    urls = [
+        "https://github.com/open-source-parsers/jsoncpp/archive/1.8.4.tar.gz", 
+    ],
+)

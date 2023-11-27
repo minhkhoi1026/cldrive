@@ -80,6 +80,7 @@ cc_binary(
     deps = [
         ":csv_log",
         ":libcldrive",
+        ":mem_analysis_util",
         "//gpu/clinfo:libclinfo",
         "//labm8/cpp:app",
         "//labm8/cpp:logging",
@@ -96,12 +97,24 @@ cc_image(
         # TODO(cec): This is a duplicate of the dependencies of :cldrive.
         ":csv_log",
         ":libcldrive",
+        ":mem_analysis_util",
         "//gpu/clinfo:libclinfo",
         "//labm8/cpp:app",
         "//labm8/cpp:logging",
         "@boost//:filesystem",
         "@com_github_gflags_gflags//:gflags",
         "@com_google_absl//absl/strings",
+    ],
+)
+
+cc_library(
+    name = "mem_analysis_util",
+    srcs = ["mem_analysis_util.cc"],
+    hdrs = ["mem_analysis_util.h"],
+    deps = [
+        "//labm8/cpp:logging",
+        "@boost//:filesystem",
+        "@com_github_jsoncpp//:jsoncpp",
     ],
 )
 
