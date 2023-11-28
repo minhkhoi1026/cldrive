@@ -298,6 +298,7 @@ cc_library(
         ":kernel_arg_set",
         ":logger",
         ":opencl_util",
+        ":mem_analysis_util",
         "//gpu/cldrive/proto:cldrive_py_cc",
         "//gpu/clinfo:libclinfo",
         "//labm8/cpp:logging",

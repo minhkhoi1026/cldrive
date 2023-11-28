@@ -44,6 +44,9 @@ class KernelDriver {
       const DynamicParams& dynamic_params, KernelArgValuesSet& inputs,
       KernelArgValuesSet* outputs, const CldriveKernelRun* const run,
       Logger& logger, bool flush = true);
+  gpu::libcecl::OpenClKernelInvocation RunOnceOrDie(
+    const DynamicParams& dynamic_params, KernelArgValuesSet& inputs,
+    KernelArgValuesSet* outputs);
 
  private:
   // Private helper to public RunDynamicParams() method that doesn't catch

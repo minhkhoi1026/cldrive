@@ -17,6 +17,8 @@ namespace mem_analysis {
   bool isMemAnalysisFileExists(std::string filePathToCheck_, std::string memAnalysisDir_);
 
   // get the memory analysis information from the memory analysis file
+  std::map<int,int> getMemAnalysisInfo(boost::filesystem::path memFilePath, int gsize, int lsize);
+  std::map<int,int> getMemAnalysisInfo(std::string memFilePathStr, int gsize, int lsize);
   std::map<int, int> getMemAnalysisInfo(std::string sourceFile_, std::string memAnalysisDir_, int gsize, int lsize);
 }
 }

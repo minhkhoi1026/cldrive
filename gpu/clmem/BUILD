@@ -19,6 +19,7 @@
 load("@cec_exports_repo//tools/bzl:exports_repo.bzl", "exports_repo")
 load("@io_bazel_rules_docker//cc:image.bzl", "cc_image")
 
+
 licenses(["restricted"])  # GPL v3
 
 exports_files([

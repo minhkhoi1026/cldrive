@@ -116,7 +116,7 @@ static bool ValidateEnvs(const char* flagname, const string& value) {
   }
   return true;
 }
-// DEFINE_validator(envs, &ValidateEnvs);
+DEFINE_validator(envs, &ValidateEnvs);
 
 DEFINE_string(output_format, "csv",
               "The output format. One of: {csv,pb,pbtxt}.");
@@ -207,42 +207,40 @@ int main(int argc, char** argv) {
     LOG(FATAL) << "Flag --srcs must be set";
   }
 
-  // auto devices = GetDevicesFromCommaSeparatedString(FLAGS_envs);
+  auto devices = GetDevicesFromCommaSeparatedString(FLAGS_envs);
 
-  // // Create instances proto.
-  // gpu::cldrive::CldriveInstances instances;
-  // gpu::cldrive::CldriveInstance* instance = instances.add_instance();
-  // instance->set_build_opts(FLAGS_cl_build_opt);
-  // auto dp = instance->add_dynamic_params();
-  // dp->set_global_size_x(FLAGS_gsize);
-  // dp->set_local_size_x(FLAGS_lsize);
-  // instance->set_min_runs_per_kernel(FLAGS_num_runs);
+  // Create instances proto.
+  gpu::cldrive::CldriveInstances instances;
+  gpu::cldrive::CldriveInstance* instance = instances.add_instance();
+  instance->set_build_opts(FLAGS_cl_build_opt);
+  auto dp = instance->add_dynamic_params();
+  dp->set_global_size_x(FLAGS_gsize);
+  dp->set_local_size_x(FLAGS_lsize);
+  instance->set_min_runs_per_kernel(FLAGS_num_runs);
 
-  // // Parse logger flag.
-  // std::unique_ptr<gpu::cldrive::Logger> logger =
-  //     gpu::cldrive::MakeLoggerFromFlags(std::cout, &instances);
+  // Parse logger flag.
+  std::unique_ptr<gpu::cldrive::Logger> logger =
+      gpu::cldrive::MakeLoggerFromFlags(std::cout, &instances);
 
-  // int instance_num = 0;
+  int instance_num = 0;
   for (auto path : SplitCommaSeparated(FLAGS_srcs)) {
     std::map<int,int> memAnalysis = gpu::cldrive::mem_analysis::getMemAnalysisInfo(path, FLAGS_mem_analysis_dir, FLAGS_gsize, FLAGS_lsize);
-    for (auto it = memAnalysis.begin(); it != memAnalysis.end(); ++it) {
-      std::cout << it->first << " " << it->second << "\n";
-    }
     
-    // logger->StartNewInstance();
-    // instance->set_opencl_src(ReadFileOrDie(path));
+    logger->StartNewInstance();
+    instance->set_opencl_src(ReadFileOrDie(path));
+    instance->set_mem_filepath(gpu::cldrive::mem_analysis::getMemAnalysisFilePath(path, FLAGS_mem_analysis_dir).string());
 
-    // for (size_t i = 0; i < devices.size(); ++i) {
-    //   // Reset fields from previous loop iterations.
-    //   instance->clear_outcome();
-    //   instance->clear_kernel();
+    for (size_t i = 0; i < devices.size(); ++i) {
+      // Reset fields from previous loop iterations.
+      instance->clear_outcome();
+      instance->clear_kernel();
 
-    //   *instance->mutable_device() = devices[i];
+      *instance->mutable_device() = devices[i];
 
-    //   gpu::cldrive::Cldrive(instance, instance_num).RunOrDie(*logger);
-    // }
+      gpu::cldrive::Cldrive(instance, instance_num).RunOrDie(*logger);
+    }
 
-    // ++instance_num;
+    ++instance_num;
   }
 
   return 0;

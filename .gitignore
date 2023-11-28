@@ -2,3 +2,5 @@ kernels/
 kernels-modified/
 backup/
 cldrive.log
+mem-analysis/
+cldrive-backup/

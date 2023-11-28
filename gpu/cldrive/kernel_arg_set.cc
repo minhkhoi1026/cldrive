@@ -75,6 +75,28 @@ labm8::Status KernelArgSet::SetRandom(const cl::Context& context,
   return labm8::Status::OK;
 }
 
+labm8::Status KernelArgSet::SetRandom(const cl::Context& context,
+                                      const std::vector<long long>& args_array_bound,
+                                      KernelArgValuesSet* values) {
+  values->Clear();
+  int i = 0;
+  for (auto& arg : args_) {
+    DynamicParams dynamic_params;
+    dynamic_params.set_global_size_x(args_array_bound[i]);
+    auto value = arg.TryToCreateRandomValue(context, dynamic_params);
+    if (value) {
+      values->AddKernelArgValue(std::move(value));
+    } else {
+      // TryToCreateRandomValue() returns nullptr if the argument is not
+      // supported.
+      return labm8::Status(labm8::error::Code::INVALID_ARGUMENT,
+                           "Unsupported argument type.");
+    }
+    ++i;
+  }
+  return labm8::Status::OK;
+}
+
 labm8::Status KernelArgSet::SetOnes(const cl::Context& context,
                                     const DynamicParams& dynamic_params,
                                     KernelArgValuesSet* values) {

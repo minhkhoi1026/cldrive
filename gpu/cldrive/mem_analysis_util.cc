@@ -22,18 +22,15 @@ namespace mem_analysis {
     return boost::filesystem::exists(memFileToCheck);
   }
 
-  std::map<int, int> getMemAnalysisInfo(std::string sourceFile_, std::string memAnalysisDir_, int gsize, int lsize) {
-    // get the file path to check
-    boost::filesystem::path memFileToCheck = getMemAnalysisFilePath(sourceFile_, memAnalysisDir_);
-
+  std::map<int,int> getMemAnalysisInfo(boost::filesystem::path memFilePath, int gsize, int lsize) {
     std::map<int, int> memAnalysisInfo;
 
     // If the file not exists, then use default memory analysis setting (empty)
-    if (boost::filesystem::exists(memFileToCheck) == false) {
+    if (boost::filesystem::exists(memFilePath) == false) {
       return memAnalysisInfo;
     }
 
-    std::ifstream jsonFile(memFileToCheck.string());
+    std::ifstream jsonFile(memFilePath.string());
 
     // Read the JSON content into a string
     std::string jsonData((std::istreambuf_iterator<char>(jsonFile)),
@@ -59,6 +56,18 @@ namespace mem_analysis {
     }
 
     return memAnalysisInfo;
+  }
+
+  std::map<int,int> getMemAnalysisInfo(std::string memFilePathStr, int gsize, int lsize) {
+    // get the file path to check
+    boost::filesystem::path memFilePath(memFilePathStr);
+    return getMemAnalysisInfo(memFilePath, gsize, lsize);
+  }
+
+  std::map<int, int> getMemAnalysisInfo(std::string sourceFile_, std::string memAnalysisDir_, int gsize, int lsize) {
+    // get the file path to check
+    boost::filesystem::path memFilePath = getMemAnalysisFilePath(sourceFile_, memAnalysisDir_);
+    return getMemAnalysisInfo(memFilePath, gsize, lsize);
   }
 }
 }

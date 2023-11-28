@@ -33,6 +33,7 @@ message CldriveInstances {
 message CldriveInstance {
   optional gpu.clinfo.OpenClDevice device = 1;
   optional string opencl_src = 2;
+  
   repeated DynamicParams dynamic_params = 3;
   optional int32 min_runs_per_kernel = 4;
   // A string of options to pass to clBuildProgram(). One option,
@@ -49,6 +50,7 @@ message CldriveInstance {
   }
   optional InstanceOutcome outcome = 10;
   repeated CldriveKernelInstance kernel = 11;
+  optional string mem_filepath = 12;
 }
 
 message CldriveKernelInstance {
@@ -65,6 +67,7 @@ message CldriveKernelInstance {
   optional KernelInstanceOutcome outcome = 3;
   optional int64 work_item_local_mem_size_in_bytes = 4;
   optional int64 work_item_private_mem_size_in_bytes = 5;
+  repeated int64 arg_array_bounds = 6;
 }
 
 message DynamicParams {
