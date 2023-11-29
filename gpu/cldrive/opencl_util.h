@@ -38,6 +38,9 @@ void CopyDeviceToHost(const cl::CommandQueue &queue, const cl::Buffer &buffer,
 // Get the name of a kernel.
 string GetOpenClKernelName(const cl::Kernel &kernel);
 
+// Get the name of a kernel argument.
+string GetKernelArgName(const cl::Kernel& kernel, size_t arg_index);
+
 // Get the type name of a kernel argument.
 string GetKernelArgTypeName(const cl::Kernel &kernel, size_t arg_index);
 

@@ -51,4 +51,5 @@ message OpenClKernelInvocation {
   // execution times, respectively.
   required int64 transfer_time_ns = 7;
   required int64 kernel_time_ns = 6;
+  required string args_info = 8;
 }

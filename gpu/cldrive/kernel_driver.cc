@@ -187,6 +187,7 @@ gpu::libcecl::OpenClKernelInvocation KernelDriver::RunOnceOrDie(
   log.set_kernel_time_ns(profiling.kernel_nanoseconds);
   log.set_transfer_time_ns(profiling.transfer_nanoseconds);
   log.set_transferred_bytes(profiling.transferred_bytes);
+  log.set_args_info(args_set_.ToStringWithValue(inputs));
 
   logger.RecordLog(&instance_, kernel_instance_, run, &log, flush);
 

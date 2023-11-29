@@ -55,6 +55,8 @@ class KernelArg {
   bool IsPointer() const;
 
   const OpenClType &type() const;
+  const string &name() const;
+  const string &type_name() const;
 
  private:
   std::unique_ptr<KernelArgValue> TryToCreateKernelArgValue(
@@ -64,6 +66,8 @@ class KernelArg {
   OpenClType type_;
   cl_kernel_arg_address_qualifier address_;
   bool is_pointer_;
+  string name_;
+  string type_name_;
 };
 
 }  // namespace cldrive

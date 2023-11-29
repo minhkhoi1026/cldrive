@@ -92,6 +92,30 @@ string GetKernelArgTypeName(const cl::Kernel& kernel, size_t arg_index) {
   return name;
 }
 
+string GetKernelArgName(const cl::Kernel& kernel, size_t arg_index) {
+  // Rather than determine the size of the character array needed to store the
+  // string, allocate a buffer that *should be* large enough. This is a
+  // workaround for a bug in an OpenCL implementation.
+  size_t buffer_size = 512;
+  char* chars = new char[buffer_size];
+
+  size_t actual_size;
+  CHECK(clGetKernelArgInfo(
+            kernel(), arg_index, CL_KERNEL_ARG_NAME, buffer_size, chars,
+            /*param_value_size_ret=*/&actual_size) == CL_SUCCESS);
+
+  CHECK(actual_size <= buffer_size)
+      << "OpenCL kernel name exceeds " << buffer_size << " characters";
+
+  // Construct a string from the buffer.
+  string name(chars);
+  // name_size includes trailing '\0' character, name.size() does not.
+  CHECK(name.size() == actual_size - 1);
+  delete[] chars;
+
+  return name;
+}
+
 }  // namespace util
 }  // namespace cldrive
 }  // namespace gpu

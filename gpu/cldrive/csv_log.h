@@ -89,6 +89,9 @@ class CsvLog {
   // CldriveInstance.outcome != PASS, else CldriveKernelInstance.outcome if
   // CldriveKernelInstance.outcome != PASS, else CldriveKernelRun.outcome.
   string outcome_;
+  
+  // A stringified representation for kernel arguments. From OpenClKernelInvocation.args_info.
+  string args_; 
 
   // From CldriveKernelRun.log. If outcome != PASS, these will be empty.
   labm8::int64 transferred_bytes_;

@@ -52,7 +52,7 @@ std::ostream& NullIfNegative(std::ostream& stream, const T& value) {
 std::ostream& operator<<(std::ostream& stream, const CsvLogHeader& header) {
   stream << "instance,device,build_opts,kernel,work_item_local_mem_size,"
          << "work_item_private_mem_size,global_size,local_size,outcome,"
-         << "transferred_bytes,transfer_time_ns,kernel_time_ns\n";
+         << "transferred_bytes,transfer_time_ns,kernel_time_ns,args_info\n";
   return stream;
 }
 
@@ -78,7 +78,8 @@ std::ostream& operator<<(std::ostream& stream, const CsvLog& log) {
   NullIfNegative(stream, log.local_size_) << "," << log.outcome_ << ",";
   NullIfNegative(stream, log.transferred_bytes_) << ",";
   NullIfNegative(stream, log.transfer_time_ns_) << ",";
-  NullIfNegative(stream, log.kernel_time_ns_) << std::endl;
+  NullIfNegative(stream, log.kernel_time_ns_) << ",";
+  NullIfEmpty(stream, log.args_) << std::endl;
   return stream;
 }
 
@@ -94,6 +95,7 @@ std::ostream& operator<<(std::ostream& stream, const CsvLog& log) {
   csv.build_opts_ = instance->build_opts();
 
   csv.outcome_ = CldriveInstance::InstanceOutcome_Name(instance->outcome());
+  csv.args_ = log->args_info();
   if (kernel_instance) {
     csv.kernel_ = kernel_instance->name();
     csv.work_item_local_mem_size_ =

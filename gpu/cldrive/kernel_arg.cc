@@ -29,6 +29,8 @@ namespace gpu {
 namespace cldrive {
 
 labm8::Status KernelArg::Init(cl::Kernel* kernel, size_t arg_index) {
+  name_ = util::GetKernelArgName(*kernel, arg_index);
+
   address_ = kernel->getArgInfo<CL_KERNEL_ARG_ADDRESS_QUALIFIER>(arg_index);
   CHECK(IsGlobal() || IsLocal() || IsConstant() || IsPrivate());
 
@@ -49,20 +51,20 @@ labm8::Status KernelArg::Init(cl::Kernel* kernel, size_t arg_index) {
                          "Unsupported argument");
   }
 
-  string type_name = util::GetKernelArgTypeName(*kernel, arg_index);
+  type_name_ = util::GetKernelArgTypeName(*kernel, arg_index);
 
-  is_pointer_ = type_name.back() == '*';
+  is_pointer_ = type_name_.back() == '*';
 
   // Strip the trailing '*' on pointer types.
   if (is_pointer_) {
-    type_name.resize(type_name.size() - 1);
+    type_name_.resize(type_name_.size() - 1);
   }
 
-  auto type_or = OpenClTypeFromString(type_name);
+  auto type_or = OpenClTypeFromString(type_name_);
   if (!type_or.ok()) {
     LOG(WARNING) << "Argument " << arg_index << " of kernel '"
                  << util::GetOpenClKernelName(*kernel)
-                 << "' is of unknown type: " << type_name;
+                 << "' is of unknown type: " << type_name_;
     return type_or.status();
   }
   type_ = type_or.ValueOrDie();
@@ -78,6 +80,8 @@ labm8::Status KernelArg::Init(cl::Kernel* kernel, size_t arg_index) {
 }
 
 const OpenClType& KernelArg::type() const { return type_; }
+const string& KernelArg::name() const { return name_; }
+const string& KernelArg::type_name() const { return type_name_; }
 
 std::unique_ptr<KernelArgValue> KernelArg::TryToCreateRandomValue(
     const cl::Context& context, const DynamicParams& dynamic_params) const {

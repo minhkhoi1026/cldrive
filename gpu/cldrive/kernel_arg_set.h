@@ -43,6 +43,8 @@ class KernelArgSet {
   labm8::Status SetOnes(const cl::Context& context,
                         const DynamicParams& dynamic_params,
                         KernelArgValuesSet* values);
+  const std::vector<KernelArg>& args() const;
+  string ToStringWithValue(const KernelArgValuesSet& values) const;
 
  private:
   cl::Kernel* kernel_;
