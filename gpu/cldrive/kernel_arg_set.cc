@@ -117,23 +117,32 @@ labm8::Status KernelArgSet::SetOnes(const cl::Context& context,
 
 string KernelArgSet::ToStringWithValue(const KernelArgValuesSet& arg_values) const {
   string s = "[";
-  std::cout << arg_values.values().size();
   for (size_t i = 0; i < arg_values.values().size(); ++i) {
+    // if arg is a pointer, save the size of the array instead
+    string value = arg_values.values()[i]->ToString();
+    if (args_[i].IsPointer()) {
+      value = std::to_string(arg_values.values()[i]->Size());
+    }
+    else {
+      value = arg_values.values()[i]->ToString();
+    }
+
     absl::StrAppend(&s, absl::StrFormat("{id: %d, name: %s, type: %s, value: %s, "
-                                        "is_pointer: %v, is_global: %v, is_local: %v, "
-                                        "is_constant: %v, is_private: %v},",
+                                        "is_pointer: %d, is_global: %d, is_local: %d, "
+                                        "is_constant: %d, is_private: %d},",
                                         i, 
                                         args_[i].name(),
                                         args_[i].type_name(),
+                                        value,
                                         args_[i].IsPointer(),
                                         args_[i].IsGlobal(),
                                         args_[i].IsLocal(),
                                         args_[i].IsConstant(),
-                                        args_[i].IsPrivate(),
-                                        arg_values.values()[i]->ToString()
+                                        args_[i].IsPrivate()
                                         ));
   }
   absl::StrAppend(&s, "]");
+  
   return s;
 }
 

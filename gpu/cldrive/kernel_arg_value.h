@@ -49,6 +49,8 @@ class KernelArgValue {
   virtual string ToString() const = 0;
 
   virtual size_t SizeInBytes() const = 0;
+
+  virtual size_t Size() const = 0;
 };
 
 }  // namespace cldrive

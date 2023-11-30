@@ -56,6 +56,8 @@ class LocalMemoryArgValue : public KernelArgValue {
 
   virtual size_t SizeInBytes() const override { return sizeof(T) * size_; }
 
+  virtual size_t Size() const override { return size_; }
+
  private:
   const size_t size_;
 };

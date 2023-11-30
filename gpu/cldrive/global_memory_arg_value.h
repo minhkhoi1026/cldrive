@@ -60,7 +60,7 @@ class GlobalMemoryArgValue : public KernelArgValue {
 
   const std::vector<T> &vector() const { return vector_; }
 
-  size_t size() const { return vector().size(); }
+  virtual size_t Size() const override { return vector_.size(); }
 
   virtual void CopyToDevice(const cl::CommandQueue &queue,
                             ProfilingData *profiling) override {
@@ -121,7 +121,7 @@ class GlobalMemoryArgValueWithBuffer : public GlobalMemoryArgValue<T> {
   virtual std::unique_ptr<KernelArgValue> CopyFromDevice(
       const cl::CommandQueue &queue, ProfilingData *profiling) override {
     size_t buffer_size = this->vector().size() * sizeof(T);
-    auto new_arg = std::make_unique<GlobalMemoryArgValue<T>>(this->size());
+    auto new_arg = std::make_unique<GlobalMemoryArgValue<T>>(this->Size());
     util::CopyDeviceToHost(queue, buffer(), new_arg->vector().data(),
                            buffer_size, profiling);
     return std::move(new_arg);

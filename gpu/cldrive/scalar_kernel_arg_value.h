@@ -62,6 +62,7 @@ class ScalarKernelArgValue : public KernelArgValue {
   }
 
   virtual size_t SizeInBytes() const override { return sizeof(T); }
+  virtual size_t Size() const override { return 1; }
 
   const T &value() const { return value_; }
   T &value() { return value_; }
