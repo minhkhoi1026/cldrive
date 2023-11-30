@@ -129,6 +129,7 @@ labm8::Status KernelDriver::RunDynamicParams(
   std::vector<long long> arrayBoundArgs;
   int nArgs = kernel_.getInfo<CL_KERNEL_NUM_ARGS>();
   for (int i = 0; i < nArgs; ++i) {
+    // if mem analysis info is not found, then use global size as array bound
     if (memAnalysisInfo.find(i) != memAnalysisInfo.end()) {
       kernel_instance_->add_arg_array_bounds(dynamic_params.global_size_x());
     }

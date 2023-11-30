@@ -51,7 +51,7 @@ namespace mem_analysis {
         int argId = currentChild["arg_id"].asInt();
         int arraySize = std::round(currentChild["coef"][0].asDouble() * gsize 
                               + currentChild["coef"][1].asDouble() * lsize 
-                              + currentChild["coef"][2].asDouble());
+                              + currentChild["coef"][2].asDouble()) + 1;
         memAnalysisInfo[argId] = arraySize;
     }
 
