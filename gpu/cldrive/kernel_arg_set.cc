@@ -127,18 +127,26 @@ string KernelArgSet::ToStringWithValue(const KernelArgValuesSet& arg_values) con
       value = arg_values.values()[i]->ToString();
     }
 
-    absl::StrAppend(&s, absl::StrFormat("{id: %d, name: %s, type: %s, value: %s, "
-                                        "is_pointer: %d, is_global: %d, is_local: %d, "
-                                        "is_constant: %d, is_private: %d},",
+    string qualifier;
+    if (args_[i].IsGlobal()) {
+      qualifier = "global";
+    }
+    else if (args_[i].IsLocal()) {
+      qualifier = "local";
+    }
+    else if (args_[i].IsConstant()) {
+      qualifier = "constant";
+    }
+    else if (args_[i].IsPrivate()) {
+      qualifier = "private";
+    }
+
+    absl::StrAppend(&s, absl::StrFormat("{id: %d, name: %s, type: %s, value: %s, qualifier: %s},",
                                         i, 
                                         args_[i].name(),
                                         args_[i].type_name(),
                                         value,
-                                        args_[i].IsPointer(),
-                                        args_[i].IsGlobal(),
-                                        args_[i].IsLocal(),
-                                        args_[i].IsConstant(),
-                                        args_[i].IsPrivate()
+                                        qualifier
                                         ));
   }
   absl::StrAppend(&s, "]");

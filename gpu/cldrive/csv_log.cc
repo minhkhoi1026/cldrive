@@ -79,7 +79,7 @@ std::ostream& operator<<(std::ostream& stream, const CsvLog& log) {
   NullIfNegative(stream, log.transferred_bytes_) << ",";
   NullIfNegative(stream, log.transfer_time_ns_) << ",";
   NullIfNegative(stream, log.kernel_time_ns_) << ",";
-  NullIfEmpty(stream, log.args_) << std::endl;
+  stream << "\""; NullIfEmpty(stream, log.args_) << "\"" << std::endl;
   return stream;
 }
 
