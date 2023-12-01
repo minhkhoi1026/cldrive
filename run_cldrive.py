@@ -9,7 +9,7 @@ import os
 from tqdm import tqdm
 import multiprocessing
 import random
-import hashlib
+import time
 from retry.api import retry_call
 from loguru import logger
 
@@ -20,10 +20,14 @@ MEM_ANALYSIS_DIR = "mem-analysis"
 os.makedirs(BACKUP_DIR, exist_ok=True)
 TIMEOUT = 100
 NRUN = 10
-NUM_GPU = 1
+NUM_GPU = 2
 verbose_cldrive = False
-device_num_sm = 72  # {"GPU|NVIDIA|NVIDIA_GeForce_RTX_3090|535.86.05|3.0": 82}
-BACKUPED_LIST = list(os.path.splitext(path)[0] for path in os.listdir(BACKUP_DIR))
+device_num_sm_dict = {
+    "GPU|NVIDIA|NVIDIA_GeForce_RTX_3090|535.86.05|3.0": 82,
+    "GPU|NVIDIA|NVIDIA_A10|535.104.05|3.0": 72
+}
+device_num_sm = 72
+BACKUPED_LIST = set(list(os.path.splitext(path)[0] for path in os.listdir(BACKUP_DIR)))
 
 random.seed(2610)
 
@@ -181,8 +185,8 @@ def get_config():
     # including both simple case (multiple of 32) and complex case (not multiple of 32)
     n_sample_local = 4
     n_sample_wg = 50
-    n_sample_small_wg = int(n_sample_wg * 0.25)
-    n_sample_medium_wg = int(n_sample_wg * 0.6)
+    n_sample_small_wg = int(n_sample_wg * 0.15)
+    n_sample_medium_wg = int(n_sample_wg * 0.7)
     n_sample_large_wg = int(n_sample_wg * 0.15)
     local_sizes = [32 * i for i in range(1, 32)]
     small_wg_sizes = list(range(1, device_num_sm))
@@ -223,7 +227,6 @@ def get_config():
     launch_configs = gen_launch_configs()
     nrun = NRUN
     for kernel in kernel_path_configs:
-        launch_configs = gen_launch_configs()
         for launch_config in launch_configs:
             yield {
                 "kernel_path": kernel,
@@ -233,32 +236,19 @@ def get_config():
             }
 
 
-def get_hash_kernel_instance(kernel_path, gsize, lsize, device_name):
-    return hashlib.sha256(
-        kernel_path.encode("utf-8")
-        + str(gsize).encode("utf-8")
-        + str(lsize).encode("utf-8")
-        + str(device_name).encode("utf-8")
-    ).hexdigest()
-
+def get_file_id_from_config(config):
+    kernel_id = os.path.splitext(os.path.basename(config["kernel_path"]))[0]
+    return f"{kernel_id}_{config['gsize']}_{config['lsize']}"
 
 def get_kernel_cldrive_df(config):
     with open(config["kernel_path"], "r", encoding="utf-8") as f:
         src = f.read()
 
     cl_platform = getOpenCLPlatforms()[0]
-    h = get_hash_kernel_instance(
-        config["kernel_path"], config["gsize"], config["lsize"], cl_platform
-    )
-
-    if str(h) in BACKUPED_LIST:
-        logger.debug(
-            f"Skip {h} with kernel {config['kernel_path']}, gsize {config['gsize']}, lsize {config['lsize']}"
-        )
-        return pd.read_csv(os.path.join(BACKUP_DIR, f"{h}.csv")).to_dict("records")[0]
+    fileid = get_file_id_from_config(config)
 
     logger.debug(
-        f"Running {h} with kernel {config['kernel_path']}, gsize {config['gsize']}, lsize {config['lsize']}"
+        f"Running {fileid} with kernel {config['kernel_path']}, gsize {config['gsize']}, lsize {config['lsize']}"
     )
     df, stderr = GetCLDriveDataFrame(
         src_file=config["kernel_path"],
@@ -266,44 +256,63 @@ def get_kernel_cldrive_df(config):
         lsize=config["lsize"],
         gsize=config["gsize"],
         cl_platform=cl_platform,
-    )
+    )    
+    if stderr == "TIMEOUT":
+        logger.debug(f"TIMEOUT {fileid}")
+        result = {
+            "kernel_path": config["kernel_path"],
+            "num_runs": config["num_runs"],
+            "gsize": config["gsize"],
+            "lsize": config["lsize"],
+            "kernel_name": "",
+            "outcome": "TIMEOUT",
+            "device_name": "",
+            "work_item_local_mem_size": 0,
+            "work_item_private_mem_size": 0,
+            "transferred_bytes": [],
+            "transfer_time_ns": [],
+            "kernel_time_ns": [],
+            "stderr": stderr,
+            "args_info": "[]",
+        }
+        pd.DataFrame([result]).to_csv(os.path.join(BACKUP_DIR, f"{fileid}.csv"), index=None)
+        return result
+
+    # if df is None and stderr != "TIMEOUT":
+    if df is None:
+        return None
 
     result = {
         "kernel_path": config["kernel_path"],
         "num_runs": config["num_runs"],
         "gsize": config["gsize"],
         "lsize": config["lsize"],
-        "kernel_name": df["kernel"][0]
-        if df is not None
-        else "",  # assume one kernel per file
-        "outcome": df["outcome"][0] if df is not None else "FAILED",
-        "device_name": df["device"][0] if df is not None else "FAILED",
-        "work_item_local_mem_size": df["work_item_local_mem_size"][0]
-        if df is not None
-        else 0,
-        "work_item_private_mem_size": df["work_item_private_mem_size"][0]
-        if df is not None
-        else 0,
-        "transferred_bytes": df["transferred_bytes"].to_list()
-        if df is not None
-        else [],
-        "transfer_time_ns": df["transfer_time_ns"].to_list() if df is not None else [],
-        "kernel_time_ns": df["kernel_time_ns"].to_list() if df is not None else [],
+        "kernel_name": df["kernel"][0],  # assume one kernel per file
+        "outcome": df["outcome"][0],
+        "device_name": df["device"][0],
+        "work_item_local_mem_size": df["work_item_local_mem_size"][0],
+        "work_item_private_mem_size": df["work_item_private_mem_size"][0],
+        "transferred_bytes": df["transferred_bytes"].to_list(),
+        "transfer_time_ns": df["transfer_time_ns"].to_list(),
+        "kernel_time_ns": df["kernel_time_ns"].to_list(),
         "stderr": stderr,
+        "args_info": df["args_info"][0],
     }
-    pd.DataFrame([result]).to_csv(os.path.join(BACKUP_DIR, f"{h}.csv"), index=None)
+    pd.DataFrame([result]).to_csv(os.path.join(BACKUP_DIR, f"{fileid}.csv"), index=None)
     return result
 
 
 def wrapping_func(config):
-    return retry_call(
-        get_kernel_cldrive_df,
-        fargs=[config],
-        tries=2,
-        delay=0.1,
-        jitter=0.2,
-        logger=logger,
-    )
+    time.sleep(random.random() * 0.1)
+    return get_kernel_cldrive_df(config)
+    # return retry_call(
+    #     get_kernel_cldrive_df,
+    #     fargs=[config],
+    #     tries=2,
+    #     delay=0.1,
+    #     jitter=0.2,
+    #     logger=logger,
+    # )
 
 
 def set_cuda_visible():
@@ -314,10 +323,8 @@ def set_cuda_visible():
 if __name__ == "__main__":
     # Define the list of elements you want to process
 
-    configs = pd.read_json("mem_analysis_pilot.jsonl", orient="records", lines=True).to_dict("records")
-    for config in configs:
-        config.__delitem__("outcome")
-        config["num_runs"] = NRUN
+    configs = list(get_config())
+    configs = [config for config in configs if get_file_id_from_config(config) not in BACKUPED_LIST]
 
     # # Create a pool of 4 processes
     num_processes = NUM_GPU
@@ -329,4 +336,5 @@ if __name__ == "__main__":
 
     # # for config in tqdm(get_config()):
     # #     results.append(get_kernel_cldrive_df(config))
+    results = [result for result in results if result]
     pd.DataFrame(results).to_csv("cldrive_results.csv", index=None)
