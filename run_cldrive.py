@@ -280,7 +280,25 @@ def get_kernel_cldrive_df(config):
 
     # if df is None and stderr != "TIMEOUT":
     if df is None:
-        return None
+        logger.debug(f"Error {fileid}")
+        result = {
+            "kernel_path": config["kernel_path"],
+            "num_runs": config["num_runs"],
+            "gsize": config["gsize"],
+            "lsize": config["lsize"],
+            "kernel_name": "",
+            "outcome": "ERROR",
+            "device_name": "",
+            "work_item_local_mem_size": 0,
+            "work_item_private_mem_size": 0,
+            "transferred_bytes": [],
+            "transfer_time_ns": [],
+            "kernel_time_ns": [],
+            "stderr": stderr,
+            "args_info": "[]",
+        }
+        pd.DataFrame([result]).to_csv(os.path.join(BACKUP_DIR, f"{fileid}.csv"), index=None)
+        return result
 
     result = {
         "kernel_path": config["kernel_path"],
