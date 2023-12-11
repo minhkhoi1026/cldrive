@@ -19,13 +19,13 @@ import json
 
 
 CLDRIVE = "bazel-bin/gpu/clmem/clmem"
-KERNEL_DIR = "kernels-modified"
-BACKUP_DIR = "backup"
+KERNEL_DIR = "kernels"
+BACKUP_DIR = "backup-mem-analysis"
 TIMEOUT = 5
 NUM_GPU = 1
 NUM_PROCESS = 16
 verbose_cldrive = False
-device_num_sm = 82  # {"GPU|NVIDIA|NVIDIA_GeForce_RTX_3090|535.86.05|3.0": 82}
+device_num_sm = 72  # {"GPU|NVIDIA|NVIDIA_GeForce_RTX_3090|535.86.05|3.0": 82}
 n_sample_local = 4
 n_sample_wg = 50
 
