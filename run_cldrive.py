@@ -256,6 +256,7 @@ def get_kernel_cldrive_df(config):
         lsize=config["lsize"],
         gsize=config["gsize"],
         cl_platform=cl_platform,
+        timeout=TIMEOUT,
     )    
     if stderr == "TIMEOUT":
         logger.debug(f"TIMEOUT {fileid}")
@@ -340,7 +341,6 @@ def set_cuda_visible():
 
 if __name__ == "__main__":
     # Define the list of elements you want to process
-
     configs = list(get_config())
     configs = [config for config in configs if get_file_id_from_config(config) not in BACKUPED_LIST]
 
