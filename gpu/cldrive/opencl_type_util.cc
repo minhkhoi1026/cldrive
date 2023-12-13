@@ -32,6 +32,7 @@ std::unique_ptr<GlobalMemoryArgValueWithBuffer<T>> CreateGlobalMemoryArgValue(
   auto arg_value = std::make_unique<GlobalMemoryArgValueWithBuffer<T>>(
       context, size, /*value=*/opencl_type::MakeScalar<T>(value));
   if (rand_values) {
+    srand(123); //Add seed for generating random values to make results reproducible
     for (size_t i = 0; i < size; ++i) {
       arg_value->vector()[i] = opencl_type::MakeScalar<T>(rand());
     }

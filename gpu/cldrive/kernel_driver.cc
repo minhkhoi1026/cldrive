@@ -183,7 +183,10 @@ gpu::libcecl::OpenClKernelInvocation KernelDriver::RunOnceOrDie(
   profiling.kernel_nanoseconds += GetElapsedNanoseconds(event);
 
   inputs.CopyFromDeviceToNewValueSet(queue_, outputs, &profiling);
-
+  int output_size = outputs->values().size();
+  for (int i = 0; i < output_size; ++i) {
+    std::cout << "Output " << i << ": \n" << outputs->values()[i]->ToString() << std::endl;
+  }
   // Set run proto fields.
   log.set_kernel_time_ns(profiling.kernel_nanoseconds);
   log.set_transfer_time_ns(profiling.transfer_nanoseconds);
@@ -219,7 +222,6 @@ gpu::libcecl::OpenClKernelInvocation KernelDriver::RunOnceOrDie(
   profiling.kernel_nanoseconds += GetElapsedNanoseconds(event);
 
   inputs.CopyFromDeviceToNewValueSet(queue_, outputs, &profiling);
-
   // Set run proto fields.
   log.set_kernel_time_ns(profiling.kernel_nanoseconds);
   log.set_transfer_time_ns(profiling.transfer_nanoseconds);
