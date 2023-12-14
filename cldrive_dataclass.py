@@ -1,8 +1,9 @@
 from pydantic import BaseModel, ConfigDict
-from typing import List, Union
+from typing import List, Union, Optional
 from numpy import ndarray
 
 class CLdriveResult(BaseModel):
+    kernel_id: str
     kernel_src: str
     success: bool
     seed: int
