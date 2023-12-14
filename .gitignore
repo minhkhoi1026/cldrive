@@ -5,3 +5,4 @@ cldrive.log
 mem-analysis/
 cldrive-backup/
 full_cldrive.csv
+*__pycache__/

@@ -1,15 +1,80 @@
-from typing import List
+from typing import List, Union
 from cldrive_dataclass import CLdriveResult
+import subprocess as sp
+import time
+from numpy import ndarray
+import numpy as np
+import os
 
 def cldrive_check_correctness(ground_truth_kernel: str, generated_kernel: str) -> bool:
     """Check correctness of CLDRIVE."""
     pass
-def run_kernels(kernel_list: List[str], seed_list:List[int] = [1,2,3,4,5]) -> List[CLdriveResult]:
+def run_kernel_list(kernel_list: List[str], seed_list:List[int] = [1,2,3,4,5]) -> List[CLdriveResult]:
+    cldrive_result_list = []
     for seed in seed_list:
+        compile_cldrive(seed)
         for kernel in kernel_list:
-            # Run kernel with seed
-            # Save output to CLdriveResult
-            pass
+            cldrive_run_output = run_one_kernel(kernel, seed)
+            cldrive_result_list.append(cldrive_run_output)
+    return cldrive_result_list
+def run_one_kernel(kernel: str, seed) -> CLdriveResult:
+    """Run one kernel with CLDRIVE."""
+    with open("temp_kernel.cl", "w") as f:
+        f.write(kernel)
+    run_command = "bazel-bin/gpu/cldrive/cldrive --srcs temp_kernel.cl -num_runs 1"
+    with sp.Popen(run_command, shell=True, stdout=sp.PIPE, stderr=sp.PIPE, text=True) as process:
+        try:
+            process.wait(timeout=10)
+            output = process.stdout.read()
+            success = True
+        except sp.TimeoutExpired:
+            print("Process exceeded the timeout. Terminating...")
+            process.terminate()  # Terminate the process
+            time.sleep(2)  # Wait a bit to make sure it has terminated
+            # If the process is still running, forcefully kill it
+            if process.poll() is None:
+                print("Process did not terminate after termination signal. Killing...")
+                process.kill()
+                time.sleep(2)  # Wait again
+            output = "Process exceeded the timeout. Terminated"
+    output_np = parse_run_output(output)
+    run_output = CLdriveResult(
+        kernel_src = kernel,
+        success = success,
+        seed = seed, 
+        run_output = output_np
+    )
+    os.remove("temp_kernel.cl")
+    return run_output
+def parse_run_output(output: str) -> List[Union[ndarray, str]]:
+    """Collect the numbers in run output of cldrive"""
+    result = []
+    for line in output.split("\n"):
+        if "Output" in line:
+            try:
+                numbers_str = line.split(":")[1]
+                numbers = np.array([float(n) for n in numbers_str.split(",") if n != ""])
+                result.append(numbers)
+            except ValueError:
+                print("Error parsing output, keep it as string:", line)
+                result.append(line.split(":")[1])
+    return result
+
 def compile_cldrive(seed: int) -> None:
     """Compile CLDRIVE with the provided seed."""
-    pass
+    # First replace the seed in opencl_type_util.cc
+    with open("gpu/cldrive/opencl_type_util.cc", "r") as f:
+        src = f.read()
+    src = src.replace("srand(123)", f"srand({seed})")        
+    with open("gpu/cldrive/opencl_type_util.cc", "w") as f:
+        f.write(src)
+    # Then compile cldrive
+    build_command = "bazel build -c opt //gpu/cldrive"
+    try:
+        sp.run(build_command, shell=True, check=True, stdout=sp.PIPE, stderr=sp.PIPE, text=True)
+    except sp.CalledProcessError as e:
+        print("Cannot compile cldrive. Error Output:", e.stderr)
+        raise e
+    finally:
+        # Restore the original opencl_type_util.cc file
+        os.system("git checkout -- gpu/cldrive/opencl_type_util.cc")

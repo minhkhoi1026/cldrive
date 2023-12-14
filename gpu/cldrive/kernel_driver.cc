@@ -185,7 +185,7 @@ gpu::libcecl::OpenClKernelInvocation KernelDriver::RunOnceOrDie(
   inputs.CopyFromDeviceToNewValueSet(queue_, outputs, &profiling);
   int output_size = outputs->values().size();
   for (int i = 0; i < output_size; ++i) {
-    std::cout << "Output " << i << ": \n" << outputs->values()[i]->ToString() << std::endl;
+    std::cout << "Output " << i << ": " << outputs->values()[i]->ToString() << std::endl;
   }
   // Set run proto fields.
   log.set_kernel_time_ns(profiling.kernel_nanoseconds);
