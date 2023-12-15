@@ -11,3 +11,4 @@ bazel-bin
 bazel-cldrive
 bazel-out
 bazel-testlogs
+github-crawled-kernels
