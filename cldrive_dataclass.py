@@ -6,6 +6,7 @@ class CLdriveResult(BaseModel):
     kernel_id: str
     kernel_src: str
     success: bool
+    error: Optional[str] = None
     seed: int
-    run_output: List[Union[ndarray, str]]
+    run_output: Optional[List[Union[ndarray, str]]] = None
     model_config = ConfigDict(arbitrary_types_allowed=True)

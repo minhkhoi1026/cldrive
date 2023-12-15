@@ -6,3 +6,8 @@ mem-analysis/
 cldrive-backup/
 full_cldrive.csv
 *__pycache__/
+cldrive_runner.log
+bazel-bin
+bazel-cldrive
+bazel-out
+bazel-testlogs
