@@ -13,35 +13,57 @@ def cldrive_check_correctness(
     second_kernel_id: str,
     clrun_result_list: List[CLdriveResult],
 ) -> bool:
-    """Check correctness of CLDRIVE."""
+    """Check if first and second kernels produce the same output when running with CLdrive.
+    Args:
+        first_kernel_id: The id of the first kernel.
+        second_kernel_id: The id of the second kernel.
+        clrun_result_list: The list of CLdriveResult.
+    Returns:
+        True if the two kernels are correct, False otherwise.
+    """
     is_correct = True
-    first_kernel_result = None
-    second_kernel_result = None
+    first_kernel_result_list = []
+    second_kernel_result_list = []
     for clrun_result in clrun_result_list:
         if clrun_result.kernel_id == first_kernel_id:
-            first_kernel_result = clrun_result
+            first_kernel_result_list.append(clrun_result)
         elif clrun_result.kernel_id == second_kernel_id:
-            second_kernel_result = clrun_result
-    if (first_kernel_result is None) or (second_kernel_result is None):
+            second_kernel_result_list.append(clrun_result)
+    if len(first_kernel_result_list) != len(second_kernel_result_list):
         is_correct = False
-    elif len(first_kernel_result.run_output) != len(second_kernel_result.run_output):
+    elif len(first_kernel_result_list) == 0 or len(second_kernel_result_list) == 0:
         is_correct = False
-    elif first_kernel_result.success is False or second_kernel_result.success is False:
-        is_correct = False
-    else:
-        combined_output_list = zip(first_kernel_result.run_output, second_kernel_result.run_output)
-        for output in combined_output_list:
-            if isinstance(output[0], ndarray) and isinstance(output[1], ndarray):
-                if np.allclose(output[0], output[1]) is False:
+        return is_correct
+    # Group the results by seed    
+    result_pairs_list_by_seed = []
+    for first_kernel_result in first_kernel_result_list:
+        for second_kernel_result in second_kernel_result_list:
+            if first_kernel_result.seed == second_kernel_result.seed:
+                result_pairs_list_by_seed.append((first_kernel_result, second_kernel_result))
+    for first_kernel_result, second_kernel_result in result_pairs_list_by_seed:
+        if (first_kernel_result is None) or (second_kernel_result is None):
+            is_correct = False
+            break
+        elif len(first_kernel_result.run_output) != len(second_kernel_result.run_output):
+            is_correct = False
+            break
+        elif first_kernel_result.success is False or second_kernel_result.success is False:
+            is_correct = False
+            break
+        else:
+            combined_output_list = zip(first_kernel_result.run_output, second_kernel_result.run_output)
+            for output in combined_output_list:
+                if isinstance(output[0], ndarray) and isinstance(output[1], ndarray):
+                    if np.allclose(output[0], output[1]) is False:
+                        is_correct = False
+                        break
+                elif isinstance(output[0], str) and isinstance(output[1], str):
+                    if output[0] != output[1]:
+                        is_correct = False
+                        break
+                else:
                     is_correct = False
                     break
-            elif isinstance(output[0], str) and isinstance(output[1], str):
-                if output[0] != output[1]:
-                    is_correct = False
-                    break
-            else:
-                is_correct = False
-                break
     return is_correct
         
 
