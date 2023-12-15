@@ -280,7 +280,7 @@ def get_kernel_cldrive_df(config):
         return result
 
     # if df is None and stderr != "TIMEOUT":
-    if df is None:
+    if df is None or df.empty:
         logger.debug(f"Error {fileid}")
         result = {
             "kernel_path": config["kernel_path"],
