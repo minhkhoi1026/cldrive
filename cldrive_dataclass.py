@@ -8,5 +8,5 @@ class CLdriveResult(BaseModel):
     success: bool
     error: Optional[str] = None
     seed: int
-    run_output: Optional[List[Union[ndarray, str]]] = None
+    run_output: Optional[str] = None
     model_config = ConfigDict(arbitrary_types_allowed=True)
