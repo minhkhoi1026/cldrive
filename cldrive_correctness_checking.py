@@ -4,9 +4,15 @@ import subprocess as sp
 import time
 from numpy import ndarray
 import numpy as np
+import json
+from pathlib import Path
 import os
 from uuid import uuid4
+from tqdm import tqdm
+import re
 
+from utils import setup_logging
+logger = setup_logging()
 
 def cldrive_check_correctness(
     first_kernel_id: str,
@@ -40,6 +46,7 @@ def cldrive_check_correctness(
         for second_kernel_result in second_kernel_result_list:
             if first_kernel_result.seed == second_kernel_result.seed:
                 result_pairs_list_by_seed.append((first_kernel_result, second_kernel_result))
+    # Compare the outputs of the two kernels with the same seed
     for first_kernel_result, second_kernel_result in result_pairs_list_by_seed:
         if (first_kernel_result is None) or (second_kernel_result is None):
             is_correct = False
@@ -51,7 +58,9 @@ def cldrive_check_correctness(
             is_correct = False
             break
         else:
-            combined_output_list = zip(first_kernel_result.run_output, second_kernel_result.run_output)
+            first_kernel_paresed_output = parse_run_output(first_kernel_result.run_output)
+            second_kernel_paresed_output = parse_run_output(second_kernel_result.run_output)
+            combined_output_list = zip(first_kernel_paresed_output, second_kernel_paresed_output)
             for output in combined_output_list:
                 if isinstance(output[0], ndarray) and isinstance(output[1], ndarray):
                     if np.allclose(output[0], output[1]) is False:
@@ -71,11 +80,15 @@ def run_kernel_list(
     kernel_list: List[str], seed_list: List[int] = [1, 2, 3, 4, 5]
 ) -> List[CLdriveResult]:
     cldrive_result_list = []
-    for seed in seed_list:
+    for seed in tqdm(seed_list):
         compile_cldrive(seed)
-        for kernel in kernel_list:
+        num_success = 0
+        for kernel in tqdm(kernel_list):
             cldrive_run_output = run_one_kernel(kernel, seed)
             cldrive_result_list.append(cldrive_run_output)
+            if cldrive_run_output.success:
+                num_success += 1
+        logger.info(f"Success rate for seed {seed}: {num_success}/{len(kernel_list)}")
     return cldrive_result_list
 
 
@@ -85,36 +98,38 @@ def run_one_kernel(
     """Run one kernel with CLDRIVE."""
     with open("temp_kernel.cl", "w") as f:
         f.write(kernel)
-    run_command = "bazel-bin/gpu/cldrive/cldrive --srcs temp_kernel.cl -num_runs 1"
+    run_command = "bazel-bin/gpu/cldrive/cldrive --srcs temp_kernel.cl -num_runs 1 -gsize 512"
+    success = False
     with sp.Popen(
         run_command, shell=True, stdout=sp.PIPE, stderr=sp.PIPE, text=True
     ) as process:
         try:
             process.wait(timeout=10)
             output = process.stdout.read()
-            success = True
+            success = process.returncode == 0
         except sp.TimeoutExpired:
-            print("Process exceeded the timeout. Terminating...")
+            success = False
+            logger.info("Process exceeded the timeout. Terminating...")
             process.terminate()  # Terminate the process
             time.sleep(2)  # Wait a bit to make sure it has terminated
             # If the process is still running, forcefully kill it
             if process.poll() is None:
-                print("Process did not terminate after termination signal. Killing...")
+                logger.info("Process did not terminate after termination signal. Killing...")
                 process.kill()
                 time.sleep(2)  # Wait again
             output = "Process exceeded the timeout. Terminated"
-    output_np = parse_run_output(output)
+    
     kernel_id = str(uuid4())
     run_output = CLdriveResult(
         kernel_id=kernel_id,
         kernel_src=kernel,
         success=success,
+        error=output if not success else None,
         seed=seed,
-        run_output=output_np,
+        run_output=output if success else None,
     )
     os.remove("temp_kernel.cl")
     return run_output
-
 
 def parse_run_output(output: str) -> List[Union[ndarray, str]]:
     """Collect the numbers in run output of cldrive"""
@@ -128,7 +143,7 @@ def parse_run_output(output: str) -> List[Union[ndarray, str]]:
                 )
                 result.append(numbers)
             except ValueError:
-                print("Error parsing output, keep it as string:", line)
+                logger.error(f"Error parsing output, keep it as string: {line[:100]}..." )
                 result.append(line.split(":")[1])
     return result
 
@@ -138,7 +153,8 @@ def compile_cldrive(seed: int) -> None:
     # First replace the seed in opencl_type_util.cc
     with open("gpu/cldrive/opencl_type_util.cc", "r") as f:
         src = f.read()
-    src = src.replace("srand(123)", f"srand({seed})")
+    pattern = re.compile(r'srand\(\d+\)')
+    src = re.sub(pattern, f'srand({seed})', src)
     with open("gpu/cldrive/opencl_type_util.cc", "w") as f:
         f.write(src)
     # Then compile cldrive
@@ -158,3 +174,17 @@ def compile_cldrive(seed: int) -> None:
     finally:
         # Restore the original opencl_type_util.cc file
         os.system("git checkout -- gpu/cldrive/opencl_type_util.cc")
+
+if __name__ == "__main__":
+    crawled_kernel_path = Path("github-crawled-kernels/kernels")
+    kernel_list = []
+    for kernel_file in crawled_kernel_path.glob("*.cl"):
+        with open(kernel_file, "r") as f:
+            kernel_list.append(f.read())
+    # Run the first 100 kernels
+    result_list = run_kernel_list(kernel_list = kernel_list[:100], seed_list=[1])
+    # Dump result list in a json file
+    with open("first_100_crawled_kernels_result.json", "w") as f:
+        json.dump([result.model_dump() for result in result_list], f, indent=4)
+    print(len(result_list))
+    

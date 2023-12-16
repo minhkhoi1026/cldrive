@@ -18,14 +18,24 @@ def test_cldrive_check_correctness():
             kernel_src="",
             success=True,
             seed=1,
-            run_output=[np.array([1, 2, 3, 4, 5]), np.array([2, 4, 6, 8, 10])],
+            run_output="""
+            Some text
+            Output 0: 1,2,3,4,5
+            Output 1: 2,4,6,8,10
+            Some text
+            """,
         ),
         CLdriveResult(
             kernel_id="456",
             kernel_src="",
             success=True,
             seed=1,
-            run_output=[np.array([1, 2, 3, 4, 5]), np.array([2, 4, 6, 8, 10])],
+            run_output="""
+            Some text
+            Output 0: 1,2,3,4,5
+            Output 1: 2,4,6,8,10
+            Some text
+            """,
         ),
     ]
     assert (
@@ -43,14 +53,24 @@ def test_cldrive_check_correctness():
             kernel_src="",
             success=True,
             seed=1,
-            run_output=[np.array([1, 2, 3, 4, 5]), np.array([2, 4, 6, 8, 10])],
+            run_output="""
+            Some text
+            Output 0: 1,2,3,4,5
+            Output 1: 2,4,6,8,10
+            Some text
+            """,
         ),
         CLdriveResult(
             kernel_id="456",
             kernel_src="",
             success=True,
             seed=1,
-            run_output=[np.array([1]), np.array([2])],
+            run_output="""
+            Some text
+            Output 0: 1,2,3,4,5
+            Output 1: 2,4,6,8,11
+            Some text
+            """,
         ),
     ]
     assert (
@@ -88,14 +108,11 @@ def test_run_one_kernel():
     cldrive_output_seed1 = run_one_kernel(kernel=kernel, seed=1)
     compile_cldrive(seed=2)
     cldrive_output_seed2 = run_one_kernel(kernel=kernel, seed=2)
-
+    output_seed1 = parse_run_output(cldrive_output_seed1.run_output)
+    output_seed2 = parse_run_output(cldrive_output_seed2.run_output)
     assert cldrive_output_seed1.success == True
-    assert len(cldrive_output_seed1.run_output[0]) == 1024
-    assert (
-        np.allclose(
-            cldrive_output_seed1.run_output[1], cldrive_output_seed2.run_output[1]
-        )
-    ) is False
+    assert len(output_seed1[1]) == 512
+    assert np.allclose(output_seed1[1], output_seed2[1]) is False
 
 
 def test_parse_run_output():
