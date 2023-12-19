@@ -35,17 +35,25 @@ has been used in the following publications:
 1. Cummins, C. (2020). Deep Learning for Compilers. University of Edinburgh.
 
 ## Build
-
-See [INSTALL.md](https://github.com/ChrisCummins/phd/blob/master/INSTALL.md) for instructions on setting up the build
-environment.
-
+### Installation steps 
+1. Create a conda env with python 3.6
+```sh
+$ conda create -n cldrive python=3.6
+$ conda activate cldrive
+```
+2. Install `bazel` version 3.7.2 
+```sh
+$ chmod +x bazel-3.7.2-installer-linux-x86_64.sh
+$ ./bazel-3.7.2-installer-linux-x86_64.sh --user
+```
 Then build cldrive using:
 
 ```sh
 $ bazel build -c opt //gpu/cldrive
 ```
-
 This will build an optimized `cldrive` binary and print its path.
+
+For more details, see [INSTALL.md](https://github.com/ChrisCummins/phd/blob/master/INSTALL.md) for instructions on setting up the build environment.
 
 ## Usage
 
