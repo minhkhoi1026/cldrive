@@ -51,7 +51,7 @@ std::ostream& NullIfNegative(std::ostream& stream, const T& value) {
 
 std::ostream& operator<<(std::ostream& stream, const CsvLogHeader& header) {
   stream << "instance,device,build_opts,kernel,work_item_local_mem_size,"
-         << "work_item_private_mem_size,global_size,local_size,outcome,"
+         << "work_item_private_mem_size,global_size,local_size_x,local_size_y,local_size_z,outcome,"
          << "transferred_bytes,transfer_time_ns,kernel_time_ns,args_info\n";
   return stream;
 }
@@ -60,8 +60,10 @@ CsvLog::CsvLog(int instance_id)
     : instance_id_(instance_id),
       work_item_local_mem_size_(-1),
       work_item_private_mem_size_(-1),
-      global_size_(-1),
-      local_size_(-1),
+      global_size_x_(-1),
+      local_size_x_(-1),
+      local_size_y_(-1),
+      local_size_z_(-1),
       transferred_bytes_(-1),
       transfer_time_ns_(-1),
       kernel_time_ns_(-1) {
@@ -74,8 +76,10 @@ std::ostream& operator<<(std::ostream& stream, const CsvLog& log) {
   NullIfEmpty(stream, log.kernel_) << ",";
   NullIfNegative(stream, log.work_item_local_mem_size_) << ",";
   NullIfNegative(stream, log.work_item_private_mem_size_) << ",";
-  NullIfNegative(stream, log.global_size_) << ",";
-  NullIfNegative(stream, log.local_size_) << "," << log.outcome_ << ",";
+  NullIfNegative(stream, log.global_size_x_) << ",";
+  NullIfNegative(stream, log.local_size_x_) << ",";
+  NullIfNegative(stream, log.local_size_y_) << ",";
+  NullIfNegative(stream, log.local_size_z_) << "," << log.outcome_ << ",";
   NullIfNegative(stream, log.transferred_bytes_) << ",";
   NullIfNegative(stream, log.transfer_time_ns_) << ",";
   NullIfNegative(stream, log.kernel_time_ns_) << ",";
@@ -108,8 +112,10 @@ std::ostream& operator<<(std::ostream& stream, const CsvLog& log) {
     if (run) {
       csv.outcome_ = CldriveKernelRun::KernelRunOutcome_Name(run->outcome());
       if (log) {
-        csv.global_size_ = log->global_size();
-        csv.local_size_ = log->local_size();
+        csv.global_size_x_ = log->global_size_x();
+        csv.local_size_x_ = log->local_size_x();
+        csv.local_size_y_ = log->local_size_y();
+        csv.local_size_z_ = log->local_size_z();
         if (log->transferred_bytes() >= 0) {
           csv.outcome_ = "PASS";
           csv.kernel_time_ns_ = log->kernel_time_ns();

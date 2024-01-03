@@ -232,8 +232,6 @@ int main(int argc, char** argv) {
   dp->set_local_size_x(FLAGS_lsizex);
   dp->set_local_size_y(FLAGS_lsizey);
   dp->set_local_size_z(FLAGS_lsizez);
-  std::cout << dp->local_size_x() << " " << dp->local_size_y() << " " << dp->local_size_z() << std::endl;
-  return 0;
   instance->set_min_runs_per_kernel(FLAGS_num_runs);
 
   // Parse logger flag.

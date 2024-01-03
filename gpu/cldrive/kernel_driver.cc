@@ -91,8 +91,10 @@ namespace {
 gpu::libcecl::OpenClKernelInvocation DynamicParamsToLog(
     const DynamicParams& dynamic_params) {
   gpu::libcecl::OpenClKernelInvocation invocation;
-  invocation.set_global_size(dynamic_params.global_size_x());
-  invocation.set_local_size(dynamic_params.local_size_x());
+  invocation.set_global_size_x(dynamic_params.global_size_x());
+  invocation.set_local_size_x(dynamic_params.local_size_x());
+  invocation.set_local_size_y(dynamic_params.local_size_y());
+  invocation.set_local_size_z(dynamic_params.local_size_z());
   // Negative values indicate null.
   invocation.set_kernel_time_ns(-1);
   invocation.set_transfer_time_ns(-1);
@@ -125,7 +127,7 @@ labm8::Status KernelDriver::RunDynamicParams(
   // generate array bound based on dynamic params
   std::map<int,int> memAnalysisInfo = gpu::cldrive::mem_analysis::getMemAnalysisInfo(instance_.mem_filepath(), 
                                                                                       dynamic_params.global_size_x(), 
-                                                                                      dynamic_params.local_size_x());
+                                                                                      dynamic_params.local_size_x() * dynamic_params.local_size_y() * dynamic_params.local_size_z());
   std::vector<long long> arrayBoundArgs;
   int nArgs = kernel_.getInfo<CL_KERNEL_NUM_ARGS>();
   for (int i = 0; i < nArgs; ++i) {
@@ -137,7 +139,7 @@ labm8::Status KernelDriver::RunDynamicParams(
       kernel_instance_->add_arg_array_bounds(memAnalysisInfo[i]);
     }
   }
-
+  
   // 2 warmup run
   KernelArgValuesSet inputs;
   KernelArgValuesSet output_a;
@@ -167,10 +169,14 @@ gpu::libcecl::OpenClKernelInvocation KernelDriver::RunOnceOrDie(
   cl::Event event;
 
   size_t global_size = dynamic_params.global_size_x();
-  size_t local_size = dynamic_params.local_size_x();
+  size_t local_size_x = dynamic_params.local_size_x();
+  size_t local_size_y = dynamic_params.local_size_y();
+  size_t local_size_z = dynamic_params.local_size_z();
 
-  log.set_global_size(global_size);
-  log.set_local_size(local_size);
+  log.set_global_size_x(global_size);
+  log.set_local_size_x(local_size_x);
+  log.set_local_size_y(local_size_y);
+  log.set_local_size_z(local_size_z);
   log.set_kernel_name(name_);
 
   inputs.CopyToDevice(queue_, &profiling);
@@ -178,15 +184,11 @@ gpu::libcecl::OpenClKernelInvocation KernelDriver::RunOnceOrDie(
 
   queue_.enqueueNDRangeKernel(kernel_, /*offset=*/cl::NullRange,
                               /*global=*/cl::NDRange(global_size),
-                              /*local=*/cl::NDRange(local_size),
+                              /*local=*/cl::NDRange(local_size_x, local_size_y, local_size_z),
                               /*events=*/nullptr, /*event=*/&event);
   profiling.kernel_nanoseconds += GetElapsedNanoseconds(event);
 
   inputs.CopyFromDeviceToNewValueSet(queue_, outputs, &profiling);
-  int output_size = outputs->values().size();
-  for (int i = 0; i < output_size; ++i) {
-    std::cout << "Output " << i << ": " << outputs->values()[i]->ToString() << std::endl;
-  }
   // Set run proto fields.
   log.set_kernel_time_ns(profiling.kernel_nanoseconds);
   log.set_transfer_time_ns(profiling.transfer_nanoseconds);
@@ -204,21 +206,25 @@ gpu::libcecl::OpenClKernelInvocation KernelDriver::RunOnceOrDie(
   gpu::libcecl::OpenClKernelInvocation log;
   ProfilingData profiling;
   cl::Event event;
-
+  
   size_t global_size = dynamic_params.global_size_x();
-  size_t local_size = dynamic_params.local_size_x();
+  size_t local_size_x = dynamic_params.local_size_x();
+  size_t local_size_y = dynamic_params.local_size_y();
+  size_t local_size_z = dynamic_params.local_size_z();
 
-  log.set_global_size(global_size);
-  log.set_local_size(local_size);
-  log.set_kernel_name(name_);
+  log.set_global_size_x(global_size);
+  log.set_local_size_x(local_size_x);
+  log.set_local_size_y(local_size_y);
+  log.set_local_size_z(local_size_z);
 
   inputs.CopyToDevice(queue_, &profiling);
   inputs.SetAsArgs(&kernel_);
 
   queue_.enqueueNDRangeKernel(kernel_, /*offset=*/cl::NullRange,
                               /*global=*/cl::NDRange(global_size),
-                              /*local=*/cl::NDRange(local_size),
+                              /*local=*/cl::NDRange(local_size_x, local_size_y, local_size_z),
                               /*events=*/nullptr, /*event=*/&event);
+
   profiling.kernel_nanoseconds += GetElapsedNanoseconds(event);
 
   inputs.CopyFromDeviceToNewValueSet(queue_, outputs, &profiling);
