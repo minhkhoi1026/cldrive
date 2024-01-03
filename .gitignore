@@ -1,7 +1,7 @@
 kernels/
 kernels-modified/
 backup/
-cldrive.log
+*.log
 mem-analysis/
 cldrive-backup/
-full_cldrive.csv
+*.csv
