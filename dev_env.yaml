@@ -1,0 +1,6 @@
+name: cldrive_dev
+dependencies:
+  - python=3.10
+  - pip
+  - pip:
+    - -r dev_requirements.txt
