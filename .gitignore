@@ -1,7 +1,15 @@
 kernels/
 kernels-modified/
 backup/
-cldrive.log
+*.log
 mem-analysis/
 cldrive-backup/
+*.csv
 full_cldrive.csv
+*__pycache__/
+cldrive_runner.log
+bazel-bin
+bazel-cldrive
+bazel-out
+bazel-testlogs
+github-crawled-kernels

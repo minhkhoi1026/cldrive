@@ -1,9 +1,11 @@
 import io
+from logging import config
 import pathlib
 import subprocess
 import tempfile
 import typing
 import pandas as pd
+import numpy as np
 import logging
 import os
 from tqdm import tqdm
@@ -20,13 +22,15 @@ MEM_ANALYSIS_DIR = "mem-analysis"
 os.makedirs(BACKUP_DIR, exist_ok=True)
 TIMEOUT = 100
 NRUN = 10
-NUM_GPU = 2
+
+GPU_POOL = [1, 2]
+NUM_GPU = len(GPU_POOL)
 verbose_cldrive = False
 device_num_sm_dict = {
     "GPU|NVIDIA|NVIDIA_GeForce_RTX_3090|535.86.05|3.0": 82,
     "GPU|NVIDIA|NVIDIA_A10|535.104.05|3.0": 72
 }
-device_num_sm = 72
+device_num_sm = 80
 BACKUPED_LIST = set(list(os.path.splitext(path)[0] for path in os.listdir(BACKUP_DIR)))
 
 random.seed(2610)
@@ -95,7 +99,7 @@ def RunCLDrive(
                 f.flush()
                 hf.write(header_file)
                 hf.flush()
-                cmd = '{} {} --srcs={} --cl_build_opt="-I{}{}" --num_runs={} --gsize={} --lsize={} --envs={}'.format(
+                cmd = '{} {} --srcs={} --cl_build_opt="-I{}{}" --num_runs={} --gsize={} --lsize={} --envs={} --mem_analysis_dir={}'.format(
                     "timeout -s9 {}".format(timeout) if timeout > 0 else "",
                     CLDRIVE,
                     src_file,
@@ -105,6 +109,7 @@ def RunCLDrive(
                     gsize,
                     lsize,
                     cl_platform,
+                    MEM_ANALYSIS_DIR
                 )
                 if verbose_cldrive:
                     print(cmd)
@@ -241,11 +246,35 @@ def get_file_id_from_config(config):
     return f"{kernel_id}_{config['gsize']}_{config['lsize']}"
 
 def get_kernel_cldrive_df(config):
+    fileid = get_file_id_from_config(config)
+    
+    # Cannot run kernel if it contains printf, since the stdout will also contain printf results
+    # which will break the parsing of CLDrive output
     with open(config["kernel_path"], "r", encoding="utf-8") as f:
         src = f.read()
+        
+    if "printf" in src:
+        logger.debug(f"PRINTF_NOT_SUPPORTED {fileid}")
+        result = {
+            "kernel_path": config["kernel_path"],
+            "num_runs": config["num_runs"],
+            "gsize": config["gsize"],
+            "lsize": config["lsize"],
+            "kernel_name": "",
+            "outcome": "PRINTF_NOT_SUPPORTED",
+            "device_name": "",
+            "work_item_local_mem_size": 0,
+            "work_item_private_mem_size": 0,
+            "transferred_bytes": [],
+            "transfer_time_ns": [],
+            "kernel_time_ns": [],
+            "stderr": "PRINTF_NOT_SUPPORTED",
+            "args_info": "[]",
+        }
+        pd.DataFrame([result]).to_csv(os.path.join(BACKUP_DIR, f"{fileid}.csv"), index=None)
+        return result
 
     cl_platform = getOpenCLPlatforms()[0]
-    fileid = get_file_id_from_config(config)
 
     logger.debug(
         f"Running {fileid} with kernel {config['kernel_path']}, gsize {config['gsize']}, lsize {config['lsize']}"
@@ -257,7 +286,30 @@ def get_kernel_cldrive_df(config):
         gsize=config["gsize"],
         cl_platform=cl_platform,
         timeout=TIMEOUT,
-    )    
+    )
+    
+    # ignore kernel that have prinf as it will break the csv format
+    if "printf" in src:
+        logger.debug(f"Error not supported `printf` in {fileid} as it will break the csv format")
+        result = {
+            "kernel_path": config["kernel_path"],
+            "num_runs": config["num_runs"],
+            "gsize": config["gsize"],
+            "lsize": config["lsize"],
+            "kernel_name": "",
+            "outcome": "PRINTF_NOT_SUPPORTED",
+            "device_name": "",
+            "work_item_local_mem_size": 0,
+            "work_item_private_mem_size": 0,
+            "transferred_bytes": [],
+            "transfer_time_ns": [],
+            "kernel_time_ns": [],
+            "stderr": stderr,
+            "args_info": "[]",
+        }
+        pd.DataFrame([result]).to_csv(os.path.join(BACKUP_DIR, f"{fileid}.csv"), index=None)
+        return result
+    
     if stderr == "TIMEOUT":
         logger.debug(f"TIMEOUT {fileid}")
         result = {
@@ -280,7 +332,7 @@ def get_kernel_cldrive_df(config):
         return result
 
     # if df is None and stderr != "TIMEOUT":
-    if df is None:
+    if df is None or df.empty:
         logger.debug(f"Error {fileid}")
         result = {
             "kernel_path": config["kernel_path"],
@@ -300,7 +352,9 @@ def get_kernel_cldrive_df(config):
         }
         pd.DataFrame([result]).to_csv(os.path.join(BACKUP_DIR, f"{fileid}.csv"), index=None)
         return result
-
+    # print(fileid)
+    # print(df["kernel"])
+    # print("----------------")
     result = {
         "kernel_path": config["kernel_path"],
         "num_runs": config["num_runs"],
@@ -322,7 +376,7 @@ def get_kernel_cldrive_df(config):
 
 
 def wrapping_func(config):
-    time.sleep(random.random() * 0.1)
+    time.sleep(np.random.random() * 0.5)
     return get_kernel_cldrive_df(config)
     # return retry_call(
     #     get_kernel_cldrive_df,
@@ -335,22 +389,25 @@ def wrapping_func(config):
 
 
 def set_cuda_visible():
-    process_number = multiprocessing.current_process()._identity[0] - 1
+    process_number = GPU_POOL[multiprocessing.current_process()._identity[0] - 1]
     os.environ["CUDA_VISIBLE_DEVICES"] = str(process_number)
 
 
 if __name__ == "__main__":
     # Define the list of elements you want to process
+    selected_kernels = set(pd.read_csv("selected_kernels.csv")["kernel_path"].to_list())
     configs = list(get_config())
-    configs = [config for config in configs if get_file_id_from_config(config) not in BACKUPED_LIST]
+    configs = [config for config in configs 
+                if get_file_id_from_config(config) not in BACKUPED_LIST 
+                    and config["kernel_path"] in selected_kernels]
 
     # # Create a pool of 4 processes
-    num_processes = NUM_GPU
+    num_processes = 4
     with multiprocessing.Pool(
         processes=num_processes, initializer=set_cuda_visible
     ) as pool:
         # Use the pool to map the process_element function to the elements
-        results = list(tqdm(pool.imap(wrapping_func, configs), total=len(configs)))
+        results = list(tqdm(pool.imap(wrapping_func, need_to_run_configs), total=len(configs)))
 
     # # for config in tqdm(get_config()):
     # #     results.append(get_kernel_cldrive_df(config))
