@@ -40,7 +40,6 @@
 #include <json/json.h>
 
 namespace {
-
 // Split a string into a vector of comma separated strings, e.g.
 //     'a,b' -> 'a', 'b'
 //     'ab' -> 'ab'
@@ -133,7 +132,22 @@ DEFINE_int32(gsize, 1024,
              "The global size to drive each kernel with. Buffers of this size "
              "are allocated and transferred for array arguments, and this many "
              "work items are instantiated.");
-DEFINE_int32(lsize, 128, "The local (work group) size. Must be <= gsize.");
+DEFINE_int32(lsizex, 128, "The local (work group) size in first dimension. lsizex*lsizey*lsizez must be <= gsize.");
+DEFINE_int32(lsizey, 1, "The local (work group) size in second dimension. lsizex*lsizey*lsizez must be <= gsize.");
+DEFINE_int32(lsizez, 1, "The local (work group) size in third dimension. lsizex*lsizey*lsizez must be <= gsize.");
+static bool ValidateDynamicParams(const char* flagname, const GFLAGS_NAMESPACE::int32 value) {
+  GFLAGS_NAMESPACE::int32 gsize = value;
+  GFLAGS_NAMESPACE::int32 lsizex = FLAGS_lsizex;
+  GFLAGS_NAMESPACE::int32 lsizey = FLAGS_lsizey;
+  GFLAGS_NAMESPACE::int32 lsizez = FLAGS_lsizez;
+  if ((int64_t)gsize < (int64_t) lsizex * lsizey * lsizez) {
+    LOG(FATAL) << "Global size must be greater than or equal to local size. Got: "
+                << "gsize: " << gsize << ", lsizex*lsizey*lsizez: " <<  (int64_t) lsizex * lsizey * lsizez;
+  }
+  return true;
+}
+DEFINE_validator(gsize, &ValidateDynamicParams);
+
 DEFINE_string(cl_build_opt, "", "Build options passed to clBuildProgram().");
 DEFINE_int32(num_runs, 30, "The number of runs per kernel.");
 DEFINE_bool(clinfo, false, "List the available devices and exit.");
@@ -215,7 +229,11 @@ int main(int argc, char** argv) {
   instance->set_build_opts(FLAGS_cl_build_opt);
   auto dp = instance->add_dynamic_params();
   dp->set_global_size_x(FLAGS_gsize);
-  dp->set_local_size_x(FLAGS_lsize);
+  dp->set_local_size_x(FLAGS_lsizex);
+  dp->set_local_size_y(FLAGS_lsizey);
+  dp->set_local_size_z(FLAGS_lsizez);
+  std::cout << dp->local_size_x() << " " << dp->local_size_y() << " " << dp->local_size_z() << std::endl;
+  return 0;
   instance->set_min_runs_per_kernel(FLAGS_num_runs);
 
   // Parse logger flag.
@@ -224,7 +242,7 @@ int main(int argc, char** argv) {
 
   int instance_num = 0;
   for (auto path : SplitCommaSeparated(FLAGS_srcs)) {
-    std::map<int,int> memAnalysis = gpu::cldrive::mem_analysis::getMemAnalysisInfo(path, FLAGS_mem_analysis_dir, FLAGS_gsize, FLAGS_lsize);
+    std::map<int,int> memAnalysis = gpu::cldrive::mem_analysis::getMemAnalysisInfo(path, FLAGS_mem_analysis_dir, FLAGS_gsize, FLAGS_lsizex*FLAGS_lsizey*FLAGS_lsizez);
     
     logger->StartNewInstance();
     instance->set_opencl_src(ReadFileOrDie(path));
