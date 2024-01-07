@@ -56,6 +56,7 @@ void KernelDriver::RunOrDie(Logger& logger) {
     return;
   }
 
+
   for (int i = 0; i < instance_.dynamic_params_size(); ++i) {
     auto run = RunDynamicParams(instance_.dynamic_params(i), logger);
     if (run.ok()) {

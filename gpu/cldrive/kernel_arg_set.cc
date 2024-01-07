@@ -102,7 +102,7 @@ labm8::Status KernelArgSet::SetOnes(const cl::Context& context,
                                     KernelArgValuesSet* values) {
   values->Clear();
   for (auto& arg : args_) {
-    auto value = arg.TryToCreateOnesValue(context, dynamic_params);
+    auto value = arg.TryToCreateConstValue(context, dynamic_params, 1);
     if (value) {
       values->AddKernelArgValue(std::move(value));
     } else {
@@ -140,13 +140,15 @@ string KernelArgSet::ToStringWithValue(const KernelArgValuesSet& arg_values) con
     else if (args_[i].IsPrivate()) {
       qualifier = "private";
     }
+    string is_pointer = args_[i].IsPointer() ? "true" : "false";
 
-    absl::StrAppend(&s, absl::StrFormat("{id: %d, name: %s, type: %s, value: %s, qualifier: %s},",
+    absl::StrAppend(&s, absl::StrFormat("{id: %d, name: %s, type: %s, value: %s, qualifier: %s, is_pointer: %s},",
                                         i, 
                                         args_[i].name(),
                                         args_[i].type_name(),
                                         value,
-                                        qualifier
+                                        qualifier,
+                                        is_pointer
                                         ));
   }
   absl::StrAppend(&s, "]");

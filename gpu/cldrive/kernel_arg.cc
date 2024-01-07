@@ -85,14 +85,12 @@ const string& KernelArg::type_name() const { return type_name_; }
 
 std::unique_ptr<KernelArgValue> KernelArg::TryToCreateRandomValue(
     const cl::Context& context, const DynamicParams& dynamic_params) const {
-  return TryToCreateKernelArgValue(context, dynamic_params,
-                                   /*rand_values=*/true);
+  return TryToCreateKernelArgValueRandom(context, dynamic_params);
 }
 
-std::unique_ptr<KernelArgValue> KernelArg::TryToCreateOnesValue(
-    const cl::Context& context, const DynamicParams& dynamic_params) const {
-  return TryToCreateKernelArgValue(context, dynamic_params,
-                                   /*rand_values=*/false);
+std::unique_ptr<KernelArgValue> KernelArg::TryToCreateConstValue(
+    const cl::Context& context, const DynamicParams& dynamic_params, const int& value) const {
+  return TryToCreateKernelArgValueConst(context, dynamic_params, value);
 }
 
 bool KernelArg::IsGlobal() const {
@@ -113,16 +111,15 @@ bool KernelArg::IsPrivate() const {
 
 bool KernelArg::IsPointer() const { return is_pointer_; }
 
-std::unique_ptr<KernelArgValue> KernelArg::TryToCreateKernelArgValue(
-    const cl::Context& context, const DynamicParams& dynamic_params,
-    bool rand_values) const {
+std::unique_ptr<KernelArgValue> KernelArg::TryToCreateKernelArgValueRandom(
+    const cl::Context& context, const DynamicParams& dynamic_params) const {
   CHECK(type() != OpenClType::DEFAULT_UNKNOWN);
 
   if (IsPointer() && IsGlobal()) {
     return util::CreateGlobalMemoryArgValue(
         type(), context,
         /*size=*/dynamic_params.global_size_x(),
-        /*value=*/1, rand_values);
+        /*value=*/1, /*rand_values*/true);
   } else if (IsPointer() && IsLocal()) {
     return util::CreateLocalMemoryArgValue(
         type(),
@@ -130,6 +127,28 @@ std::unique_ptr<KernelArgValue> KernelArg::TryToCreateKernelArgValue(
   } else if (!IsPointer()) {
     return util::CreateScalarArgValue(type(),
                                       /*value=*/dynamic_params.global_size_x());
+  } else {
+    return std::unique_ptr<KernelArgValue>(nullptr);
+  }
+}
+
+std::unique_ptr<KernelArgValue> KernelArg::TryToCreateKernelArgValueConst(
+    const cl::Context& context, const DynamicParams& dynamic_params,
+    const int& value) const {
+  CHECK(type() != OpenClType::DEFAULT_UNKNOWN);
+
+  if (IsPointer() && IsGlobal()) {
+    return util::CreateGlobalMemoryArgValue(
+        type(), context,
+        /*size=*/dynamic_params.global_size_x(),
+        /*value=*/value, /*rand_values*/false);
+  } else if (IsPointer() && IsLocal()) {
+    return util::CreateLocalMemoryArgValue(
+        type(),
+        /*size=*/dynamic_params.global_size_x());
+  } else if (!IsPointer()) {
+    return util::CreateScalarArgValue(type(),
+                                      /*value=*/value);
   } else {
     return std::unique_ptr<KernelArgValue>(nullptr);
   }
