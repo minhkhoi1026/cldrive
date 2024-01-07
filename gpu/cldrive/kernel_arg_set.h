@@ -20,7 +20,6 @@
 #include "gpu/cldrive/kernel_arg_values_set.h"
 #include "gpu/cldrive/proto/cldrive.pb.h"
 #include "labm8/cpp/status.h"
-#include "gpu/cldrive/argument_selector.h"
 #include "third_party/opencl/cl.hpp"
 
 namespace gpu {
@@ -36,7 +35,6 @@ class KernelArgSet {
   CldriveKernelInstance::KernelInstanceOutcome Init();
 
   labm8::Status SetStrategy(const cl::Context& context,
-                            const ArgumentSelector& dynamic_params,
                             KernelArgValuesSet* values);
 
   labm8::Status SetRandom(const cl::Context& context,
@@ -52,6 +50,7 @@ class KernelArgSet {
   const std::vector<KernelArg>& args() const;
   // Return a JSON string representation of the kernel arguments.
   string ToStringWithValue(const KernelArgValuesSet& values) const;
+  std::vector<int> getScalarArgsIndexes();
 
  private:
   cl::Kernel* kernel_;

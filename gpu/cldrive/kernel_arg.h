@@ -35,12 +35,12 @@ class KernelArg {
   // Create a random value for this argument. If the argument is not supported,
   // returns nullptr.
   std::unique_ptr<KernelArgValue> TryToCreateRandomValue(
-      const cl::Context &context, const DynamicParams &dynamic_params) const;
+      const cl::Context &context, const int& size) const;
 
   // Create a "ones" value for this argument. If the argument is not supported,
   // returns nullptr.
   std::unique_ptr<KernelArgValue> TryToCreateConstValue(
-      const cl::Context &context, const DynamicParams &dynamic_params, const int& value) const;
+      const cl::Context &context, const int& size, const int& value) const;
 
   // Address qualifier accessors.
 
@@ -60,9 +60,9 @@ class KernelArg {
 
  private:
   std::unique_ptr<KernelArgValue> TryToCreateKernelArgValueRandom(
-      const cl::Context &context, const DynamicParams &dynamic_params) const;
+      const cl::Context &context, const int& size) const;
   std::unique_ptr<KernelArgValue> TryToCreateKernelArgValueConst(
-      const cl::Context &context, const DynamicParams &dynamic_params, const int& value) const;
+      const cl::Context &context, const int& size, const int& value) const;
 
   OpenClType type_;
   cl_kernel_arg_address_qualifier address_;

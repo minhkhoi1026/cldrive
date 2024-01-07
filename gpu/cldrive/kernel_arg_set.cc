@@ -62,7 +62,8 @@ labm8::Status KernelArgSet::SetRandom(const cl::Context& context,
                                       KernelArgValuesSet* values) {
   values->Clear();
   for (auto& arg : args_) {
-    auto value = arg.TryToCreateRandomValue(context, dynamic_params);
+    auto value = (arg.IsPointer()) ? arg.TryToCreateRandomValue(context, /*size=*/dynamic_params.global_size_x())
+                                   : arg.TryToCreateConstValue(context, /*size=*/1, /*value=*/dynamic_params.global_size_x());
     if (value) {
       values->AddKernelArgValue(std::move(value));
     } else {
@@ -76,14 +77,13 @@ labm8::Status KernelArgSet::SetRandom(const cl::Context& context,
 }
 
 labm8::Status KernelArgSet::SetRandom(const cl::Context& context,
-                                      const std::vector<long long>& args_array_bound,
+                                      const std::vector<long long>& args_values,
                                       KernelArgValuesSet* values) {
   values->Clear();
   int i = 0;
   for (auto& arg : args_) {
-    DynamicParams dynamic_params;
-    dynamic_params.set_global_size_x(args_array_bound[i]);
-    auto value = arg.TryToCreateRandomValue(context, dynamic_params);
+    auto value = (arg.IsPointer()) ? arg.TryToCreateRandomValue(context, /*size=*/args_values[i])
+                                   : arg.TryToCreateConstValue(context, /*size=*/1, /*value=*/args_values[i]);
     if (value) {
       values->AddKernelArgValue(std::move(value));
     } else {
@@ -102,7 +102,8 @@ labm8::Status KernelArgSet::SetOnes(const cl::Context& context,
                                     KernelArgValuesSet* values) {
   values->Clear();
   for (auto& arg : args_) {
-    auto value = arg.TryToCreateConstValue(context, dynamic_params, 1);
+    auto value = (arg.IsPointer()) ? arg.TryToCreateConstValue(context, /*size=*/dynamic_params.global_size_x(),/*value=*/ 1)
+                                   : arg.TryToCreateConstValue(context, /*size=*/1, /*value=*/1);
     if (value) {
       values->AddKernelArgValue(std::move(value));
     } else {

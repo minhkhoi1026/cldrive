@@ -84,13 +84,13 @@ const string& KernelArg::name() const { return name_; }
 const string& KernelArg::type_name() const { return type_name_; }
 
 std::unique_ptr<KernelArgValue> KernelArg::TryToCreateRandomValue(
-    const cl::Context& context, const DynamicParams& dynamic_params) const {
-  return TryToCreateKernelArgValueRandom(context, dynamic_params);
+    const cl::Context& context, const int& size) const {
+  return TryToCreateKernelArgValueRandom(context, size);
 }
 
 std::unique_ptr<KernelArgValue> KernelArg::TryToCreateConstValue(
-    const cl::Context& context, const DynamicParams& dynamic_params, const int& value) const {
-  return TryToCreateKernelArgValueConst(context, dynamic_params, value);
+    const cl::Context& context, const int& size, const int& value) const {
+  return TryToCreateKernelArgValueConst(context, size, value);
 }
 
 bool KernelArg::IsGlobal() const {
@@ -112,40 +112,39 @@ bool KernelArg::IsPrivate() const {
 bool KernelArg::IsPointer() const { return is_pointer_; }
 
 std::unique_ptr<KernelArgValue> KernelArg::TryToCreateKernelArgValueRandom(
-    const cl::Context& context, const DynamicParams& dynamic_params) const {
+    const cl::Context& context, const int& size) const {
   CHECK(type() != OpenClType::DEFAULT_UNKNOWN);
 
   if (IsPointer() && IsGlobal()) {
     return util::CreateGlobalMemoryArgValue(
         type(), context,
-        /*size=*/dynamic_params.global_size_x(),
+        /*size=*/size,
         /*value=*/1, /*rand_values*/true);
   } else if (IsPointer() && IsLocal()) {
     return util::CreateLocalMemoryArgValue(
         type(),
-        /*size=*/dynamic_params.global_size_x());
+        /*size=*/size);
   } else if (!IsPointer()) {
     return util::CreateScalarArgValue(type(),
-                                      /*value=*/dynamic_params.global_size_x());
+                                      /*value=*/rand());
   } else {
     return std::unique_ptr<KernelArgValue>(nullptr);
   }
 }
 
 std::unique_ptr<KernelArgValue> KernelArg::TryToCreateKernelArgValueConst(
-    const cl::Context& context, const DynamicParams& dynamic_params,
-    const int& value) const {
+    const cl::Context& context, const int& size, const int& value) const {
   CHECK(type() != OpenClType::DEFAULT_UNKNOWN);
 
   if (IsPointer() && IsGlobal()) {
     return util::CreateGlobalMemoryArgValue(
         type(), context,
-        /*size=*/dynamic_params.global_size_x(),
+        /*size=*/size,
         /*value=*/value, /*rand_values*/false);
   } else if (IsPointer() && IsLocal()) {
     return util::CreateLocalMemoryArgValue(
         type(),
-        /*size=*/dynamic_params.global_size_x());
+        /*size=*/size);
   } else if (!IsPointer()) {
     return util::CreateScalarArgValue(type(),
                                       /*value=*/value);

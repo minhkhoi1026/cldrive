@@ -13,7 +13,7 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with cldrive.  If not, see <https://www.gnu.org/licenses/>.
-#include "gpu/cldrive/kernel_driver.h"
+#include "gpu/cldrive/diverse_kernel_driver.h"
 
 #include "gpu/cldrive/logger.h"
 #include "gpu/cldrive/opencl_util.h"
@@ -26,10 +26,10 @@
 namespace gpu {
 namespace cldrive {
 
-KernelDriver::KernelDriver(const cl::Context& context,
+DiverseKernelDriver::DiverseKernelDriver(const cl::Context& context,
                            const cl::CommandQueue& queue,
                            const cl::Kernel& kernel, CldriveInstance* instance,
-                           int instance_num)
+                           int instance_num, bool argument_diverse)
     : context_(context),
       queue_(queue),
       device_(context.getInfo<CL_CONTEXT_DEVICES>()[0]),
@@ -38,9 +38,10 @@ KernelDriver::KernelDriver(const cl::Context& context,
       instance_num_(instance_num),
       kernel_instance_(instance->add_kernel()),
       name_(util::GetOpenClKernelName(kernel)),
-      args_set_(&kernel_) {}
+      args_set_(&kernel_),
+      argument_diverse_(argument_diverse) {}
 
-void KernelDriver::RunOrDie(Logger& logger) {
+void DiverseKernelDriver::RunOrDie(Logger& logger) {
   kernel_instance_->set_name(name_);
   kernel_instance_->set_work_item_local_mem_size_in_bytes(
       kernel_.getWorkGroupInfo<CL_KERNEL_LOCAL_MEM_SIZE>(device_));
@@ -55,6 +56,9 @@ void KernelDriver::RunOrDie(Logger& logger) {
                      /*log=*/nullptr);
     return;
   }
+
+  //
+
   for (int i = 0; i < instance_.dynamic_params_size(); ++i) {
     auto run = RunDynamicParams(instance_.dynamic_params(i), logger);
     if (run.ok()) {
@@ -67,7 +71,7 @@ void KernelDriver::RunOrDie(Logger& logger) {
   }
 }
 
-labm8::StatusOr<CldriveKernelRun> KernelDriver::RunDynamicParams(
+labm8::StatusOr<CldriveKernelRun> DiverseKernelDriver::RunDynamicParams(
     const DynamicParams& dynamic_params, Logger& logger) {
   CldriveKernelRun run;
 
@@ -103,7 +107,7 @@ gpu::libcecl::OpenClKernelInvocation DynamicParamsToLog(
 
 }  // anonymous namespace
 
-labm8::Status KernelDriver::RunDynamicParams(
+labm8::Status DiverseKernelDriver::RunDynamicParams(
     const DynamicParams& dynamic_params, Logger& logger,
     CldriveKernelRun* run) {
   // Create a log message with just the dynamic params so that we can log the
@@ -143,7 +147,7 @@ labm8::Status KernelDriver::RunDynamicParams(
   return labm8::Status::OK;
 }
 
-gpu::libcecl::OpenClKernelInvocation KernelDriver::RunOnceOrDie(
+gpu::libcecl::OpenClKernelInvocation DiverseKernelDriver::RunOnceOrDie(
     const DynamicParams& dynamic_params, KernelArgValuesSet& inputs,
     KernelArgValuesSet* outputs, const CldriveKernelRun* const run,
     Logger& logger, bool flush) {
@@ -183,7 +187,7 @@ gpu::libcecl::OpenClKernelInvocation KernelDriver::RunOnceOrDie(
   return log;
 }
 
-gpu::libcecl::OpenClKernelInvocation KernelDriver::RunOnceOrDie(
+gpu::libcecl::OpenClKernelInvocation DiverseKernelDriver::RunOnceOrDie(
     const DynamicParams& dynamic_params, KernelArgValuesSet& inputs,
     KernelArgValuesSet* outputs) {
   gpu::libcecl::OpenClKernelInvocation log;

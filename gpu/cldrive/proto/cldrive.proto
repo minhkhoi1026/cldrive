@@ -67,7 +67,6 @@ message CldriveKernelInstance {
   optional KernelInstanceOutcome outcome = 3;
   optional int64 work_item_local_mem_size_in_bytes = 4;
   optional int64 work_item_private_mem_size_in_bytes = 5;
-  repeated int64 arg_array_bounds = 6;
 }
 
 message DynamicParams {
