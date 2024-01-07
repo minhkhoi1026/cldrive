@@ -180,9 +180,8 @@ def GetCLDriveStdout(
 
 def get_config():
     # including both simple case (multiple of 32) and complex case (not multiple of 32
-    local_sizes = [4, 16, 24, 32]
-    small_wg_sizes = list(range(1, 80))
-    MAX_GSIZE = int(1e5) - 1
+    local_sizes = 32
+    gsize = [1024, 3000]
 
     def gen_launch_configs():
         launch_configs = []
@@ -233,7 +232,6 @@ class KernelMemoryAnalyzer:
         argument_json = argument_json[2:] # ignore the first "//"
         argument_dict_obj = json.loads(argument_json)
         return list(argument_dict_obj.items())
-        
     
     def get_array_bound_relation(self):
         try:
@@ -275,7 +273,7 @@ class KernelMemoryAnalyzer:
         return retry_call(
             self.get_max_min_of_run,
             fargs=[config],
-            tries=5,
+            tries=3,
             delay=0.5,
             jitter=0.2,
             logger=logger,

@@ -116,6 +116,15 @@ labm8::Status KernelArgSet::SetOnes(const cl::Context& context,
   return labm8::Status::OK;
 }
 
+void KernelArgSet::GetScalarArgsIndexes(std::vector<int>* indexes) const {
+  indexes->clear();
+  for (size_t i = 0; i < args_.size(); ++i) {
+    if (!args_[i].IsPointer()) {
+      indexes->push_back(i);
+    }
+  }
+}
+
 string KernelArgSet::ToStringWithValue(const KernelArgValuesSet& arg_values) const {
   string s = "[";
   for (size_t i = 0; i < arg_values.values().size(); ++i) {
@@ -143,7 +152,7 @@ string KernelArgSet::ToStringWithValue(const KernelArgValuesSet& arg_values) con
     }
     string is_pointer = args_[i].IsPointer() ? "true" : "false";
 
-    absl::StrAppend(&s, absl::StrFormat("{id: %d, name: %s, type: %s, value: %s, qualifier: %s, is_pointer: %s},",
+    absl::StrAppend(&s, absl::StrFormat("{\"id\": %d, \"name\": \"%s\", \"type\": \"%s\", \"value\": \"%s\", \"qualifier\": \"%s\", \"is_pointer\": %s},",
                                         i, 
                                         args_[i].name(),
                                         args_[i].type_name(),
@@ -152,7 +161,40 @@ string KernelArgSet::ToStringWithValue(const KernelArgValuesSet& arg_values) con
                                         is_pointer
                                         ));
   }
-  absl::StrAppend(&s, "]");
+  s.back() = ']';
+  
+  return s;
+}
+
+string KernelArgSet::ToString() const {
+  string s = "[";
+  for (size_t i = 0; i < args_.size(); ++i) {
+    // if arg is a pointer, save the size of the array instead
+    string qualifier;
+    if (args_[i].IsGlobal()) {
+      qualifier = "global";
+    }
+    else if (args_[i].IsLocal()) {
+      qualifier = "local";
+    }
+    else if (args_[i].IsConstant()) {
+      qualifier = "constant";
+    }
+    else if (args_[i].IsPrivate()) {
+      qualifier = "private";
+    }
+
+    string is_pointer = args_[i].IsPointer() ? "true" : "false";
+
+    absl::StrAppend(&s, absl::StrFormat("{\"id\": %d, \"name\": \"%s\", \"type\": \"%s\", \"qualifier\": \"%s\", \"is_pointer\": %s},",
+                                        i, 
+                                        args_[i].name(),
+                                        args_[i].type_name(),
+                                        qualifier,
+                                        is_pointer
+                                        ));
+  }
+  s.back() = ']';
   
   return s;
 }

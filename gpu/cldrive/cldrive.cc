@@ -23,6 +23,7 @@
 // along with cldrive.  If not, see <https://www.gnu.org/licenses/>.
 #include "gpu/cldrive/libcldrive.h"
 #include "gpu/cldrive/mem_analysis_util.h"
+#include "gpu/cldrive/kernel_info_util.h"
 
 #include "gpu/cldrive/logger.h"
 #include "gpu/cldrive/proto/cldrive.pb.h"
@@ -151,6 +152,7 @@ DEFINE_validator(gsize, &ValidateDynamicParams);
 DEFINE_string(cl_build_opt, "", "Build options passed to clBuildProgram().");
 DEFINE_int32(num_runs, 30, "The number of runs per kernel.");
 DEFINE_bool(clinfo, false, "List the available devices and exit.");
+DEFINE_bool(kernelinfo, false, "List the kernel arguments and exit.");
 
 // End flag definitions ------------------------------------
 
@@ -210,6 +212,16 @@ int main(int argc, char** argv) {
     auto devices = labm8::gpu::clinfo::GetOpenClDevices();
     for (int i = 0; i < devices.device_size(); ++i) {
       std::cout << devices.device(i).name() << std::endl;
+    }
+    return 0;
+  }
+
+  if (FLAGS_kernelinfo) {
+    cl::Device device = labm8::gpu::clinfo::GetOpenClDeviceOrDie(labm8::gpu::clinfo::GetOpenClDevices().device(0));
+    std::cout << "path,kernel_info" << std::endl;
+    for (auto path : SplitCommaSeparated(FLAGS_srcs)) {
+      string opencl_src = ReadFileOrDie(path);
+      std::cout << path << "," << gpu::cldrive::util::GetKernelInfoOrDie(opencl_src, "", device) << std::endl;
     }
     return 0;
   }

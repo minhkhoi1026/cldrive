@@ -100,12 +100,12 @@ static bool ValidateEnvs(const char* flagname, const string& value) {
 }
 DEFINE_validator(envs, &ValidateEnvs);
 
-DEFINE_string(output_format, "csv",
-              "The output format. One of: {csv,pb,pbtxt,null}.");
+DEFINE_string(output_format, "null",
+              "The output format. One of: {pb,pbtxt,null}.");
 static bool ValidateOutputFormat(const char* flagname, const string& value) {
-  if (value.compare("csv") && value.compare("pb") && value.compare("pbtxt") && value.compare("null")) {
+  if (value.compare("pb") && value.compare("pbtxt") && value.compare("null")) {
     LOG(FATAL) << "Illegal value for --" << flagname << ". Must be one of: "
-               << "{csv,pb,pbtxt,null}";
+               << "{pb,pbtxt,null}";
   }
   return true;
 }
@@ -115,7 +115,22 @@ DEFINE_int32(gsize, 1024,
              "The global size to drive each kernel with. Buffers of this size "
              "are allocated and transferred for array arguments, and this many "
              "work items are instantiated.");
-DEFINE_int32(lsize, 128, "The local (work group) size. Must be <= gsize.");
+DEFINE_int32(lsize_x, 128, "The local (work group) size in first dimension. lsize_x*lsize_y*lsize_z must be <= gsize.");
+DEFINE_int32(lsize_y, 1, "The local (work group) size in second dimension. lsize_x*lsize_y*lsize_z must be <= gsize.");
+DEFINE_int32(lsize_z, 1, "The local (work group) size in third dimension. lsize_x*lsize_y*lsize_z must be <= gsize.");
+static bool ValidateDynamicParams(const char* flagname, const GFLAGS_NAMESPACE::int32 value) {
+  GFLAGS_NAMESPACE::int32 gsize = value;
+  GFLAGS_NAMESPACE::int32 lsize_x = FLAGS_lsize_x;
+  GFLAGS_NAMESPACE::int32 lsize_y = FLAGS_lsize_y;
+  GFLAGS_NAMESPACE::int32 lsize_z = FLAGS_lsize_z;
+  if ((int64_t)gsize < (int64_t) lsize_x * lsize_y * lsize_z) {
+    LOG(FATAL) << "Global size must be greater than or equal to local size. Got: "
+                << "gsize: " << gsize << ", lsize_x*lsize_y*lsize_z: " <<  (int64_t) lsize_x * lsize_y * lsize_z;
+  }
+  return true;
+}
+DEFINE_validator(gsize, &ValidateDynamicParams);
+
 DEFINE_string(cl_build_opt, "", "Build options passed to clBuildProgram().");
 DEFINE_int32(num_runs, 30, "The number of runs per kernel.");
 DEFINE_bool(clinfo, false, "List the available devices and exit.");
@@ -133,8 +148,6 @@ std::unique_ptr<Logger> MakeLoggerFromFlags(
   } else if (!FLAGS_output_format.compare("pbtxt")) {
     return std::make_unique<ProtocolBufferLogger>(std::cout, instances,
                                                   /*text_format=*/true);
-  } else if (!FLAGS_output_format.compare("csv")) {
-    return std::make_unique<CsvLogger>(std::cout, instances);
   }
   else if (!FLAGS_output_format.compare("null")) {
     return std::make_unique<NULLLogger>(std::cout, instances);
@@ -200,7 +213,9 @@ int main(int argc, char** argv) {
   instance->set_build_opts(FLAGS_cl_build_opt);
   auto dp = instance->add_dynamic_params();
   dp->set_global_size_x(FLAGS_gsize);
-  dp->set_local_size_x(FLAGS_lsize);
+  dp->set_local_size_x(FLAGS_lsize_x);
+  dp->set_local_size_y(FLAGS_lsize_y);
+  dp->set_local_size_z(FLAGS_lsize_z);
   instance->set_min_runs_per_kernel(FLAGS_num_runs);
 
   // Parse logger flag.

@@ -79,7 +79,6 @@ cc_binary(
     linkstatic = False,  # Needed for Oclgrind support.
     visibility = ["//visibility:public"],
     deps = [
-        ":csv_log",
         ":libclmem",
         "//gpu/clinfo:libclinfo",
         "//labm8/cpp:app",
@@ -106,18 +105,6 @@ cc_binary(
 #     ],
 # )
 
-cc_library(
-    name = "csv_log",
-    srcs = ["csv_log.cc"],
-    hdrs = ["csv_log.h"],
-    deps = [
-        "//gpu/clmem/proto:clmem_py_cc",
-        "//labm8/cpp:logging",
-        "//labm8/cpp:port",
-        "//labm8/cpp:string",
-        "@com_google_absl//absl/strings",
-    ],
-)
 
 cc_library(
     name = "global_memory_arg_value",
@@ -370,7 +357,6 @@ cc_library(
     srcs = ["logger.cc"],
     hdrs = ["logger.h"],
     deps = [
-        ":csv_log",
         "//gpu/clmem/proto:clmem_py_cc",
         "//labm8/cpp:logging",
         "//labm8/cpp:status",

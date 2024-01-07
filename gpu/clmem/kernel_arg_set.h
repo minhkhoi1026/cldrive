@@ -36,6 +36,9 @@ class KernelArgSet {
   labm8::Status SetRandom(const cl::Context& context,
                           const DynamicParams& dynamic_params,
                           KernelArgValuesSet* values);
+  labm8::Status SetRandom(const cl::Context& context,
+                                      const std::vector<long long>& args_values,
+                                      KernelArgValuesSet* values);
 
   labm8::Status SetOnes(const cl::Context& context,
                         const DynamicParams& dynamic_params,

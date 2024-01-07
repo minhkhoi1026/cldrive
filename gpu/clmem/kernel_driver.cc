@@ -108,8 +108,10 @@ namespace {
 gpu::libcecl::OpenClKernelInvocation DynamicParamsToLog(
     const DynamicParams& dynamic_params) {
   gpu::libcecl::OpenClKernelInvocation invocation;
-  invocation.set_global_size(dynamic_params.global_size_x());
-  invocation.set_local_size(dynamic_params.local_size_x());
+  invocation.set_global_size_x(dynamic_params.global_size_x());
+  invocation.set_local_size_x(dynamic_params.local_size_x());
+  invocation.set_local_size_y(dynamic_params.local_size_y());
+  invocation.set_local_size_z(dynamic_params.local_size_z());
   // Negative values indicate null.
   invocation.set_kernel_time_ns(-1);
   invocation.set_transfer_time_ns(-1);
@@ -160,10 +162,14 @@ gpu::libcecl::OpenClKernelInvocation KernelDriver::RunOnceOrDie(
   cl::Event event;
 
   size_t global_size = dynamic_params.global_size_x();
-  size_t local_size = dynamic_params.local_size_x();
+  size_t local_size_x = dynamic_params.local_size_x();
+  size_t local_size_y = dynamic_params.local_size_y();
+  size_t local_size_z = dynamic_params.local_size_z();
 
-  log.set_global_size(global_size);
-  log.set_local_size(local_size);
+  log.set_global_size_x(global_size);
+  log.set_local_size_x(local_size_x);
+  log.set_local_size_y(local_size_y);
+  log.set_local_size_z(local_size_z);
   log.set_kernel_name(name_);
 
   inputs.CopyToDevice(queue_, &profiling);
@@ -171,7 +177,7 @@ gpu::libcecl::OpenClKernelInvocation KernelDriver::RunOnceOrDie(
 
   queue_.enqueueNDRangeKernel(kernel_, /*offset=*/cl::NullRange,
                               /*global=*/cl::NDRange(global_size),
-                              /*local=*/cl::NDRange(local_size),
+                              /*local=*/cl::NDRange(local_size_x, local_size_y, local_size_z),
                               /*events=*/nullptr, /*event=*/&event);
   profiling.kernel_nanoseconds += GetElapsedNanoseconds(event);
 

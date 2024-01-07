@@ -34,14 +34,11 @@ class KernelArgSet {
 
   CldriveKernelInstance::KernelInstanceOutcome Init();
 
-  labm8::Status SetStrategy(const cl::Context& context,
-                            KernelArgValuesSet* values);
-
   labm8::Status SetRandom(const cl::Context& context,
                           const DynamicParams& dynamic_params,
                           KernelArgValuesSet* values);
   labm8::Status SetRandom(const cl::Context& context,
-                                      const std::vector<long long>& args_array_bound,
+                                      const std::vector<long long>& args_values,
                                       KernelArgValuesSet* values);
 
   labm8::Status SetOnes(const cl::Context& context,
@@ -50,7 +47,8 @@ class KernelArgSet {
   const std::vector<KernelArg>& args() const;
   // Return a JSON string representation of the kernel arguments.
   string ToStringWithValue(const KernelArgValuesSet& values) const;
-  std::vector<int> getScalarArgsIndexes();
+  string ToString() const;
+  void GetScalarArgsIndexes(std::vector<int>* indexes) const;
 
  private:
   cl::Kernel* kernel_;

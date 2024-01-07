@@ -31,6 +31,7 @@ class Cldrive {
 
  private:
   void DoRunOrDie(Logger& logger);
+  string DoGetKernelInfoOrDie(std::string opencl_src, string build_opts="");
 
   CldriveInstance* instance_;
   int instance_num_;

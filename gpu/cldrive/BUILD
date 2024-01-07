@@ -78,6 +78,7 @@ cc_binary(
     linkstatic = False,  # Needed for Oclgrind support.
     visibility = ["//visibility:public"],
     deps = [
+        ":kernel_info_util",
         ":csv_log",
         ":libcldrive",
         ":mem_analysis_util",
@@ -98,6 +99,7 @@ cc_image(
         ":csv_log",
         ":libcldrive",
         ":mem_analysis_util",
+        ":kernel_info_util",
         "//gpu/clinfo:libclinfo",
         "//labm8/cpp:app",
         "//labm8/cpp:logging",
@@ -115,6 +117,23 @@ cc_library(
         "//labm8/cpp:logging",
         "@boost//:filesystem",
         "@com_github_jsoncpp//:jsoncpp",
+    ],
+)
+
+cc_library(
+    name = "kernel_info_util",
+    srcs = ["kernel_info_util.cc"],
+    hdrs = ["kernel_info_util.h"],
+    deps = [
+        ":kernel_arg_set",
+        "//gpu/clinfo:libclinfo",
+        "//labm8/cpp:logging",
+        "//labm8/cpp:status",
+        "//labm8/cpp:statusor",
+        "//third_party/opencl",
+        "@com_google_absl//absl/strings",
+        "@com_google_absl//absl/strings:str_format",
+        "@com_google_absl//absl/time",
     ],
 )
 

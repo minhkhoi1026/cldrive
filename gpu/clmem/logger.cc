@@ -72,23 +72,6 @@ ProtocolBufferLogger::ProtocolBufferLogger(
     instances()->SerializeToOstream(&ostream(/*flush=*/true));
   }
 }
-
-CsvLogger::CsvLogger(std::ostream& ostream,
-                     const ClmemInstances* const instances)
-    : Logger(ostream, instances) {
-  this->ostream(/*flush=*/true) << CsvLogHeader();
-}
-
-/*virtual*/ labm8::Status CsvLogger::RecordLog(
-    const ClmemInstance* const instance,
-    const ClmemKernelInstance* const kernel_instance,
-    const ClmemKernelRun* const run,
-    const gpu::libcecl::OpenClKernelInvocation* const log, bool flush) {
-  ostream(flush) << CsvLog::FromProtos(instance_num(), instance,
-                                       kernel_instance, run, log);
-  return labm8::Status::OK;
-}
-
 NULLLogger::NULLLogger(std::ostream& ostream,
                      const ClmemInstances* const instances)
     : Logger(ostream, instances) {

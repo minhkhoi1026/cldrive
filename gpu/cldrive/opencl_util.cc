@@ -15,6 +15,7 @@
 // along with cldrive.  If not, see <https://www.gnu.org/licenses/>.
 #include "gpu/cldrive/opencl_util.h"
 
+
 namespace gpu {
 namespace cldrive {
 namespace util {

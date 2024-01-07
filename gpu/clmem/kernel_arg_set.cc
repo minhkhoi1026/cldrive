@@ -62,7 +62,8 @@ labm8::Status KernelArgSet::SetRandom(const cl::Context& context,
                                       KernelArgValuesSet* values) {
   values->Clear();
   for (auto& arg : args_) {
-    auto value = arg.TryToCreateRandomValue(context, dynamic_params);
+    auto value = (arg.IsPointer()) ? arg.TryToCreateRandomValue(context, /*size=*/dynamic_params.global_size_x())
+                                   : arg.TryToCreateConstValue(context, /*size=*/1, /*value=*/dynamic_params.global_size_x());
     if (value) {
       values->AddKernelArgValue(std::move(value));
     } else {
@@ -75,12 +76,34 @@ labm8::Status KernelArgSet::SetRandom(const cl::Context& context,
   return labm8::Status::OK;
 }
 
+labm8::Status KernelArgSet::SetRandom(const cl::Context& context,
+                                      const std::vector<long long>& args_values,
+                                      KernelArgValuesSet* values) {
+  values->Clear();
+  int i = 0;
+  for (auto& arg : args_) {
+    auto value = (arg.IsPointer()) ? arg.TryToCreateRandomValue(context, /*size=*/args_values[i])
+                                   : arg.TryToCreateConstValue(context, /*size=*/1, /*value=*/args_values[i]);
+    if (value) {
+      values->AddKernelArgValue(std::move(value));
+    } else {
+      // TryToCreateRandomValue() returns nullptr if the argument is not
+      // supported.
+      return labm8::Status(labm8::error::Code::INVALID_ARGUMENT,
+                           "Unsupported argument type.");
+    }
+    ++i;
+  }
+  return labm8::Status::OK;
+}
+
 labm8::Status KernelArgSet::SetOnes(const cl::Context& context,
                                     const DynamicParams& dynamic_params,
                                     KernelArgValuesSet* values) {
   values->Clear();
   for (auto& arg : args_) {
-    auto value = arg.TryToCreateOnesValue(context, dynamic_params);
+    auto value = (arg.IsPointer()) ? arg.TryToCreateConstValue(context, /*size=*/dynamic_params.global_size_x(),/*value=*/ 1)
+                                   : arg.TryToCreateConstValue(context, /*size=*/1, /*value=*/1);
     if (value) {
       values->AddKernelArgValue(std::move(value));
     } else {

@@ -15,7 +15,6 @@
 // along with clmem.  If not, see <https://www.gnu.org/licenses/>.
 #pragma once
 
-#include "gpu/clmem/csv_log.h"
 #include "gpu/clmem/proto/clmem.pb.h"
 
 #include "labm8/cpp/status.h"
@@ -69,18 +68,6 @@ class ProtocolBufferLogger : public Logger {
 
  private:
   bool text_format_ = text_format_;
-};
-
-class CsvLogger : public Logger {
- public:
-  CsvLogger(std::ostream& ostream, const ClmemInstances* const instances);
-
-  virtual labm8::Status RecordLog(
-      const ClmemInstance* const instance,
-      const ClmemKernelInstance* const kernel_instance,
-      const ClmemKernelRun* const run,
-      const gpu::libcecl::OpenClKernelInvocation* const log,
-      bool flush) override;
 };
 
 class NULLLogger : public Logger {

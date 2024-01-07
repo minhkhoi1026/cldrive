@@ -80,15 +80,13 @@ labm8::Status KernelArg::Init(cl::Kernel* kernel, size_t arg_index) {
 const OpenClType& KernelArg::type() const { return type_; }
 
 std::unique_ptr<KernelArgValue> KernelArg::TryToCreateRandomValue(
-    const cl::Context& context, const DynamicParams& dynamic_params) const {
-  return TryToCreateKernelArgValue(context, dynamic_params,
-                                   /*rand_values=*/true);
+    const cl::Context& context, const int& size) const {
+  return TryToCreateKernelArgValueRandom(context, size);
 }
 
-std::unique_ptr<KernelArgValue> KernelArg::TryToCreateOnesValue(
-    const cl::Context& context, const DynamicParams& dynamic_params) const {
-  return TryToCreateKernelArgValue(context, dynamic_params,
-                                   /*rand_values=*/false);
+std::unique_ptr<KernelArgValue> KernelArg::TryToCreateConstValue(
+    const cl::Context& context, const int& size, const int& value) const {
+  return TryToCreateKernelArgValueConst(context, size, value);
 }
 
 bool KernelArg::IsGlobal() const {
@@ -109,23 +107,43 @@ bool KernelArg::IsPrivate() const {
 
 bool KernelArg::IsPointer() const { return is_pointer_; }
 
-std::unique_ptr<KernelArgValue> KernelArg::TryToCreateKernelArgValue(
-    const cl::Context& context, const DynamicParams& dynamic_params,
-    bool rand_values) const {
+std::unique_ptr<KernelArgValue> KernelArg::TryToCreateKernelArgValueRandom(
+    const cl::Context& context, const int& size) const {
   CHECK(type() != OpenClType::DEFAULT_UNKNOWN);
 
   if (IsPointer() && IsGlobal()) {
     return util::CreateGlobalMemoryArgValue(
         type(), context,
-        /*size=*/dynamic_params.global_size_x(), // large number of elements for mem analysis
-        /*value=*/1, rand_values);
+        /*size=*/size,
+        /*value=*/1, /*rand_values*/true);
   } else if (IsPointer() && IsLocal()) {
     return util::CreateLocalMemoryArgValue(
         type(),
-        /*size=*/dynamic_params.global_size_x()); // large number of elements for mem analysis
+        /*size=*/size);
   } else if (!IsPointer()) {
     return util::CreateScalarArgValue(type(),
-                                      /*value=*/dynamic_params.global_size_x());
+                                      /*value=*/rand());
+  } else {
+    return std::unique_ptr<KernelArgValue>(nullptr);
+  }
+}
+
+std::unique_ptr<KernelArgValue> KernelArg::TryToCreateKernelArgValueConst(
+    const cl::Context& context, const int& size, const int& value) const {
+  CHECK(type() != OpenClType::DEFAULT_UNKNOWN);
+
+  if (IsPointer() && IsGlobal()) {
+    return util::CreateGlobalMemoryArgValue(
+        type(), context,
+        /*size=*/size,
+        /*value=*/value, /*rand_values*/false);
+  } else if (IsPointer() && IsLocal()) {
+    return util::CreateLocalMemoryArgValue(
+        type(),
+        /*size=*/size);
+  } else if (!IsPointer()) {
+    return util::CreateScalarArgValue(type(),
+                                      /*value=*/value);
   } else {
     return std::unique_ptr<KernelArgValue>(nullptr);
   }
