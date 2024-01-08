@@ -48,7 +48,7 @@ void KernelDriver::RunOrDie(Logger& logger) {
       kernel_.getWorkGroupInfo<CL_KERNEL_LOCAL_MEM_SIZE>(device_));
   kernel_instance_->set_work_item_private_mem_size_in_bytes(
       kernel_.getWorkGroupInfo<CL_KERNEL_PRIVATE_MEM_SIZE>(device_));
-
+  
   kernel_instance_->set_outcome(args_set_.Init());
   if (kernel_instance_->outcome() != ClmemKernelInstance::PASS) {
     LOG(WARNING) << "Skipping kernel with unsupported arguments: '" << name_
@@ -57,23 +57,33 @@ void KernelDriver::RunOrDie(Logger& logger) {
                      /*log=*/nullptr);
     return;
   }
-  // preallocate the buffer for kernel arguments, 
-  // since the size is fixed for all dynamic params 
-  // (we does not know the size of the buffer before analysis)
-  gpu::clmem::DynamicParams temp_dp;
-  temp_dp.set_global_size_x(MAX_ARRAY_SIZE);
-  temp_dp.set_local_size_x(1);
-  KernelArgValuesSet inputs;
-  auto args_status = args_set_.SetRandom(context_, temp_dp, &inputs);
-  if (!args_status.ok()) {
-    LOG(WARNING) << "Unsupported params for kernel: '" << name_ << "'";
-    logger.RecordLog(&instance_, kernel_instance_, /*run=*/nullptr, 
-                    /*log=*/nullptr);
-    return;
-  }
-
+  
+  auto max_work_group_size = device_.getInfo<CL_DEVICE_MAX_WORK_GROUP_SIZE>();
   // run experiment for all dynamic params, record the results
   for (int i = 0; i < instance_.dynamic_params_size(); ++i) {
+    // preallocate the buffer for kernel arguments, 
+    // since the size is fixed for all dynamic params 
+    // (we does not know the size of the buffer before analysis)
+    std::vector<long long> args_values;
+    for (auto& arg : args_set_.args()) {
+      if (arg.IsPointer()) {
+        if (arg.IsGlobal()) {
+          args_values.push_back(MAX_ARRAY_SIZE);
+        } else {
+          args_values.push_back(max_work_group_size);
+        }
+      } else {
+        args_values.push_back(instance_.dynamic_params(i).global_size_x());
+      }
+    }
+    KernelArgValuesSet inputs;
+    auto args_status = args_set_.SetRandom(context_, args_values, &inputs);
+    if (!args_status.ok()) {
+      LOG(WARNING) << "Unsupported params for kernel: '" << name_ << "'";
+      logger.RecordLog(&instance_, kernel_instance_, /*run=*/nullptr, 
+                      /*log=*/nullptr);
+      return;
+    }
     auto run = RunDynamicParams(instance_.dynamic_params(i), logger, inputs);
     if (run.ok()) {
       *kernel_instance_->add_run() = run.ValueOrDie();

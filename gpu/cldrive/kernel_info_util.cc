@@ -69,7 +69,8 @@ string GetKernelInfoOrDie(std::string opencl_src, string build_opts="", cl::Devi
     res += args_set_.ToString();
     res += ',';
   }
-  res.back() = '}';
+  res.pop_back(); // remove last comma
+  res += "}";
 
   // TODO: explain
   for (auto kernel : kernels) {

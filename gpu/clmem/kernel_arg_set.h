@@ -44,6 +44,8 @@ class KernelArgSet {
                         const DynamicParams& dynamic_params,
                         KernelArgValuesSet* values);
 
+  std::vector<KernelArg> args() const { return args_; }
+
  private:
   cl::Kernel* kernel_;
   std::vector<KernelArg> args_;

@@ -218,11 +218,14 @@ int main(int argc, char** argv) {
 
   if (FLAGS_kernelinfo) {
     cl::Device device = labm8::gpu::clinfo::GetOpenClDeviceOrDie(labm8::gpu::clinfo::GetOpenClDevices().device(0));
-    std::cout << "path,kernel_info" << std::endl;
+    std::string res = "{";
     for (auto path : SplitCommaSeparated(FLAGS_srcs)) {
+      res +=  "\"" + path + "\": ";
       string opencl_src = ReadFileOrDie(path);
-      std::cout << path << "," << gpu::cldrive::util::GetKernelInfoOrDie(opencl_src, "", device) << std::endl;
+      res += gpu::cldrive::util::GetKernelInfoOrDie(opencl_src, "", device) + ",";
     }
+    res.back() ='}';
+    std::cout << res << std::endl;
     return 0;
   }
 
