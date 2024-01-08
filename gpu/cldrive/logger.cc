@@ -89,5 +89,23 @@ CsvLogger::CsvLogger(std::ostream& ostream,
   return labm8::Status::OK;
 }
 
+NULLLogger::NULLLogger(std::ostream& ostream,
+                     const CldriveInstances* const instances)
+    : Logger(ostream, instances) {
+  // this->ostream(/*flush=*/true) << CsvLogHeader();
+  // do nothing
+}
+
+/*virtual*/ labm8::Status NULLLogger::RecordLog(
+    const CldriveInstance* const instance,
+    const CldriveKernelInstance* const kernel_instance,
+    const CldriveKernelRun* const run,
+    const gpu::libcecl::OpenClKernelInvocation* const log, bool flush) {
+  // do nothing
+  // ostream(flush) << CsvLog::FromProtos(instance_num(), instance,
+  //                                      kernel_instance, run, log);
+  return labm8::Status::OK;
+}
+
 }  // namespace cldrive
 }  // namespace gpu

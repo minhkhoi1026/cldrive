@@ -49,6 +49,7 @@ message ClmemInstance {
   }
   optional InstanceOutcome outcome = 10;
   repeated ClmemKernelInstance kernel = 11;
+  repeated int64 args_values = 12;
 }
 
 message ClmemKernelInstance {

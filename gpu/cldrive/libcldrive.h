@@ -31,14 +31,13 @@ class Cldrive {
 
  private:
   void DoRunOrDie(Logger& logger);
-  string DoGetKernelInfoOrDie(std::string opencl_src, string build_opts="");
 
   CldriveInstance* instance_;
   int instance_num_;
   cl::Device device_;
 };
 
-void ProcessCldriveInstancesOrDie(CldriveInstances* instance);
+// void ProcessCldriveInstancesOrDie(CldriveInstances* instance);
 
 }  // namespace cldrive
 }  // namespace gpu

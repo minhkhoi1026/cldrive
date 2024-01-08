@@ -31,6 +31,7 @@
 #include "labm8/cpp/logging.h"
 
 #include "absl/strings/str_split.h"
+#include "absl/strings/numbers.h"
 #include "boost/filesystem.hpp"
 #include "boost/filesystem/fstream.hpp"
 #include "gflags/gflags.h"
@@ -46,6 +47,19 @@ std::vector<string> SplitCommaSeparated(const string& str) {
   std::vector<absl::string_view> str_paths =
       absl::StrSplit(str, ',', absl::SkipEmpty());
   return std::vector<string>(str_paths.begin(), str_paths.end());
+}
+
+template <typename int_type>
+void SplitCommaSeparatedInt(const string& str, std::vector<int_type>& out) {
+  CHECK(!str.empty()) << "Empty argument to SplitCommaSeparatedInt()";
+  std::vector<absl::string_view> str_paths =
+      absl::StrSplit(str, ',', absl::SkipEmpty());
+  for (auto str_path : str_paths) {
+    int_type val;
+    CHECK(absl::SimpleAtoi(str_path, &val))
+        << "Failed to parse integer: '" << string(str_path) << "'";
+    out.push_back(val);
+  }
 }
 
 // Read the entire contents of a file to string or abort.
@@ -118,18 +132,10 @@ DEFINE_int32(gsize, 1024,
 DEFINE_int32(lsize_x, 128, "The local (work group) size in first dimension. lsize_x*lsize_y*lsize_z must be <= gsize.");
 DEFINE_int32(lsize_y, 1, "The local (work group) size in second dimension. lsize_x*lsize_y*lsize_z must be <= gsize.");
 DEFINE_int32(lsize_z, 1, "The local (work group) size in third dimension. lsize_x*lsize_y*lsize_z must be <= gsize.");
-static bool ValidateDynamicParams(const char* flagname, const GFLAGS_NAMESPACE::int32 value) {
-  GFLAGS_NAMESPACE::int32 gsize = value;
-  GFLAGS_NAMESPACE::int32 lsize_x = FLAGS_lsize_x;
-  GFLAGS_NAMESPACE::int32 lsize_y = FLAGS_lsize_y;
-  GFLAGS_NAMESPACE::int32 lsize_z = FLAGS_lsize_z;
-  if ((int64_t)gsize < (int64_t) lsize_x * lsize_y * lsize_z) {
-    LOG(FATAL) << "Global size must be greater than or equal to local size. Got: "
-                << "gsize: " << gsize << ", lsize_x*lsize_y*lsize_z: " <<  (int64_t) lsize_x * lsize_y * lsize_z;
-  }
-  return true;
-}
-DEFINE_validator(gsize, &ValidateDynamicParams);
+
+DEFINE_string(args_values, "",
+              "A comma separated list of values to use for each kernel "
+              "argument. Must be the same length as the number of arguments");
 
 DEFINE_string(cl_build_opt, "", "Build options passed to clBuildProgram().");
 DEFINE_int32(num_runs, 30, "The number of runs per kernel.");
@@ -212,6 +218,11 @@ int main(int argc, char** argv) {
   gpu::clmem::ClmemInstance* instance = instances.add_instance();
   instance->set_build_opts(FLAGS_cl_build_opt);
   auto dp = instance->add_dynamic_params();
+  if ((int64_t)FLAGS_gsize < (int64_t) FLAGS_lsize_x * FLAGS_lsize_y * FLAGS_lsize_z) {
+    LOG(FATAL) << "Global size must be greater than or equal to local size. Got: "
+                << "gsize: " << FLAGS_gsize << ", lsize_x*lsize_y*lsize_z: " <<  
+                (int64_t) FLAGS_lsize_x * FLAGS_lsize_y * FLAGS_lsize_z;
+  }
   dp->set_global_size_x(FLAGS_gsize);
   dp->set_local_size_x(FLAGS_lsize_x);
   dp->set_local_size_y(FLAGS_lsize_y);
@@ -223,6 +234,12 @@ int main(int argc, char** argv) {
       gpu::clmem::MakeLoggerFromFlags(std::cout, &instances);
 
   int instance_num = 0;
+  std::vector<long long> args_values;
+  SplitCommaSeparatedInt(FLAGS_args_values, args_values);
+  for (auto arg_value : args_values) {
+    instance->add_args_values(arg_value);
+  }
+
   for (auto path : SplitCommaSeparated(FLAGS_srcs)) {
     logger->StartNewInstance();
     instance->set_opencl_src(ReadFileOrDie(path));
@@ -231,7 +248,7 @@ int main(int argc, char** argv) {
       // Reset fields from previous loop iterations.
       instance->clear_outcome();
       instance->clear_kernel();
-
+      
       *instance->mutable_device() = devices[i];
 
       gpu::clmem::Clmem(instance, instance_num).RunOrDie(*logger);

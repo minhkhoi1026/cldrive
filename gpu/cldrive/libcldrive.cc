@@ -57,6 +57,7 @@ labm8::StatusOr<cl::Program> BuildOpenClProgram(
     auto duration = (end_time - start_time) / absl::Milliseconds(1);
     LOG(INFO) << "clBuildProgram() with options '" << all_build_opts
               << "' completed in " << duration << " ms";
+    
     return program;
   } catch (cl::Error e) {
     LOG_CL_ERROR(WARNING, e);
@@ -101,6 +102,7 @@ void Cldrive::DoRunOrDie(Logger& logger) {
                      /*log=*/nullptr);
     return;
   }
+  
   cl::Program program = program_or.ValueOrDie();
 
   std::vector<cl::Kernel> kernels;

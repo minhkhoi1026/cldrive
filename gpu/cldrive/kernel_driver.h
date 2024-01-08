@@ -34,7 +34,8 @@ class KernelDriver {
   void RunOrDie(Logger& logger);
 
   labm8::StatusOr<CldriveKernelRun> RunDynamicParams(
-      const DynamicParams& dynamic_params, Logger& logger);
+      const DynamicParams& dynamic_params, Logger& logger, 
+      KernelArgValuesSet& input);
 
   // Run the kernel with the given dynamic parameters. Any error here will
   // result in the programming terminating. If flush is true, the result is
@@ -45,14 +46,16 @@ class KernelDriver {
       KernelArgValuesSet* outputs, const CldriveKernelRun* const run,
       Logger& logger, bool flush = true);
   gpu::libcecl::OpenClKernelInvocation RunOnceOrDie(
-    const DynamicParams& dynamic_params, KernelArgValuesSet& inputs,
+    const DynamicParams& dynamic_params, 
+    KernelArgValuesSet& inputs,
     KernelArgValuesSet* outputs);
 
  private:
   // Private helper to public RunDynamicParams() method that doesn't catch
   // OpenCL exceptions.
   labm8::Status RunDynamicParams(const DynamicParams& dynamic_params,
-                                 Logger& logger, CldriveKernelRun* run);
+                                 Logger& logger, CldriveKernelRun* run, 
+                                 KernelArgValuesSet& inputs);
 
   cl::Context context_;
   cl::CommandQueue queue_;

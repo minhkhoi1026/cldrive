@@ -23,7 +23,7 @@
 #include "labm8/cpp/logging.h"
 #include "labm8/cpp/status_macros.h"
 
-#define MAX_ARRAY_SIZE 10000000
+#define MAX_ARRAY_SIZE 1000000
 
 namespace gpu {
 namespace clmem {
@@ -58,24 +58,24 @@ void KernelDriver::RunOrDie(Logger& logger) {
     return;
   }
   
-  auto max_work_group_size = device_.getInfo<CL_DEVICE_MAX_WORK_GROUP_SIZE>();
+  // auto max_work_group_size = device_.getInfo<CL_DEVICE_MAX_WORK_GROUP_SIZE>();
   // run experiment for all dynamic params, record the results
   for (int i = 0; i < instance_.dynamic_params_size(); ++i) {
     // preallocate the buffer for kernel arguments, 
     // since the size is fixed for all dynamic params 
     // (we does not know the size of the buffer before analysis)
-    std::vector<long long> args_values;
-    for (auto& arg : args_set_.args()) {
-      if (arg.IsPointer()) {
-        if (arg.IsGlobal()) {
-          args_values.push_back(MAX_ARRAY_SIZE);
-        } else {
-          args_values.push_back(max_work_group_size);
-        }
-      } else {
-        args_values.push_back(instance_.dynamic_params(i).global_size_x());
-      }
-    }
+    std::vector<long long> args_values(instance_.args_values().begin(), instance_.args_values().end());
+    // for (auto& arg : args_set_.args()) {
+    //   if (arg.IsPointer()) {
+    //     if (arg.IsGlobal()) {
+    //       args_values.push_back(MAX_ARRAY_SIZE);
+    //     } else {
+    //       args_values.push_back(max_work_group_size);
+    //     }
+    //   } else {
+    //     args_values.push_back(instance_.dynamic_params(i).global_size_x());
+    //   }
+    // }
     KernelArgValuesSet inputs;
     auto args_status = args_set_.SetRandom(context_, args_values, &inputs);
     if (!args_status.ok()) {

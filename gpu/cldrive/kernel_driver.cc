@@ -18,7 +18,6 @@
 #include "gpu/cldrive/logger.h"
 #include "gpu/cldrive/opencl_util.h"
 #include "gpu/clinfo/libclinfo.h"
-#include "gpu/cldrive/mem_analysis_util.h"
 
 #include "labm8/cpp/logging.h"
 #include "labm8/cpp/status_macros.h"
@@ -47,6 +46,7 @@ void KernelDriver::RunOrDie(Logger& logger) {
   kernel_instance_->set_work_item_private_mem_size_in_bytes(
       kernel_.getWorkGroupInfo<CL_KERNEL_PRIVATE_MEM_SIZE>(device_));
 
+  KernelArgValuesSet inputs;
   kernel_instance_->set_outcome(args_set_.Init());
   if (kernel_instance_->outcome() != CldriveKernelInstance::PASS) {
     LOG(WARNING) << "Skipping kernel with unsupported arguments: '" << name_
@@ -55,8 +55,26 @@ void KernelDriver::RunOrDie(Logger& logger) {
                      /*log=*/nullptr);
     return;
   }
+  
   for (int i = 0; i < instance_.dynamic_params_size(); ++i) {
-    auto run = RunDynamicParams(instance_.dynamic_params(i), logger);
+    auto args_values_proto = instance_.args_values();
+    labm8::Status args_status;
+    if (args_values_proto.begin() != args_values_proto.end()) {
+      std::vector<long long> args_values(args_values_proto.begin(), args_values_proto.end());
+      args_status = args_set_.SetRandom(context_, args_values, &inputs);
+    }
+    else {
+      args_status = args_set_.SetRandom(context_, instance_.dynamic_params(i), &inputs);
+    }
+    if (!args_status.ok()) {
+      LOG(WARNING) << "Unsupported params for kernel: '" << name_ << "'";
+      logger.RecordLog(&instance_, kernel_instance_, /*run=*/nullptr, 
+                      /*log=*/nullptr);
+      return;
+    }
+
+    auto run = RunDynamicParams(instance_.dynamic_params(i), logger, inputs);
+    
     if (run.ok()) {
       *kernel_instance_->add_run() = run.ValueOrDie();
     } else {
@@ -68,11 +86,11 @@ void KernelDriver::RunOrDie(Logger& logger) {
 }
 
 labm8::StatusOr<CldriveKernelRun> KernelDriver::RunDynamicParams(
-    const DynamicParams& dynamic_params, Logger& logger) {
+    const DynamicParams& dynamic_params, Logger& logger, KernelArgValuesSet& inputs) {
   CldriveKernelRun run;
 
   try {
-    RunDynamicParams(dynamic_params, logger, &run);
+    RunDynamicParams(dynamic_params, logger, &run, inputs);
   } catch (cl::Error error) {
     LOG(WARNING) << "Error code " << error.err() << " ("
                  << labm8::gpu::clinfo::OpenClErrorString(error.err()) << ") "
@@ -105,7 +123,7 @@ gpu::libcecl::OpenClKernelInvocation DynamicParamsToLog(
 
 labm8::Status KernelDriver::RunDynamicParams(
     const DynamicParams& dynamic_params, Logger& logger,
-    CldriveKernelRun* run) {
+    CldriveKernelRun* run, KernelArgValuesSet& inputs) {
   // Create a log message with just the dynamic params so that we can log the
   // global and local sizes on error.
   gpu::libcecl::OpenClKernelInvocation log = DynamicParamsToLog(dynamic_params);
@@ -124,9 +142,7 @@ labm8::Status KernelDriver::RunDynamicParams(
   }
   
   // 2 warmup run
-  KernelArgValuesSet inputs;
   KernelArgValuesSet output_a;
-  CHECK(args_set_.SetRandom(context_, dynamic_params, &inputs).ok());
   inputs.SetAsArgs(&kernel_);
   RunOnceOrDie(dynamic_params, inputs, &output_a);
   RunOnceOrDie(dynamic_params, inputs, &output_a);

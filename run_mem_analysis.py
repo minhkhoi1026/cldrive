@@ -13,22 +13,20 @@ import random
 import hashlib
 from retry.api import retry_call
 from loguru import logger
-from sklearn.linear_model import LinearRegression
 import numpy as np
 import json
+import copy
 
+from utils import detect_kernel_dimensions
 
-CLDRIVE = "bazel-bin/gpu/clmem/clmem"
-KERNEL_DIR = "kernels"
+CLDRIVE = "bazel-bin/gpu/cldrive/cldrive"
+CLMEM = "bazel-bin/gpu/clmem/clmem"
+KERNEL_DIR = "hahah"
 BACKUP_DIR = "backup-mem-analysis"
 TIMEOUT = 5
 NUM_GPU = 1
-NUM_PROCESS = 16
+NUM_PROCESS = 2
 verbose_cldrive = False
-device_num_sm = 72  # {"GPU|NVIDIA|NVIDIA_GeForce_RTX_3090|535.86.05|3.0": 82}
-n_sample_local = 4
-n_sample_wg = 50
-
 
 random.seed(2610)
 
@@ -37,14 +35,13 @@ logger.add("cldrive.log", level="DEBUG")
 rng = np.random.default_rng()
 
 
-
 def getOpenCLPlatforms() -> None:
     """
     Identify compatible OpenCL platforms for current system.
     """
     try:
         cmd = subprocess.Popen(
-            "{} --clinfo".format(CLDRIVE).split(),
+            "{} --clinfo".format(CLMEM).split(),
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             universal_newlines=True,
@@ -74,7 +71,7 @@ def RunCLDrive(
     """
     If CLDrive executable exists, run it over provided source code.
     """
-    if not CLDRIVE:
+    if not CLMEM:
         logger.warn(
             "CLDrive executable has not been found. Skipping CLDrive execution."
         )
@@ -97,9 +94,9 @@ def RunCLDrive(
                 f.flush()
                 hf.write(header_file)
                 hf.flush()
-                cmd = '{} {} --srcs={} --cl_build_opt="-I{}{}" --num_runs={} --gsize={} --lsize={} --envs={}'.format(
+                cmd = '{} {} --srcs={} --cl_build_opt="-I{}{}" --num_runs={} --gsize={} --lsize_x={} --envs={}'.format(
                     "timeout -s9 {}".format(timeout) if timeout > 0 else "",
-                    CLDRIVE,
+                    CLMEM,
                     f.name,
                     pathlib.Path(hf.name).resolve().parent,
                     ",{}".format(",".join(extra_args)) if len(extra_args) > 0 else "",
@@ -121,9 +118,9 @@ def RunCLDrive(
         else:
             f.write(src)
             f.flush()
-            cmd = "{} {} --srcs={} {} --num_runs={} --gsize={} --lsize={} --envs={} --output_format=null".format(
+            cmd = "{} {} --srcs={} {} --num_runs={} --gsize={} --lsize_x={} --envs={} --output_format=null".format(
                 "timeout -s9 {}".format(timeout) if timeout > 0 else "",
-                CLDRIVE,
+                CLMEM,
                 f.name,
                 "--cl_build_opt={}".format(",".join(extra_args))
                 if len(extra_args) > 0
@@ -179,26 +176,17 @@ def GetCLDriveStdout(
 
 
 def get_config():
-    # including both simple case (multiple of 32) and complex case (not multiple of 32
-    local_sizes = 32
-    gsize = [1024, 3000]
+    local_sizes = [16]
+    global_sizes = [256, 512]
 
     def gen_launch_configs():
         launch_configs = []
-        l_samples = random.sample(local_sizes, n_sample_local)
-
-        wg_samples = []
-        wg_samples.extend(random.sample(small_wg_sizes, n_sample_wg))
-
-        for lsize in l_samples:
-            for wg_size in wg_samples:
-                gsize = lsize * wg_size
-                if gsize > MAX_GSIZE:
-                    gsize = lsize * int(MAX_GSIZE / lsize)
+        for lsize in local_sizes:
+            for gsize in global_sizes:
                 launch_configs.append((gsize, lsize))
         return launch_configs
-    launch_configs = gen_launch_configs()
-    return launch_configs
+    
+    return gen_launch_configs()
 
 class KernelRunInstance:
     def __init__(self, kernel_code, gsize, lsize) -> None:
@@ -217,36 +205,58 @@ class KernelRunInstance:
         )
 
         return stdout, stderr
-  
+    
+def get_kernel_info(kernel_path):
+    cmd = f"{CLDRIVE} --srcs={kernel_path} --kernelinfo"
+    proc = subprocess.Popen(
+        cmd.split(),
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        universal_newlines=True,
+    )
+    stdout, stderr = proc.communicate()
+    if stdout == "":
+        raise Exception(f"ERROR: Get kernel info failed with error:\n{stderr}")
+    else:
+        kernels = json.loads(stdout, strict=False)
+        return kernels
+
 class KernelMemoryAnalyzer:
     def __init__(self, kernel_path) -> None:
         self.kernel_path = kernel_path
         with open(kernel_path, "r", encoding="utf-8") as f:
             self.kernel_code = f.read()
         self.argument_list = self.get_argument_list()
-        self.id2arg = {i: arg for (arg, i) in self.argument_list}
+        self.id2name = {arg["id"]: arg["name"] for arg in self.argument_list}
     
     def get_argument_list(self):
-        # get argument list from the first line of kernel code
-        argument_json = self.kernel_code.split("\n")[0]
-        argument_json = argument_json[2:] # ignore the first "//"
-        argument_dict_obj = json.loads(argument_json)
-        return list(argument_dict_obj.items())
+        # tuple of (kernel_name, argument_desc)
+        # argument_desc is a dictionary of keys 'id', 'name', 'type', 'qualifier', 'is_pointer'
+        kernels = list(get_kernel_info(self.kernel_path)[self.kernel_path].items())
+        # get the first kernel argument desc, currently only support one kernel per file
+        return kernels[0][1]        
     
-    def get_array_bound_relation(self):
+    def get_array_bound_relation(self):              
         try:
             X, ys = self.get_mem_access_dataset()
         
-            result = {}
-            model = LinearRegression()
-            for arg_name, arg_id in self.argument_list:
-                if arg_name not in ys.keys(): continue
-                y = ys[arg_name]
-                # fit datapoint into a linear function
-                # array_bound = a_2*gsize + a_1*lsize + a_0
-                model.fit(X, y)
+            result = copy.deepcopy(self.argument_list)
+            
+            for i in range(len(result)):
+                arg_info = result[i]
+                # skip scalar arguments
+                if arg_info["is_pointer"] == False: continue
+                # if array is not used, use gsize as the bound
+                if arg_info["name"] not in ys.keys(): 
+                    result[i]["coef"] = [0, 1]
+                else:
+                    arg_name = arg_info["name"]
+                    y = ys[arg_name]
+                    # fit datapoint into a linear function
+                    # array_bound = a*gsize + b
+                    coef = np.linalg.solve(X, y)
+                    result[i]["coef"] = coef.tolist()
                 
-                result[arg_name] = {"coef": np.concatenate((model.coef_, [model.intercept_])).tolist(), "arg_id": arg_id}
             return result
         except Exception as e:
             logger.error(f"ERROR: Get memory access dataset failed with error:\n{e}")
@@ -255,8 +265,12 @@ class KernelMemoryAnalyzer:
     def get_mem_access_dataset(self):
         launch_configs = list(get_config())
         max_ids, min_ids, launch_configs = self.run_multiple_configs(launch_configs)
-        X = launch_configs
+        X = np.array(launch_configs)[:,0] # only use gsize
+        X = np.expand_dims(X, axis=1) # expand to (2,1)
+        X = np.insert(X, 0, 1, axis=1) # add coef column = 1
         ys = pd.DataFrame(max_ids).to_dict("list")
+        print(ys)
+        print(self.id2name)
         return X, ys
     
     def run_multiple_configs(self, launch_configs):
@@ -270,6 +284,7 @@ class KernelMemoryAnalyzer:
             return max_list, min_list, launch_config
             
     def wrapping_func(self, config):
+        # return self.get_max_min_of_run(config)
         return retry_call(
             self.get_max_min_of_run,
             fargs=[config],
@@ -288,8 +303,8 @@ class KernelMemoryAnalyzer:
         # for each memory access pair (arg_id, id_access), get the max and min of the run
         # return a list of (arg_id, max, min)
         max_list, min_list = self.parse_stdout(stdout)
-        max_dict = {self.id2arg[x["arg_id"]]: x["id_access"] for x in max_list}
-        min_dict = {self.id2arg[x["arg_id"]]: x["id_access"] for x in min_list}
+        max_dict = {self.id2name[x["arg_id"]]: x["id_access"] for x in max_list}
+        min_dict = {self.id2name[x["arg_id"]]: x["id_access"] for x in min_list}
         return max_dict, min_dict, launch_config
         
     def parse_stdout(self, stdout):
@@ -304,7 +319,7 @@ class KernelMemoryAnalyzer:
 
 
 def set_cuda_visible():
-    process_number = rng.integers(0, NUM_GPU)
+    process_number = 0
     os.environ["CUDA_VISIBLE_DEVICES"] = str(process_number)
 
 
@@ -318,7 +333,11 @@ if __name__ == "__main__":
     need_calculate = []
     for kernel in os.listdir(KERNEL_DIR):
         kernel_path = os.path.join(KERNEL_DIR, kernel)
-        if os.path.splitext(kernel_path)[1] != ".cl" or os.path.splitext(kernel)[0] in BACKUPED_LIST:
+        with open(kernel_path, "r", encoding="utf-8") as f:
+            kernel_code = f.read()
+        if os.path.splitext(kernel_path)[1] != ".cl" \
+            or os.path.splitext(kernel)[0] in BACKUPED_LIST \
+            or detect_kernel_dimensions(kernel_code) != "1D":
             continue
         need_calculate.append(kernel)
         
@@ -328,6 +347,7 @@ if __name__ == "__main__":
         
         analyzer = KernelMemoryAnalyzer(kernel_path)
         res_dict = analyzer.get_array_bound_relation()
+        print(res_dict)
         res_path = os.path.join(BACKUP_DIR, os.path.splitext(kernel)[0] + ".json")
         with open(res_path, "w", encoding="utf-8") as f:
             json.dump(res_dict, f)

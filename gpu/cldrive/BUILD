@@ -81,13 +81,13 @@ cc_binary(
         ":kernel_info_util",
         ":csv_log",
         ":libcldrive",
-        ":mem_analysis_util",
         "//gpu/clinfo:libclinfo",
         "//labm8/cpp:app",
         "//labm8/cpp:logging",
         "@boost//:filesystem",
         "@com_github_gflags_gflags//:gflags",
         "@com_google_absl//absl/strings",
+        "@com_github_jsoncpp//:jsoncpp"
     ],
 )
 
@@ -98,7 +98,6 @@ cc_image(
         # TODO(cec): This is a duplicate of the dependencies of :cldrive.
         ":csv_log",
         ":libcldrive",
-        ":mem_analysis_util",
         ":kernel_info_util",
         "//gpu/clinfo:libclinfo",
         "//labm8/cpp:app",
@@ -106,17 +105,6 @@ cc_image(
         "@boost//:filesystem",
         "@com_github_gflags_gflags//:gflags",
         "@com_google_absl//absl/strings",
-    ],
-)
-
-cc_library(
-    name = "mem_analysis_util",
-    srcs = ["mem_analysis_util.cc"],
-    hdrs = ["mem_analysis_util.h"],
-    deps = [
-        "//labm8/cpp:logging",
-        "@boost//:filesystem",
-        "@com_github_jsoncpp//:jsoncpp",
     ],
 )
 
@@ -317,12 +305,12 @@ cc_library(
         ":kernel_arg_set",
         ":logger",
         ":opencl_util",
-        ":mem_analysis_util",
         "//gpu/cldrive/proto:cldrive_py_cc",
         "//gpu/clinfo:libclinfo",
         "//labm8/cpp:logging",
         "//labm8/cpp:status_macros",
         "//labm8/cpp:statusor",
+        "//labm8/cpp:status",
         "//labm8/cpp:string",
         "//third_party/opencl",
     ],

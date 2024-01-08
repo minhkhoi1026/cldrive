@@ -50,7 +50,7 @@ message CldriveInstance {
   }
   optional InstanceOutcome outcome = 10;
   repeated CldriveKernelInstance kernel = 11;
-  optional string mem_filepath = 12;
+  repeated int64 args_values = 12;
 }
 
 message CldriveKernelInstance {

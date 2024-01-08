@@ -22,7 +22,6 @@
 // You should have received a copy of the GNU General Public License
 // along with cldrive.  If not, see <https://www.gnu.org/licenses/>.
 #include "gpu/cldrive/libcldrive.h"
-#include "gpu/cldrive/mem_analysis_util.h"
 #include "gpu/cldrive/kernel_info_util.h"
 
 #include "gpu/cldrive/logger.h"
@@ -33,6 +32,7 @@
 #include "labm8/cpp/logging.h"
 
 #include "absl/strings/str_split.h"
+#include "absl/strings/numbers.h"
 #include "boost/filesystem.hpp"
 #include "boost/filesystem/fstream.hpp"
 #include "gflags/gflags.h"
@@ -48,6 +48,19 @@ std::vector<string> SplitCommaSeparated(const string& str) {
   std::vector<absl::string_view> str_paths =
       absl::StrSplit(str, ',', absl::SkipEmpty());
   return std::vector<string>(str_paths.begin(), str_paths.end());
+}
+
+template <typename int_type>
+void SplitCommaSeparatedInt(const string& str, std::vector<int_type>& out) {
+  CHECK(!str.empty()) << "Empty argument to SplitCommaSeparatedInt()";
+  std::vector<absl::string_view> str_paths =
+      absl::StrSplit(str, ',', absl::SkipEmpty());
+  for (auto str_path : str_paths) {
+    int_type val;
+    CHECK(absl::SimpleAtoi(str_path, &val))
+        << "Failed to parse integer: '" << string(str_path) << "'";
+    out.push_back(val);
+  }
 }
 
 // Read the entire contents of a file to string or abort.
@@ -81,22 +94,6 @@ static bool ValidateSrcs(const char* flagname, const string& value) {
 }
 DEFINE_validator(srcs, &ValidateSrcs);
 
-DEFINE_string(mem_analysis_dir, "mem_analysis_info", "The directory to store the memory analysis information, "
-                                                      "each source file corresponds to a json file with same name in this directory. "
-                                                      "Example: if the source file is /path/to/file.cl, "
-                                                      "then the memory analysis file is /path/to/mem_analysis_info/file.json");
-static bool ValidateMemAnalysis(const char* flagname, const string& value) {
-  for (auto str_path : SplitCommaSeparated(FLAGS_srcs)) {
-    if (!gpu::cldrive::mem_analysis::isMemAnalysisFileExists(str_path, value)) {
-      LOG(WARNING) << "Memory analysis file not found for source file: " << str_path << ". Using default memory analysis setting."
-                   << ". Please run clmem first to generate the memory analysis file, then put it in " << value << " directory.";
-    }
-  }
-
-  return true;
-}
-DEFINE_validator(mem_analysis_dir, &ValidateMemAnalysis);
-
 DEFINE_string(envs, "",
               "A comma separated list of OpenCL devices to use. Use "
               "'--clinfo' argument to print a list of available devices. If "
@@ -119,11 +116,11 @@ static bool ValidateEnvs(const char* flagname, const string& value) {
 DEFINE_validator(envs, &ValidateEnvs);
 
 DEFINE_string(output_format, "csv",
-              "The output format. One of: {csv,pb,pbtxt}.");
+              "The output format. One of: {csv,pb,pbtxt,null}.");
 static bool ValidateOutputFormat(const char* flagname, const string& value) {
-  if (value.compare("csv") && value.compare("pb") && value.compare("pbtxt")) {
+  if (value.compare("csv") && value.compare("pb") && value.compare("pbtxt") && value.compare("null")) {
     LOG(FATAL) << "Illegal value for --" << flagname << ". Must be one of: "
-               << "{csv,pb,pbtxt}";
+               << "{csv,pb,pbtxt,null}";
   }
   return true;
 }
@@ -136,19 +133,10 @@ DEFINE_int32(gsize, 1024,
 DEFINE_int32(lsize_x, 128, "The local (work group) size in first dimension. lsize_x*lsize_y*lsize_z must be <= gsize.");
 DEFINE_int32(lsize_y, 1, "The local (work group) size in second dimension. lsize_x*lsize_y*lsize_z must be <= gsize.");
 DEFINE_int32(lsize_z, 1, "The local (work group) size in third dimension. lsize_x*lsize_y*lsize_z must be <= gsize.");
-static bool ValidateDynamicParams(const char* flagname, const GFLAGS_NAMESPACE::int32 value) {
-  GFLAGS_NAMESPACE::int32 gsize = value;
-  GFLAGS_NAMESPACE::int32 lsize_x = FLAGS_lsize_x;
-  GFLAGS_NAMESPACE::int32 lsize_y = FLAGS_lsize_y;
-  GFLAGS_NAMESPACE::int32 lsize_z = FLAGS_lsize_z;
-  if ((int64_t)gsize < (int64_t) lsize_x * lsize_y * lsize_z) {
-    LOG(FATAL) << "Global size must be greater than or equal to local size. Got: "
-                << "gsize: " << gsize << ", lsize_x*lsize_y*lsize_z: " <<  (int64_t) lsize_x * lsize_y * lsize_z;
-  }
-  return true;
-}
-DEFINE_validator(gsize, &ValidateDynamicParams);
 
+DEFINE_string(args_values, "",
+              "A comma separated list of values to use for each kernel "
+              "argument. Must be the same length as the number of arguments");
 DEFINE_string(cl_build_opt, "", "Build options passed to clBuildProgram().");
 DEFINE_int32(num_runs, 30, "The number of runs per kernel.");
 DEFINE_bool(clinfo, false, "List the available devices and exit.");
@@ -169,6 +157,8 @@ std::unique_ptr<Logger> MakeLoggerFromFlags(
                                                   /*text_format=*/true);
   } else if (!FLAGS_output_format.compare("csv")) {
     return std::make_unique<CsvLogger>(std::cout, instances);
+  } else if (!FLAGS_output_format.compare("null")) {
+    return std::make_unique<NULLLogger>(std::cout, instances);
   } else {
     CHECK(false) << "unreachable!";
     return nullptr;
@@ -216,6 +206,13 @@ int main(int argc, char** argv) {
     return 0;
   }
 
+  // Check that required flags are set. We can't check this in the flag
+  // validator functions as they are only required if the early-exit flags
+  // above are not set.
+  if (FLAGS_srcs.empty()) {
+    LOG(FATAL) << "Flag --srcs must be set";
+  }
+
   if (FLAGS_kernelinfo) {
     cl::Device device = labm8::gpu::clinfo::GetOpenClDeviceOrDie(labm8::gpu::clinfo::GetOpenClDevices().device(0));
     std::string res = "{";
@@ -229,13 +226,6 @@ int main(int argc, char** argv) {
     return 0;
   }
 
-  // Check that required flags are set. We can't check this in the flag
-  // validator functions as they are only required if the early-exit flags
-  // above are not set.
-  if (FLAGS_srcs.empty()) {
-    LOG(FATAL) << "Flag --srcs must be set";
-  }
-
   auto devices = GetDevicesFromCommaSeparatedString(FLAGS_envs);
 
   // Create instances proto.
@@ -243,6 +233,11 @@ int main(int argc, char** argv) {
   gpu::cldrive::CldriveInstance* instance = instances.add_instance();
   instance->set_build_opts(FLAGS_cl_build_opt);
   auto dp = instance->add_dynamic_params();
+  if ((int64_t)FLAGS_gsize < (int64_t) FLAGS_lsize_x * FLAGS_lsize_y * FLAGS_lsize_z) {
+    LOG(FATAL) << "Global size must be greater than or equal to local size. Got: "
+                << "gsize: " << FLAGS_gsize << ", lsize_x*lsize_y*lsize_z: " 
+                <<  (int64_t) FLAGS_lsize_x * FLAGS_lsize_y * FLAGS_lsize_z;
+  }
   dp->set_global_size_x(FLAGS_gsize);
   dp->set_local_size_x(FLAGS_lsize_x);
   dp->set_local_size_y(FLAGS_lsize_y);
@@ -254,12 +249,14 @@ int main(int argc, char** argv) {
       gpu::cldrive::MakeLoggerFromFlags(std::cout, &instances);
 
   int instance_num = 0;
+  std::vector<long long> args_values;
+  SplitCommaSeparatedInt(FLAGS_args_values, args_values);
+  for (auto arg_value : args_values) {
+    instance->add_args_values(arg_value);
+  }
   for (auto path : SplitCommaSeparated(FLAGS_srcs)) {
-    std::map<int,int> memAnalysis = gpu::cldrive::mem_analysis::getMemAnalysisInfo(path, FLAGS_mem_analysis_dir, FLAGS_gsize, FLAGS_lsize_x*FLAGS_lsize_y*FLAGS_lsize_z);
-    
     logger->StartNewInstance();
     instance->set_opencl_src(ReadFileOrDie(path));
-    instance->set_mem_filepath(gpu::cldrive::mem_analysis::getMemAnalysisFilePath(path, FLAGS_mem_analysis_dir).string());
 
     for (size_t i = 0; i < devices.size(); ++i) {
       // Reset fields from previous loop iterations.
