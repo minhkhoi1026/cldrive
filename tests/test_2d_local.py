@@ -15,7 +15,7 @@ import time
 from loguru import logger
 import sys
 sys.path.append('./')
-from utils import detect_kernel_dimensions
+from app.utils import detect_kernel_dimensions
 
 CLDRIVE = "bazel-bin/gpu/cldrive/cldrive"
 KERNEL_DIR = "kernels"

@@ -52,7 +52,6 @@ std::vector<string> SplitCommaSeparated(const string& str) {
 
 template <typename int_type>
 void SplitCommaSeparatedInt(const string& str, std::vector<int_type>& out) {
-  CHECK(!str.empty()) << "Empty argument to SplitCommaSeparatedInt()";
   std::vector<absl::string_view> str_paths =
       absl::StrSplit(str, ',', absl::SkipEmpty());
   for (auto str_path : str_paths) {
