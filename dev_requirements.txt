@@ -1,5 +1,0 @@
-pydantic
-pre-commit
-pytest
-tqdm
-numpy
