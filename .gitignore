@@ -13,3 +13,5 @@ bazel-cldrive
 bazel-out
 bazel-testlogs
 github-crawled-kernels
+__pycache__/*
+*.egg-info/
