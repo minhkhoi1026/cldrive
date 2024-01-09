@@ -1,4 +1,47 @@
+import json
 import logging
+import subprocess
+from loguru import logger
+
+def getOpenCLPlatforms(cldrive_exe) -> None:
+    """
+    Identify compatible OpenCL platforms for current system.
+    """
+    try:
+        cmd = subprocess.Popen(
+            "{} --clinfo".format(cldrive_exe).split(),
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            universal_newlines=True,
+        )
+        stdout, stderr = cmd.communicate()
+        if stderr:
+            raise ValueError(stderr)
+    except Exception as e:
+        logger.error(cmd)
+        logger.error(e)
+    CL_PLATFORMS = list(
+        platform for platform in stdout.split("\n") if len(platform) > 0
+    )
+    return CL_PLATFORMS
+
+def get_kernel_info(cldrive_exe, kernel_path):
+    cmd = f"{cldrive_exe} --srcs={kernel_path} --kernelinfo"
+    proc = subprocess.Popen(
+        cmd.split(),
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        universal_newlines=True,
+    )
+    stdout, stderr = proc.communicate()
+    try:
+        kernels = json.loads(stdout, strict=False)
+        return kernels
+    except Exception as e:
+        raise Exception(f"""ERROR: Get kernel info failed with:\n
+                        - output: {stdout}
+                        - error: {stderr}
+                        - exception: {e}""")
 
 def setup_logging(logger_name: str = "gpu-code-gen") -> logging.Logger:
     """
