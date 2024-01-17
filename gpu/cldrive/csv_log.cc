@@ -70,6 +70,18 @@ CsvLog::CsvLog(int instance_id)
   CHECK(instance_id >= 0) << "Negative instance ID not allowed";
 }
 
+std::string addQuotes(const std::string& str) {
+  std::string quoted = "\"";
+  for (auto c : str) {
+    if (c == '"') {
+      quoted += "\"";
+    }
+    quoted += c;
+  }
+  quoted += "\"";
+  return quoted;
+}
+
 std::ostream& operator<<(std::ostream& stream, const CsvLog& log) {
   stream << log.instance_id_ << "," << log.device_ << "," << log.build_opts_
          << ",";
@@ -83,7 +95,7 @@ std::ostream& operator<<(std::ostream& stream, const CsvLog& log) {
   NullIfNegative(stream, log.transferred_bytes_) << ",";
   NullIfNegative(stream, log.transfer_time_ns_) << ",";
   NullIfNegative(stream, log.kernel_time_ns_) << ",";
-  stream << "\""; NullIfEmpty(stream, log.args_) << "\"" << std::endl;
+  NullIfEmpty(stream, addQuotes(log.args_)) << std::endl;
   return stream;
 }
 

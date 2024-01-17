@@ -6,6 +6,12 @@ import pandas as pd
 from loguru import logger
 import tempfile
 
+from app.parser import ParseCLDriveStdoutToDataframe
+from app.utils import getOpenCLPlatforms
+
+CLDRIVE = "bazel-bin/gpu/cldrive/cldrive"
+TIMEOUT = 10
+
 def RunCLDrive(
     cldrive_exe: str,
     src: str,
@@ -102,3 +108,64 @@ def RunCLDrive(
         if proc.returncode == 9:
             stderr = "TIMEOUT"
     return stdout, stderr
+
+class KernelRunInstance:
+    def __init__(self, kernel_code, gsize, lsize, args_values=None,
+                 cldrive_exe=CLDRIVE, device=getOpenCLPlatforms(CLDRIVE)[0],
+                 timeout=TIMEOUT) -> None:
+        self.kernel_code = kernel_code
+        self.gsize = gsize
+        self.lsize = lsize
+        self.args_info = args_values
+        self.cldrive_exe = cldrive_exe
+        self.device = device
+        self.timeout = timeout
+    
+    def run_mem_access(self):
+        stdout, stderr = RunCLDrive(
+            cldrive_exe=self.cldrive_exe,
+            src=self.kernel_code,
+            num_runs=1,
+            lsize=self.lsize,
+            gsize=self.gsize,
+            args_values=self.args_info,
+            cl_platform=self.device,
+            timeout=self.timeout,
+            output_format="null",
+        )
+
+        return stdout, stderr
+    
+    def run_check(self):
+        stdout, stderr = RunCLDrive(
+            cldrive_exe=self.cldrive_exe,
+            src=self.kernel_code,
+            num_runs=1,
+            lsize=self.lsize,
+            gsize=self.gsize,
+            args_values=self.args_info,
+            cl_platform=self.device,
+            timeout=self.timeout,
+            output_format="csv",
+        )
+        df = ParseCLDriveStdoutToDataframe(stdout)
+
+        return df, stderr
+    
+    def run_n_times(self, nrun=10):
+        stdout, stderr = RunCLDrive(
+            cldrive_exe=self.cldrive_exe,
+            src=self.kernel_code,
+            num_runs=nrun,
+            lsize=self.lsize,
+            gsize=self.gsize,
+            args_values=self.args_info,
+            cl_platform=self.device,
+            timeout=self.timeout,
+            output_format="csv",
+        )
+
+        df = ParseCLDriveStdoutToDataframe(stdout)
+
+
+        return df, stderr
