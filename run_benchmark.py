@@ -1,20 +1,11 @@
-import io
 import json
-import sys
-from unittest import result
-import pandas as pd
 import os
 from tqdm import tqdm
-import multiprocessing
 import random
 from loguru import logger
 import numpy as np
-import copy
-import itertools
 
-from app.parser import ParseCLDriveStdoutToDataframe
-from app.utils import detect_kernel_dimensions, getOpenCLPlatforms, get_kernel_info
-from app.runner import KernelRunInstance, RunCLDrive
+from app.runner import KernelRunInstance
 
 ORG_CONFIG_DIR = "kernels1"
 BACKUP_DIR = "backup-benchmark"
@@ -37,6 +28,7 @@ if __name__ == "__main__":
     
     for kernel_configs_filename in os.listdir(ORG_CONFIG_DIR):
         kernel_configs_path = os.path.join(ORG_CONFIG_DIR, kernel_configs_filename)
+        file_id = os.path.splitext(kernel_configs_filename)[0]
         with open(kernel_configs_path, "r", encoding="utf-8") as f:
             kernel_configs = json.load(f)
             
@@ -44,6 +36,10 @@ if __name__ == "__main__":
         for kernel_config in tqdm(kernel_configs["launch_configs"]):
             gsize = kernel_config["gsize"]
             lsize = kernel_config["lsize"]
+            
+            if f"{file_id}_{gsize}_{lsize}" in BACKUPED_LIST:
+                continue
+            
             run_instance = KernelRunInstance(kernel_code=kernel_code,
                                              gsize=gsize,
                                              lsize=lsize,
@@ -51,11 +47,9 @@ if __name__ == "__main__":
             result_df, stderr = run_instance.run_n_times(10)
             if result_df is None:
                 logger.error(f"ERROR: {stderr}")
-                with open(os.path.join(FAIL_DIR, f"{os.path.splitext(kernel_configs_filename)[0]}_{gsize}_{lsize}.txt"), "w") as f:
+                with open(os.path.join(FAIL_DIR, f"{file_id}_{gsize}_{lsize}.txt"), "w") as f:
                     f.write(stderr)
             else:
-                result_df.to_csv(os.path.join(SUCCESS_DIR, f"{os.path.splitext(kernel_configs_filename)[0]}_{gsize}_{lsize}.csv"), index=None)
-                print(result_df)
-                exit(0)
+                result_df.to_csv(os.path.join(SUCCESS_DIR, f"{file_id}_{gsize}_{lsize}.csv"), index=None)
                 logger.info(f"SUCCESS: {kernel_configs_filename}")
             

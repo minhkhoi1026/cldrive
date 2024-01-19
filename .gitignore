@@ -3,7 +3,7 @@ kernels-modified/
 backup/
 *.log
 mem-analysis/
-backup-mem-analysis/
+backup-*/
 cldrive-backup/
 *.csv
 full_cldrive.csv
@@ -16,3 +16,4 @@ bazel-testlogs
 github-crawled-kernels
 __pycache__/*
 *.egg-info/
+local/
