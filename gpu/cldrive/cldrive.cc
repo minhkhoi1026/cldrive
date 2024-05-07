@@ -125,19 +125,19 @@ static bool ValidateOutputFormat(const char* flagname, const string& value) {
 }
 DEFINE_validator(output_format, &ValidateOutputFormat);
 
-DEFINE_int32(gsize, 1024,
+DEFINE_int64(gsize, 1024,
              "The global size to drive each kernel with. Buffers of this size "
              "are allocated and transferred for array arguments, and this many "
              "work items are instantiated.");
-DEFINE_int32(lsize_x, 128, "The local (work group) size in first dimension. lsize_x*lsize_y*lsize_z must be <= gsize.");
-DEFINE_int32(lsize_y, 1, "The local (work group) size in second dimension. lsize_x*lsize_y*lsize_z must be <= gsize.");
-DEFINE_int32(lsize_z, 1, "The local (work group) size in third dimension. lsize_x*lsize_y*lsize_z must be <= gsize.");
+DEFINE_int64(lsize_x, 128, "The local (work group) size in first dimension. lsize_x*lsize_y*lsize_z must be <= gsize.");
+DEFINE_int64(lsize_y, 1, "The local (work group) size in second dimension. lsize_x*lsize_y*lsize_z must be <= gsize.");
+DEFINE_int64(lsize_z, 1, "The local (work group) size in third dimension. lsize_x*lsize_y*lsize_z must be <= gsize.");
 
 DEFINE_string(args_values, "",
               "A comma separated list of values to use for each kernel "
               "argument. Must be the same length as the number of arguments");
 DEFINE_string(cl_build_opt, "", "Build options passed to clBuildProgram().");
-DEFINE_int32(num_runs, 30, "The number of runs per kernel.");
+DEFINE_int32(num_runs, 5, "The number of runs per kernel.");
 DEFINE_bool(clinfo, false, "List the available devices and exit.");
 DEFINE_bool(kernelinfo, false, "List the kernel arguments and exit.");
 
