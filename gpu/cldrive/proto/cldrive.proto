@@ -70,12 +70,12 @@ message CldriveKernelInstance {
 }
 
 message DynamicParams {
-  optional int32 global_size_x = 1;
-  optional int32 local_size_x = 2;
-  optional int32 global_size_y = 3;
-  optional int32 local_size_y = 4;
-  optional int32 global_size_z = 5;
-  optional int32 local_size_z = 6;
+  optional int64 global_size_x = 1;
+  optional int64 local_size_x = 2;
+  optional int64 global_size_y = 3;
+  optional int64 local_size_y = 4;
+  optional int64 global_size_z = 5;
+  optional int64 local_size_z = 6;
 }
 
 message CldriveKernelRun {
