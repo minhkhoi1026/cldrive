@@ -8,7 +8,7 @@ import numpy as np
 #create parser
 import argparse
 parser = argparse.ArgumentParser(description='Group cldrive CSV files into one DataFrame')
-parser.add_argument('--input_folder', '-i', type=str, default="./local/github-2M1", help="Input folder path")
+parser.add_argument('--input_folder', '-i', type=str, default="./local/github-2M1/success", help="Input folder path")
 parser.add_argument('--kernel_folder', '-k', type=str, default="./local/kernels", help="Path of the folder containing kernels source code")
 parser.add_argument("--with_input_size", action="store_true", default=False, help="If the input size is included in the filename")
 parser.add_argument("--output_path", "-o", type=str, default="local/github-2M1/grouped.csv", help="Output file name")
@@ -17,7 +17,7 @@ args = parser.parse_args()
 # Define the folder path where your CSV files are located
 result_path = args.input_folder
 kernel_path = args.kernel_folder
-save_path = os.path.splitdrive(args.output_path)[0]
+save_path = os.path.dirname(args.output_path)
 if not os.path.exists(result_path):
     raise FileNotFoundError(f"Folder {result_path} not found")
 if not os.path.exists(kernel_path):
