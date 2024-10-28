@@ -1,0 +1,14 @@
+{
+    "kernel": "SimpleGL_Kernels.cl",
+    "scalar_strategy": [
+        "not-relevant",
+        "not-relevant",
+        "not-relevant"
+    ],
+    "scalar_values": [
+        -10,
+        -10,
+        -10
+    ],
+    "runtime": 12352
+}

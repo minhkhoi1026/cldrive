@@ -1,6 +1,5 @@
 from ast import arg
 import pathlib
-import random
 import subprocess
 import typing
 import pandas as pd
@@ -12,7 +11,6 @@ from app.utils import getOpenCLPlatforms
 
 CLDRIVE = "bazel-bin/gpu/cldrive/cldrive"
 TIMEOUT = 10
-MAX_GSIZE = int(1e7) - 1
 
 def RunCLDrive(
     cldrive_exe: str,
@@ -67,9 +65,10 @@ def RunCLDrive(
                     cl_platform,
                     output_format
                 )
-                if verbose_cldrive:
-                    print(cmd)
-                    # print(src)
+                # print(cmd)
+                # if verbose_cldrive:
+                #     #print(cmd)
+                #     print(src)
                 proc = subprocess.Popen(
                     cmd.split(),
                     stdout=subprocess.PIPE,
@@ -94,20 +93,22 @@ def RunCLDrive(
                 cl_platform,
                 output_format
             )
-            if verbose_cldrive:
-                print(cmd)
-                # print(src)
+            #print(cmd)
+            #if verbose_cldrive:
+                #print(cmd)
+                #print(src)
             proc = subprocess.Popen(
                 cmd.split(),
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
                 universal_newlines=True,
             )
+            
             try:
                 stdout, stderr = proc.communicate()
             except UnicodeDecodeError:
                 return "", ""
-        if proc.returncode == 9:
+        if proc.returncode == -9:
             stderr = "TIMEOUT"
     return stdout, stderr
 
@@ -166,34 +167,6 @@ class KernelRunInstance:
             timeout=self.timeout,
             output_format="csv",
         )
-
         df = ParseCLDriveStdoutToDataframe(stdout)
 
-
         return df, stderr
-
-def gen_launch_configs(device_num_sm):
-    n_sample_local = 4
-    n_sample_wg = 50
-    n_sample_small_wg = int(n_sample_wg * 0.15)
-    n_sample_medium_wg = int(n_sample_wg * 0.7)
-    n_sample_large_wg = int(n_sample_wg * 0.15)
-    local_sizes = [32 * i for i in range(1, 32)]
-    small_wg_sizes = list(range(1, device_num_sm))
-    medium_wg_sizes = list(range(device_num_sm, device_num_sm * 20))
-    large_wg_sizes = list(range(device_num_sm * 20, device_num_sm * 1000))
-    launch_configs = []
-    l_samples = random.sample(local_sizes, n_sample_local)
-
-    wg_samples = []
-    wg_samples.extend(random.sample(small_wg_sizes, n_sample_small_wg))
-    wg_samples.extend(random.sample(medium_wg_sizes, n_sample_medium_wg))
-    wg_samples.extend(random.sample(large_wg_sizes, n_sample_large_wg))
-
-    for lsize in l_samples:
-        for wg_size in wg_samples:
-            gsize = lsize * wg_size
-            if gsize > MAX_GSIZE:
-                gsize = lsize * int(MAX_GSIZE / lsize)
-            launch_configs.append((gsize, lsize))
-    return launch_configs

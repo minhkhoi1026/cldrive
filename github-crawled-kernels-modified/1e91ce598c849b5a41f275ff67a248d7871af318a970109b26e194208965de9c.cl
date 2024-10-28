@@ -1,0 +1,80 @@
+//{"N":1,"result_ldexp":0}
+int hook(int argId, int id) {
+	int gID = get_global_id(0);
+	printf("%d,%d,%d\n", gID, argId, id);
+	return id;
+}
+kernel void kernel_ldexp_withDD1(global float* result_ldexp, int N) {
+  float t1 = 0.00000003;
+  int t2 = 1;
+  int i = 0;
+  for (i = 0; i < N; i++) {
+    t1 = 0.00000003;
+    t1 = ldexp(t1, t2);
+    t1 = ldexp(t1, t2);
+    t1 = ldexp(t1, t2);
+    t1 = ldexp(t1, t2);
+    t1 = ldexp(t1, t2);
+    t1 = ldexp(t1, t2);
+    t1 = ldexp(t1, t2);
+    t1 = ldexp(t1, t2);
+    t1 = ldexp(t1, t2);
+    t1 = ldexp(t1, t2);
+    t1 = ldexp(t1, t2);
+    t1 = ldexp(t1, t2);
+    t1 = ldexp(t1, t2);
+    t1 = ldexp(t1, t2);
+    t1 = ldexp(t1, t2);
+    t1 = ldexp(t1, t2);
+    t1 = ldexp(t1, t2);
+    t1 = ldexp(t1, t2);
+    t1 = ldexp(t1, t2);
+    t1 = ldexp(t1, t2);
+    t1 = ldexp(t1, t2);
+    t1 = ldexp(t1, t2);
+    t1 = ldexp(t1, t2);
+    t1 = ldexp(t1, t2);
+    t1 = ldexp(t1, t2);
+    t1 = ldexp(t1, t2);
+    t1 = ldexp(t1, t2);
+    t1 = ldexp(t1, t2);
+    t1 = ldexp(t1, t2);
+    t1 = ldexp(t1, t2);
+    t1 = ldexp(t1, t2);
+    t1 = ldexp(t1, t2);
+    t1 = ldexp(t1, t2);
+    t1 = ldexp(t1, t2);
+    t1 = ldexp(t1, t2);
+    t1 = ldexp(t1, t2);
+    t1 = ldexp(t1, t2);
+    t1 = ldexp(t1, t2);
+    t1 = ldexp(t1, t2);
+    t1 = ldexp(t1, t2);
+    t1 = ldexp(t1, t2);
+    t1 = ldexp(t1, t2);
+    t1 = ldexp(t1, t2);
+    t1 = ldexp(t1, t2);
+    t1 = ldexp(t1, t2);
+    t1 = ldexp(t1, t2);
+    t1 = ldexp(t1, t2);
+    t1 = ldexp(t1, t2);
+    t1 = ldexp(t1, t2);
+    t1 = ldexp(t1, t2);
+    t1 = ldexp(t1, t2);
+    t1 = ldexp(t1, t2);
+    t1 = ldexp(t1, t2);
+    t1 = ldexp(t1, t2);
+    t1 = ldexp(t1, t2);
+    t1 = ldexp(t1, t2);
+    t1 = ldexp(t1, t2);
+    t1 = ldexp(t1, t2);
+    t1 = ldexp(t1, t2);
+    t1 = ldexp(t1, t2);
+    t1 = ldexp(t1, t2);
+    t1 = ldexp(t1, t2);
+    t1 = ldexp(t1, t2);
+    t1 = ldexp(t1, t2);
+    ;
+  }
+  *result_ldexp = t1;
+}

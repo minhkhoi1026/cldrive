@@ -129,7 +129,7 @@ string KernelArgSet::ToStringWithValue(const KernelArgValuesSet& arg_values) con
   string s = "[";
   for (size_t i = 0; i < arg_values.values().size(); ++i) {
     // if arg is a pointer, save the size of the array instead
-    string value;
+    string value = "";
     if (args_[i].IsPointer()) {
       value = std::to_string(arg_values.values()[i]->Size());
     }

@@ -1,0 +1,6 @@
+{
+    "kernel": "8062a72b8b80805b754d35502054b2976137946309aa90e4c1decd9617370d77.cl",
+    "scalar_strategy": "('not-relevant', 'not-relevant')",
+    "scalar_values": "(10, 0)",
+    "runtime": 17408
+}

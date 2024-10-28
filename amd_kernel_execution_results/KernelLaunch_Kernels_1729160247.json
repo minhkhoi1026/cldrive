@@ -1,0 +1,14 @@
+{
+    "kernel": "KernelLaunch_Kernels.cl",
+    "scalar_strategy": [
+        "granularity",
+        "not-relevant",
+        "granularity"
+    ],
+    "scalar_values": [
+        1,
+        -10,
+        4
+    ],
+    "runtime": 13312
+}

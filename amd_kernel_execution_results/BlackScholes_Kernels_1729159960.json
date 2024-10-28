@@ -1,0 +1,10 @@
+{
+    "kernel": "BlackScholes_Kernels.cl",
+    "scalar_strategy": [
+        "not-relevant"
+    ],
+    "scalar_values": [
+        0
+    ],
+    "runtime": 14336
+}

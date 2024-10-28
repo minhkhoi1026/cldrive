@@ -1,0 +1,6 @@
+I 2024-08-10 09:36:27 [gpu/cldrive/libcldrive.cc:58] clBuildProgram() with options '-cl-kernel-arg-info' completed in 3 ms
+F 2024-08-10 09:36:27 [gpu/cldrive/libcldrive.cc:80] Unhandled OpenCL exception.
+    Raised by:  clCreateBuffer
+    Error code: -61 (CL_INVALID_BUFFER_SIZE)
+This is a bug! Please report to <https://github.com/ChrisCummins/cldrive/issues>.
+timeout: the monitored command dumped core

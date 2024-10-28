@@ -1,0 +1,6 @@
+{
+    "kernel": "2d459b340b3918d3b8717c2a8d7fb5fd55bedcfa886ef942c2036aceb712131c.cl",
+    "scalar_strategy": "('bound-check', 'not-relevant')",
+    "scalar_values": "(1000000000, 10)",
+    "runtime": 4096
+}

@@ -167,10 +167,10 @@ gpu::libcecl::OpenClKernelInvocation KernelDriver::RunOnceOrDie(
   ProfilingData profiling;
   cl::Event event;
 
-  uint64_t global_size = dynamic_params.global_size_x();
-  uint64_t local_size_x = dynamic_params.local_size_x();
-  uint64_t local_size_y = dynamic_params.local_size_y();
-  uint64_t local_size_z = dynamic_params.local_size_z();
+  size_t global_size = dynamic_params.global_size_x();
+  size_t local_size_x = dynamic_params.local_size_x();
+  size_t local_size_y = dynamic_params.local_size_y();
+  size_t local_size_z = dynamic_params.local_size_z();
 
   log.set_global_size_x(global_size);
   log.set_local_size_x(local_size_x);
@@ -187,8 +187,7 @@ gpu::libcecl::OpenClKernelInvocation KernelDriver::RunOnceOrDie(
                               /*events=*/nullptr, /*event=*/&event);
   profiling.kernel_nanoseconds += GetElapsedNanoseconds(event);
 
-  // currently no need to copy back the output since we only need kernel execution time
-  // inputs.CopyFromDeviceToNewValueSet(queue_, outputs, &profiling);
+  inputs.CopyFromDeviceToNewValueSet(queue_, outputs, &profiling);
   // Set run proto fields.
   log.set_kernel_time_ns(profiling.kernel_nanoseconds);
   log.set_transfer_time_ns(profiling.transfer_nanoseconds);
@@ -227,8 +226,7 @@ gpu::libcecl::OpenClKernelInvocation KernelDriver::RunOnceOrDie(
 
   profiling.kernel_nanoseconds += GetElapsedNanoseconds(event);
 
-  // currently no need to copy back the output since we only need kernel execution time
-  // inputs.CopyFromDeviceToNewValueSet(queue_, outputs, &profiling);
+  inputs.CopyFromDeviceToNewValueSet(queue_, outputs, &profiling);
   // Set run proto fields.
   log.set_kernel_time_ns(profiling.kernel_nanoseconds);
   log.set_transfer_time_ns(profiling.transfer_nanoseconds);

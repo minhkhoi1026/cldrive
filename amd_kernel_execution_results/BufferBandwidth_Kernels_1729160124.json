@@ -1,0 +1,14 @@
+{
+    "kernel": "BufferBandwidth_Kernels.cl",
+    "scalar_strategy": [
+        "granularity",
+        "not-relevant",
+        "granularity"
+    ],
+    "scalar_values": [
+        1,
+        0,
+        3
+    ],
+    "runtime": 13312
+}

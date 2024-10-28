@@ -1,0 +1,6 @@
+{
+    "kernel": "f600e9125ef65369e4a9212bfd34f29f8d1a275885ea2405d6379b9751b3040f.cl",
+    "scalar_strategy": "('stride', 'bound-check')",
+    "scalar_values": "(2, 10000)",
+    "runtime": 12288
+}

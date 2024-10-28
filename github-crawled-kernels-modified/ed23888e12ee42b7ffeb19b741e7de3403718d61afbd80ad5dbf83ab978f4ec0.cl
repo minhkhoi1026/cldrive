@@ -1,0 +1,16 @@
+//{"s1":0,"s2":1}
+int hook(int argId, int id) {
+	int gID = get_global_id(0);
+	printf("%d,%d,%d\n", gID, argId, id);
+	return id;
+}
+kernel void shuffle_test(global float8* s1, global char16* s2) {
+  uint8 mask1 = (uint8)(1, 2, 0, 1, 3, 1, 2, 3);
+  float4 input = (float4)(0.25f, 0.5f, 0.75f, 1.0f);
+  *s1 = shuffle(input, mask1);
+
+  uchar16 mask2 = (uchar16)(6, 10, 5, 2, 8, 0, 9, 14, 7, 5, 12, 3, 11, 15, 1, 13);
+  char8 input1 = (char8)('l', 'o', 'f', 'c', 'a', 'u', 's', 'f');
+  char8 input2 = (char8)('f', 'e', 'h', 't', 'n', 'n', '2', 'i');
+  *s2 = shuffle2(input1, input2, mask2);
+}

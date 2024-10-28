@@ -1,0 +1,12 @@
+{
+    "kernel": "SimpleConvolution_Kernels.cl",
+    "scalar_strategy": [
+        "granularity",
+        "granularity"
+    ],
+    "scalar_values": [
+        4,
+        3
+    ],
+    "runtime": 16384
+}

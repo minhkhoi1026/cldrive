@@ -1,0 +1,6 @@
+{
+    "kernel": "7b89088c7d46001552984e7a5af53e8cc00da2efd512b02cab3438f30275a440.cl",
+    "scalar_strategy": "('stride',)",
+    "scalar_values": "(16,)",
+    "runtime": 4096
+}

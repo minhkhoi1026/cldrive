@@ -1,0 +1,88 @@
+//{"data":5,"data[x]":4,"in":0,"out":1,"x":2,"y":3}
+int hook(int argId, int id) {
+	int gID = get_global_id(0);
+	printf("%d,%d,%d\n", gID, argId, id);
+	return id;
+}
+constant int data[4][17] = {
+    {
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+    },
+    {
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+    },
+    {
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+    },
+    {
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+    },
+};
+
+kernel void foo(global int* in, global int* out, int x, int y) {
+  *out = *in + data[hook(5, x)][hook(4, y)];
+}

@@ -1,0 +1,232 @@
+//{"in":0,"output":1,"size":3,"sp":2,"target":4}
+int hook(int argId, int id) {
+	int gID = get_global_id(0);
+	printf("%d,%d,%d\n", gID, argId, id);
+	return id;
+}
+inline ulong ROTL641(const ulong x) {
+  return (x << 1 | x >> 63);
+}
+inline ulong ROTL64_1(const ulong x, const unsigned int y) {
+  return (x << y | x >> (64 - y));
+}
+kernel void search(global const ulong* restrict in, global ulong* restrict output, global const ulong4* restrict sp, const unsigned int size, const ulong target) {
+  ulong nonce = get_global_id(0);
+
+  ulong4 vstate0 = (ulong4)((nonce << 8) + (in[hook(0, 0)] & 0xFF), (in[hook(0, 1)] & 0xFFFFFFFFFFFFFF00U), in[hook(0, 2)], in[hook(0, 3)]);
+  ulong4 vstate4 = (ulong4)(in[hook(0, 4)], in[hook(0, 5)], in[hook(0, 6)], in[hook(0, 7)]);
+  ulong4 vstate8 = (ulong4)(in[hook(0, 8)], in[hook(0, 9)], (in[hook(0, 10)] & 0xFF) + 256, 0);
+  ulong4 vstate12 = 0;
+  ulong4 vstate16 = (ulong4)(0x8000000000000000U, 0, 0, 0);
+  ulong4 vstate20 = 0;
+  ulong state24 = 0;
+
+  ulong4 m;
+  ulong m4, m5, m6;
+
+  for (int i = 0; i < 23; ++i) {
+    m.s0 = vstate0.s0 ^ vstate4.s1 ^ vstate8.s2 * vstate12.s3 * vstate20.s0 ^ ROTL641(vstate0.s2 ^ vstate4.s3 ^ vstate12.s0 * vstate16.s1 * vstate20.s2);
+    m.s1 = vstate0.s1 ^ vstate4.s2 ^ vstate8.s3 * vstate16.s0 * vstate20.s1 ^ ROTL641(vstate0.s3 ^ vstate8.s0 ^ vstate12.s1 * vstate16.s2 * vstate20.s3);
+    m.s2 = vstate0.s2 ^ vstate4.s3 ^ vstate12.s0 * vstate16.s1 * vstate20.s2 ^ ROTL641(vstate4.s0 ^ vstate8.s1 ^ vstate12.s2 * vstate16.s3 * state24);
+    m.s3 = vstate0.s3 ^ vstate8.s0 ^ vstate12.s1 * vstate16.s2 * vstate20.s3 ^ ROTL641(vstate0.s0 ^ vstate4.s1 ^ vstate8.s2 * vstate12.s3 * vstate20.s0);
+    m4 = vstate4.s0 ^ vstate8.s1 ^ vstate12.s2 * vstate16.s3 * state24 ^ ROTL641(vstate0.s1 ^ vstate4.s2 ^ vstate8.s3 * vstate16.s0 * vstate20.s1);
+    m5 = vstate0.s1 ^ m.s0;
+    vstate0.s0 ^= m4;
+    vstate0.s1 = ROTL64_1(vstate4.s2 ^ m.s0, 44);
+    vstate4.s2 = ROTL64_1(vstate8.s1 ^ m.s3, 20);
+    vstate8.s1 = ROTL64_1(vstate20.s2 ^ m.s1, 61);
+    vstate20.s2 = ROTL64_1(vstate12.s2 ^ m.s3, 39);
+    vstate12.s2 = ROTL64_1(vstate20.s0 ^ m4, 18);
+    vstate20.s0 = ROTL64_1(vstate0.s2 ^ m.s1, 62);
+    vstate0.s2 = ROTL64_1(vstate12.s0 ^ m.s1, 43);
+    vstate12.s0 = ROTL64_1(vstate12.s1 ^ m.s2, 25);
+    vstate12.s1 = ROTL64_1(vstate16.s3 ^ m.s3, 8);
+    vstate16.s3 = ROTL64_1(vstate20.s3 ^ m.s2, 56);
+    vstate20.s3 = ROTL64_1(vstate12.s3 ^ m4, 41);
+    vstate12.s3 = ROTL64_1(vstate4.s0 ^ m.s3, 27);
+    vstate4.s0 = ROTL64_1(state24 ^ m.s3, 14);
+    state24 = ROTL64_1(vstate20.s1 ^ m.s0, 2);
+    vstate20.s1 = ROTL64_1(vstate8.s0 ^ m.s2, 55);
+    vstate8.s0 = ROTL64_1(vstate16.s0 ^ m.s0, 45);
+    vstate16.s0 = ROTL64_1(vstate4.s1 ^ m4, 36);
+    vstate4.s1 = ROTL64_1(vstate0.s3 ^ m.s2, 28);
+    vstate0.s3 = ROTL64_1(vstate16.s2 ^ m.s2, 21);
+    vstate16.s2 = ROTL64_1(vstate16.s1 ^ m.s1, 15);
+    vstate16.s1 = ROTL64_1(vstate8.s3 ^ m.s0, 10);
+    vstate8.s3 = ROTL64_1(vstate4.s3 ^ m.s1, 6);
+    vstate4.s3 = ROTL64_1(vstate8.s2 ^ m4, 3);
+    vstate8.s2 = ROTL64_1(m5, 1);
+    m5 = vstate0.s0;
+    m6 = vstate0.s1;
+    vstate0.s0 = bitselect(vstate0.s0 ^ vstate0.s2, vstate0.s0, vstate0.s1);
+    vstate0.s1 = bitselect(vstate0.s1 ^ vstate0.s3, vstate0.s1, vstate0.s2);
+    vstate0.s2 = bitselect(vstate0.s2 ^ vstate4.s0, vstate0.s2, vstate0.s3);
+    vstate0.s3 = bitselect(vstate0.s3 ^ m5, vstate0.s3, vstate4.s0);
+    vstate4.s0 = bitselect(vstate4.s0 ^ m6, vstate4.s0, m5);
+    m5 = vstate4.s1;
+    m6 = vstate4.s2;
+    vstate4.s1 = bitselect(vstate4.s1 ^ vstate4.s3, vstate4.s1, vstate4.s2);
+    vstate4.s2 = bitselect(vstate4.s2 ^ vstate8.s0, vstate4.s2, vstate4.s3);
+    vstate4.s3 = bitselect(vstate4.s3 ^ vstate8.s1, vstate4.s3, vstate8.s0);
+    vstate8.s0 = bitselect(vstate8.s0 ^ m5, vstate8.s0, vstate8.s1);
+    vstate8.s1 = bitselect(vstate8.s1 ^ m6, vstate8.s1, m5);
+    m5 = vstate8.s2;
+    m6 = vstate8.s3;
+    vstate8.s2 = bitselect(vstate8.s2 ^ vstate12.s0, vstate8.s2, vstate8.s3);
+    vstate8.s3 = bitselect(vstate8.s3 ^ vstate12.s1, vstate8.s3, vstate12.s0);
+    vstate12.s0 = bitselect(vstate12.s0 ^ vstate12.s2, vstate12.s0, vstate12.s1);
+    vstate12.s1 = bitselect(vstate12.s1 ^ m5, vstate12.s1, vstate12.s2);
+    vstate12.s2 = bitselect(vstate12.s2 ^ m6, vstate12.s2, m5);
+    m5 = vstate12.s3;
+    m6 = vstate16.s0;
+    vstate12.s3 = bitselect(vstate12.s3 ^ vstate16.s1, vstate12.s3, vstate16.s0);
+    vstate16.s0 = bitselect(vstate16.s0 ^ vstate16.s2, vstate16.s0, vstate16.s1);
+    vstate16.s1 = bitselect(vstate16.s1 ^ vstate16.s3, vstate16.s1, vstate16.s2);
+    vstate16.s2 = bitselect(vstate16.s2 ^ m5, vstate16.s2, vstate16.s3);
+    vstate16.s3 = bitselect(vstate16.s3 ^ m6, vstate16.s3, m5);
+    m5 = vstate20.s0;
+    m6 = vstate20.s1;
+    vstate20.s0 = bitselect(vstate20.s0 ^ vstate20.s2, vstate20.s0, vstate20.s1);
+    vstate20.s1 = bitselect(vstate20.s1 ^ vstate20.s3, vstate20.s1, vstate20.s2);
+    vstate20.s2 = bitselect(vstate20.s2 ^ state24, vstate20.s2, vstate20.s3);
+    vstate20.s3 = bitselect(vstate20.s3 ^ m5, vstate20.s3, state24);
+    state24 = bitselect(state24 ^ m6, state24, m5);
+    vstate0.s0 ^= 1;
+    ;
+    vstate0 ^= sp[hook(2, vstate0.s0 % size)] ^ sp[hook(2, vstate0.s1 % size)] ^ sp[hook(2, vstate0.s2 % size)] ^ sp[hook(2, vstate0.s3 % size)];
+    ;
+    vstate4 ^= sp[hook(2, vstate4.s0 % size)] ^ sp[hook(2, vstate4.s1 % size)] ^ sp[hook(2, vstate4.s2 % size)] ^ sp[hook(2, vstate4.s3 % size)];
+    ;
+    vstate8 ^= sp[hook(2, vstate8.s0 % size)] ^ sp[hook(2, vstate8.s1 % size)] ^ sp[hook(2, vstate8.s2 % size)] ^ sp[hook(2, vstate8.s3 % size)];
+    ;
+    vstate12 ^= sp[hook(2, vstate12.s0 % size)] ^ sp[hook(2, vstate12.s1 % size)] ^ sp[hook(2, vstate12.s2 % size)] ^ sp[hook(2, vstate12.s3 % size)];
+    ;
+    vstate16 ^= sp[hook(2, vstate16.s0 % size)] ^ sp[hook(2, vstate16.s1 % size)] ^ sp[hook(2, vstate16.s2 % size)] ^ sp[hook(2, vstate16.s3 % size)];
+    ;
+    vstate20 ^= sp[hook(2, vstate20.s0 % size)] ^ sp[hook(2, vstate20.s1 % size)] ^ sp[hook(2, vstate20.s2 % size)] ^ sp[hook(2, vstate20.s3 % size)];
+    ;
+    ;
+  }
+
+  m.s0 = vstate0.s0 ^ vstate4.s1 ^ vstate8.s2 * vstate12.s3 * vstate20.s0 ^ ROTL641(vstate0.s2 ^ vstate4.s3 ^ vstate12.s0 * vstate16.s1 * vstate20.s2);
+  m.s1 = vstate0.s1 ^ vstate4.s2 ^ vstate8.s3 * vstate16.s0 * vstate20.s1 ^ ROTL641(vstate0.s3 ^ vstate8.s0 ^ vstate12.s1 * vstate16.s2 * vstate20.s3);
+  m.s2 = vstate0.s2 ^ vstate4.s3 ^ vstate12.s0 * vstate16.s1 * vstate20.s2 ^ ROTL641(vstate4.s0 ^ vstate8.s1 ^ vstate12.s2 * vstate16.s3 * state24);
+  m.s3 = vstate0.s3 ^ vstate8.s0 ^ vstate12.s1 * vstate16.s2 * vstate20.s3 ^ ROTL641(vstate0.s0 ^ vstate4.s1 ^ vstate8.s2 * vstate12.s3 * vstate20.s0);
+  m4 = vstate4.s0 ^ vstate8.s1 ^ vstate12.s2 * vstate16.s3 * state24 ^ ROTL641(vstate0.s1 ^ vstate4.s2 ^ vstate8.s3 * vstate16.s0 * vstate20.s1);
+  vstate0.s0 ^= m4;
+  vstate0.s1 = ROTL64_1(vstate4.s2 ^ m.s0, 44);
+  vstate0.s2 = ROTL64_1(vstate12.s0 ^ m.s1, 43);
+  vstate4.s0 = ROTL64_1(state24 ^ m.s3, 14);
+  vstate0.s3 = ROTL64_1(vstate16.s2 ^ m.s2, 21);
+  m5 = vstate0.s0;
+  vstate0.s0 = bitselect(vstate0.s0 ^ vstate0.s2, vstate0.s0, vstate0.s1);
+  vstate0.s1 = bitselect(vstate0.s1 ^ vstate0.s3, vstate0.s1, vstate0.s2);
+  vstate0.s2 = bitselect(vstate0.s2 ^ vstate4.s0, vstate0.s2, vstate0.s3);
+  vstate0.s3 = bitselect(vstate0.s3 ^ m5, vstate0.s3, vstate4.s0);
+  vstate0.s0 ^= 1;
+  ;
+
+  vstate4 = (ulong4)(1, 0, 0, 0);
+  vstate8 = 0;
+  vstate12 = 0;
+  vstate16 = (ulong4)(0x8000000000000000U, 0, 0, 0);
+  vstate20 = 0;
+  state24 = 0;
+
+  for (int i = 0; i < 23; ++i) {
+    m.s0 = vstate0.s0 ^ vstate4.s1 ^ vstate8.s2 * vstate12.s3 * vstate20.s0 ^ ROTL641(vstate0.s2 ^ vstate4.s3 ^ vstate12.s0 * vstate16.s1 * vstate20.s2);
+    m.s1 = vstate0.s1 ^ vstate4.s2 ^ vstate8.s3 * vstate16.s0 * vstate20.s1 ^ ROTL641(vstate0.s3 ^ vstate8.s0 ^ vstate12.s1 * vstate16.s2 * vstate20.s3);
+    m.s2 = vstate0.s2 ^ vstate4.s3 ^ vstate12.s0 * vstate16.s1 * vstate20.s2 ^ ROTL641(vstate4.s0 ^ vstate8.s1 ^ vstate12.s2 * vstate16.s3 * state24);
+    m.s3 = vstate0.s3 ^ vstate8.s0 ^ vstate12.s1 * vstate16.s2 * vstate20.s3 ^ ROTL641(vstate0.s0 ^ vstate4.s1 ^ vstate8.s2 * vstate12.s3 * vstate20.s0);
+    m4 = vstate4.s0 ^ vstate8.s1 ^ vstate12.s2 * vstate16.s3 * state24 ^ ROTL641(vstate0.s1 ^ vstate4.s2 ^ vstate8.s3 * vstate16.s0 * vstate20.s1);
+    m5 = vstate0.s1 ^ m.s0;
+    vstate0.s0 ^= m4;
+    vstate0.s1 = ROTL64_1(vstate4.s2 ^ m.s0, 44);
+    vstate4.s2 = ROTL64_1(vstate8.s1 ^ m.s3, 20);
+    vstate8.s1 = ROTL64_1(vstate20.s2 ^ m.s1, 61);
+    vstate20.s2 = ROTL64_1(vstate12.s2 ^ m.s3, 39);
+    vstate12.s2 = ROTL64_1(vstate20.s0 ^ m4, 18);
+    vstate20.s0 = ROTL64_1(vstate0.s2 ^ m.s1, 62);
+    vstate0.s2 = ROTL64_1(vstate12.s0 ^ m.s1, 43);
+    vstate12.s0 = ROTL64_1(vstate12.s1 ^ m.s2, 25);
+    vstate12.s1 = ROTL64_1(vstate16.s3 ^ m.s3, 8);
+    vstate16.s3 = ROTL64_1(vstate20.s3 ^ m.s2, 56);
+    vstate20.s3 = ROTL64_1(vstate12.s3 ^ m4, 41);
+    vstate12.s3 = ROTL64_1(vstate4.s0 ^ m.s3, 27);
+    vstate4.s0 = ROTL64_1(state24 ^ m.s3, 14);
+    state24 = ROTL64_1(vstate20.s1 ^ m.s0, 2);
+    vstate20.s1 = ROTL64_1(vstate8.s0 ^ m.s2, 55);
+    vstate8.s0 = ROTL64_1(vstate16.s0 ^ m.s0, 45);
+    vstate16.s0 = ROTL64_1(vstate4.s1 ^ m4, 36);
+    vstate4.s1 = ROTL64_1(vstate0.s3 ^ m.s2, 28);
+    vstate0.s3 = ROTL64_1(vstate16.s2 ^ m.s2, 21);
+    vstate16.s2 = ROTL64_1(vstate16.s1 ^ m.s1, 15);
+    vstate16.s1 = ROTL64_1(vstate8.s3 ^ m.s0, 10);
+    vstate8.s3 = ROTL64_1(vstate4.s3 ^ m.s1, 6);
+    vstate4.s3 = ROTL64_1(vstate8.s2 ^ m4, 3);
+    vstate8.s2 = ROTL64_1(m5, 1);
+    m5 = vstate0.s0;
+    m6 = vstate0.s1;
+    vstate0.s0 = bitselect(vstate0.s0 ^ vstate0.s2, vstate0.s0, vstate0.s1);
+    vstate0.s1 = bitselect(vstate0.s1 ^ vstate0.s3, vstate0.s1, vstate0.s2);
+    vstate0.s2 = bitselect(vstate0.s2 ^ vstate4.s0, vstate0.s2, vstate0.s3);
+    vstate0.s3 = bitselect(vstate0.s3 ^ m5, vstate0.s3, vstate4.s0);
+    vstate4.s0 = bitselect(vstate4.s0 ^ m6, vstate4.s0, m5);
+    m5 = vstate4.s1;
+    m6 = vstate4.s2;
+    vstate4.s1 = bitselect(vstate4.s1 ^ vstate4.s3, vstate4.s1, vstate4.s2);
+    vstate4.s2 = bitselect(vstate4.s2 ^ vstate8.s0, vstate4.s2, vstate4.s3);
+    vstate4.s3 = bitselect(vstate4.s3 ^ vstate8.s1, vstate4.s3, vstate8.s0);
+    vstate8.s0 = bitselect(vstate8.s0 ^ m5, vstate8.s0, vstate8.s1);
+    vstate8.s1 = bitselect(vstate8.s1 ^ m6, vstate8.s1, m5);
+    m5 = vstate8.s2;
+    m6 = vstate8.s3;
+    vstate8.s2 = bitselect(vstate8.s2 ^ vstate12.s0, vstate8.s2, vstate8.s3);
+    vstate8.s3 = bitselect(vstate8.s3 ^ vstate12.s1, vstate8.s3, vstate12.s0);
+    vstate12.s0 = bitselect(vstate12.s0 ^ vstate12.s2, vstate12.s0, vstate12.s1);
+    vstate12.s1 = bitselect(vstate12.s1 ^ m5, vstate12.s1, vstate12.s2);
+    vstate12.s2 = bitselect(vstate12.s2 ^ m6, vstate12.s2, m5);
+    m5 = vstate12.s3;
+    m6 = vstate16.s0;
+    vstate12.s3 = bitselect(vstate12.s3 ^ vstate16.s1, vstate12.s3, vstate16.s0);
+    vstate16.s0 = bitselect(vstate16.s0 ^ vstate16.s2, vstate16.s0, vstate16.s1);
+    vstate16.s1 = bitselect(vstate16.s1 ^ vstate16.s3, vstate16.s1, vstate16.s2);
+    vstate16.s2 = bitselect(vstate16.s2 ^ m5, vstate16.s2, vstate16.s3);
+    vstate16.s3 = bitselect(vstate16.s3 ^ m6, vstate16.s3, m5);
+    m5 = vstate20.s0;
+    m6 = vstate20.s1;
+    vstate20.s0 = bitselect(vstate20.s0 ^ vstate20.s2, vstate20.s0, vstate20.s1);
+    vstate20.s1 = bitselect(vstate20.s1 ^ vstate20.s3, vstate20.s1, vstate20.s2);
+    vstate20.s2 = bitselect(vstate20.s2 ^ state24, vstate20.s2, vstate20.s3);
+    vstate20.s3 = bitselect(vstate20.s3 ^ m5, vstate20.s3, state24);
+    state24 = bitselect(state24 ^ m6, state24, m5);
+    vstate0.s0 ^= 1;
+    ;
+    vstate0 ^= sp[hook(2, vstate0.s0 % size)] ^ sp[hook(2, vstate0.s1 % size)] ^ sp[hook(2, vstate0.s2 % size)] ^ sp[hook(2, vstate0.s3 % size)];
+    ;
+    vstate4 ^= sp[hook(2, vstate4.s0 % size)] ^ sp[hook(2, vstate4.s1 % size)] ^ sp[hook(2, vstate4.s2 % size)] ^ sp[hook(2, vstate4.s3 % size)];
+    ;
+    vstate8 ^= sp[hook(2, vstate8.s0 % size)] ^ sp[hook(2, vstate8.s1 % size)] ^ sp[hook(2, vstate8.s2 % size)] ^ sp[hook(2, vstate8.s3 % size)];
+    ;
+    vstate12 ^= sp[hook(2, vstate12.s0 % size)] ^ sp[hook(2, vstate12.s1 % size)] ^ sp[hook(2, vstate12.s2 % size)] ^ sp[hook(2, vstate12.s3 % size)];
+    ;
+    vstate16 ^= sp[hook(2, vstate16.s0 % size)] ^ sp[hook(2, vstate16.s1 % size)] ^ sp[hook(2, vstate16.s2 % size)] ^ sp[hook(2, vstate16.s3 % size)];
+    ;
+    vstate20 ^= sp[hook(2, vstate20.s0 % size)] ^ sp[hook(2, vstate20.s1 % size)] ^ sp[hook(2, vstate20.s2 % size)] ^ sp[hook(2, vstate20.s3 % size)];
+    ;
+    ;
+  }
+
+  m5 = vstate4.s0 ^ vstate8.s1 ^ vstate12.s2 * vstate16.s3 * state24;
+  m.s2 = vstate0.s2 ^ vstate4.s3 ^ vstate12.s0 * vstate16.s1 * vstate20.s2 ^ ROTL641(m5);
+  m.s3 = vstate0.s3 ^ vstate8.s0 ^ vstate12.s1 * vstate16.s2 * vstate20.s3 ^ ROTL641(vstate0.s0 ^ vstate4.s1 ^ vstate8.s2 * vstate12.s3 * vstate20.s0);
+  m4 = m5 ^ ROTL641(vstate0.s1 ^ vstate4.s2 ^ vstate8.s3 * vstate16.s0 * vstate20.s1);
+  vstate0.s0 ^= m4;
+  vstate4.s0 = ROTL64_1(state24 ^ m.s3, 14);
+  vstate0.s3 = ROTL64_1(vstate16.s2 ^ m.s2, 21);
+  vstate0.s3 = bitselect(vstate0.s3 ^ vstate0.s0, vstate0.s3, vstate4.s0);
+  ;
+
+  if (vstate0.s3 <= target)
+    output[hook(1, outputhook(1, 15)++)] = nonce;
+}

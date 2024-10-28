@@ -1,0 +1,10 @@
+{
+    "kernel": "Template_Kernels.cl",
+    "scalar_strategy": [
+        "not-relevant"
+    ],
+    "scalar_values": [
+        -10
+    ],
+    "runtime": 5120
+}

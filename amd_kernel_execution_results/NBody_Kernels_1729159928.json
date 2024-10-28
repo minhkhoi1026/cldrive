@@ -1,0 +1,14 @@
+{
+    "kernel": "NBody_Kernels.cl",
+    "scalar_strategy": [
+        "granularity",
+        "not-relevant",
+        "not-relevant"
+    ],
+    "scalar_values": [
+        3,
+        -10,
+        -10
+    ],
+    "runtime": 17408
+}

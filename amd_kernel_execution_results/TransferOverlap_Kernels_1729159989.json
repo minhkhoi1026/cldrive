@@ -1,0 +1,14 @@
+{
+    "kernel": "TransferOverlap_Kernels.cl",
+    "scalar_strategy": [
+        "granularity",
+        "not-relevant",
+        "granularity"
+    ],
+    "scalar_values": [
+        1,
+        -10,
+        2
+    ],
+    "runtime": 13344
+}

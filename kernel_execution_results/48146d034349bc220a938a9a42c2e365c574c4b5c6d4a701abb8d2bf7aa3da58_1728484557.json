@@ -1,0 +1,6 @@
+{
+    "kernel": "48146d034349bc220a938a9a42c2e365c574c4b5c6d4a701abb8d2bf7aa3da58.cl",
+    "scalar_strategy": "('granularity', 'granularity')",
+    "scalar_values": "(1, 1)",
+    "runtime": 5120
+}

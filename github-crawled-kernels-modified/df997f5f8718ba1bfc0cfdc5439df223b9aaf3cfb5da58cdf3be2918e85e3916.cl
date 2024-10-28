@@ -1,0 +1,81 @@
+//{"N":1,"result_remquo":0}
+int hook(int argId, int id) {
+	int gID = get_global_id(0);
+	printf("%d,%d,%d\n", gID, argId, id);
+	return id;
+}
+kernel void kernel_remquo_withDD1(global float* result_remquo, int N) {
+  float t1 = 4.3;
+  float t2 = 1.0;
+  int j = 0;
+  int* quo = &j;
+  int i = 0;
+  for (i = 0; i < N; i++) {
+    t1 = remquo(t1, t2, quo);
+    t1 = remquo(t1, t2, quo);
+    t1 = remquo(t1, t2, quo);
+    t1 = remquo(t1, t2, quo);
+    t1 = remquo(t1, t2, quo);
+    t1 = remquo(t1, t2, quo);
+    t1 = remquo(t1, t2, quo);
+    t1 = remquo(t1, t2, quo);
+    t1 = remquo(t1, t2, quo);
+    t1 = remquo(t1, t2, quo);
+    t1 = remquo(t1, t2, quo);
+    t1 = remquo(t1, t2, quo);
+    t1 = remquo(t1, t2, quo);
+    t1 = remquo(t1, t2, quo);
+    t1 = remquo(t1, t2, quo);
+    t1 = remquo(t1, t2, quo);
+    t1 = remquo(t1, t2, quo);
+    t1 = remquo(t1, t2, quo);
+    t1 = remquo(t1, t2, quo);
+    t1 = remquo(t1, t2, quo);
+    t1 = remquo(t1, t2, quo);
+    t1 = remquo(t1, t2, quo);
+    t1 = remquo(t1, t2, quo);
+    t1 = remquo(t1, t2, quo);
+    t1 = remquo(t1, t2, quo);
+    t1 = remquo(t1, t2, quo);
+    t1 = remquo(t1, t2, quo);
+    t1 = remquo(t1, t2, quo);
+    t1 = remquo(t1, t2, quo);
+    t1 = remquo(t1, t2, quo);
+    t1 = remquo(t1, t2, quo);
+    t1 = remquo(t1, t2, quo);
+    t1 = remquo(t1, t2, quo);
+    t1 = remquo(t1, t2, quo);
+    t1 = remquo(t1, t2, quo);
+    t1 = remquo(t1, t2, quo);
+    t1 = remquo(t1, t2, quo);
+    t1 = remquo(t1, t2, quo);
+    t1 = remquo(t1, t2, quo);
+    t1 = remquo(t1, t2, quo);
+    t1 = remquo(t1, t2, quo);
+    t1 = remquo(t1, t2, quo);
+    t1 = remquo(t1, t2, quo);
+    t1 = remquo(t1, t2, quo);
+    t1 = remquo(t1, t2, quo);
+    t1 = remquo(t1, t2, quo);
+    t1 = remquo(t1, t2, quo);
+    t1 = remquo(t1, t2, quo);
+    t1 = remquo(t1, t2, quo);
+    t1 = remquo(t1, t2, quo);
+    t1 = remquo(t1, t2, quo);
+    t1 = remquo(t1, t2, quo);
+    t1 = remquo(t1, t2, quo);
+    t1 = remquo(t1, t2, quo);
+    t1 = remquo(t1, t2, quo);
+    t1 = remquo(t1, t2, quo);
+    t1 = remquo(t1, t2, quo);
+    t1 = remquo(t1, t2, quo);
+    t1 = remquo(t1, t2, quo);
+    t1 = remquo(t1, t2, quo);
+    t1 = remquo(t1, t2, quo);
+    t1 = remquo(t1, t2, quo);
+    t1 = remquo(t1, t2, quo);
+    t1 = remquo(t1, t2, quo);
+    ;
+  }
+  *result_remquo = t1;
+}

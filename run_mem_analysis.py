@@ -11,25 +11,24 @@ import numpy as np
 import copy
 import itertools
 
-from app.parser import ParseCLDriveStdoutToDataframe
+from app.parser import ParseCLDriveStdoutToDataframe    
 from app.utils import detect_kernel_dimensions, getOpenCLPlatforms, get_kernel_info
-from app.runner import MAX_GSIZE, KernelRunInstance, RunCLDrive, gen_launch_configs
-
+from app.runner import RunCLDrive
+'''
+get_kernel_args_values => get_run_settings(gsize, lsize) --gsize --lsize are fixed
+=> kernel_name.json - output of get_run_settings() is for predefined gsize, lsize
+'''
 CLDRIVE = "bazel-bin/gpu/cldrive/cldrive"
-ORG_KERNEL_DIR = "local/kernels"
-HOOK_INSERTED_KERNEL_DIR = "local/kernels-modified"
-BACKUP_DIR = "local/backup-mem-analysis-extend-v3"
+CLMEM = "bazel-bin/gpu/clmem/clmem"
+ORG_KERNEL_DIR = "kernels"
+HOOK_INSERTED_KERNEL_DIR = "kernels-modified"
+BACKUP_DIR = "backup-mem-analysis"
 SUCCESS_DIR = os.path.join(BACKUP_DIR, "success")
 FAIL_DIR = os.path.join(BACKUP_DIR, "fail")
-SELECTED_KERNELS_FILE = "local/selected_kernels-200k.json"
-TIMEOUT = 10 # timeout for each run
-GPU_POOL = [1,2,3]
-NUM_GPU = len(GPU_POOL) # number of GPUs to run in parallel
-NUM_PROCESS = 16 # number of processes to run in parallel
-MAX_ARG_TRY = 216 # maximum number of argument settings to try, to avoid exponential explosion of argument settings
-NUM_ARG_SELECTION = 4 # number of argument settings to select
-verbose_cldrive = False # whether to print CLDrive stdout
-device_num_sm = 80 # number of SMs of the current GPU, used to generate launch configs
+TIMEOUT = 10
+NUM_GPU = 1
+NUM_PROCESS = 8
+verbose_cldrive = False
 
 random.seed(2610)
 
@@ -37,6 +36,57 @@ random.seed(2610)
 logger.add("cldrive.log", level="INFO")
 logger.add(sys.stderr, level="DEBUG")
 rng = np.random.default_rng()
+
+def get_config():
+    local_sizes = [32]
+    global_sizes = [192, 512]
+
+    def gen_launch_configs():
+        launch_configs = []
+        for lsize in local_sizes:
+            for gsize in global_sizes:
+                launch_configs.append((gsize, lsize))
+        return launch_configs
+    
+    return gen_launch_configs()
+
+class KernelRunInstance:
+    def __init__(self, kernel_code, gsize, lsize, args_values=None) -> None:
+        self.kernel_code = kernel_code
+        self.gsize = gsize
+        self.lsize = lsize
+        self.args_info = args_values
+    
+    def run_mem_access(self):
+        stdout, stderr = RunCLDrive(
+            cldrive_exe=CLDRIVE,
+            src=self.kernel_code,
+            num_runs=1,
+            lsize=self.lsize,
+            gsize=self.gsize,
+            args_values=self.args_info,
+            cl_platform=getOpenCLPlatforms(CLDRIVE)[0],
+            timeout=TIMEOUT,
+            output_format="null",
+        )
+
+        return stdout, stderr
+    
+    def run_check(self):
+        stdout, stderr = RunCLDrive(
+            cldrive_exe=CLDRIVE,
+            src=self.kernel_code,
+            num_runs=1,
+            lsize=self.lsize,
+            gsize=self.gsize,
+            args_values=self.args_info,
+            cl_platform=getOpenCLPlatforms(CLDRIVE)[0],
+            timeout=TIMEOUT,
+            output_format="csv",
+        )
+        df, stderr = ParseCLDriveStdoutToDataframe(stdout, stderr)
+
+        return df, stderr
     
 
 class KernelMemoryAnalyzer:
@@ -69,7 +119,6 @@ class KernelMemoryAnalyzer:
         4. Return a set of combinations that have array bound larger or equal to gsize
         """  
         candidate_values = [1, 4, gsize, 16, 32, 256]
-        
         arg_settings = []
         n_tried = 0
         for scalars_setting in itertools.product(candidate_values, repeat=len(self.scalar_argument_list)):
@@ -82,26 +131,24 @@ class KernelMemoryAnalyzer:
             # create argument value for cldrive + check if array bound is larger or equal to gsize
             args_values = []
             i = 0
-            is_valid = True
+            is_geq_than_gsize = True
             
             for argument in argument_list:
                 if argument["is_pointer"] == False:
                     args_values.append(scalars_setting[i])
                     i += 1
                 else:
-                    # array bound = a*gsize + b + 1 (since we the max_index=a*gsize+b and the array starts from 0)
-                    args_values.append(int(np.ceil(argument["coef"][0] + argument["coef"][1]*gsize + 1)))
-                    # ignore if array bound is smaller than gsize or larger than MAX_GSIZE 
-                    if args_values[-1] < gsize or args_values[-1] > MAX_GSIZE:
-                        is_valid = False
+                    args_values.append(int(np.ceil(argument["coef"][0] + argument["coef"][1]*gsize)))
+                    # if args_values[-1] < gsize:
+                    if args_values[-1] < 0:
+                        is_geq_than_gsize = False
                         break
             
             # if array bound is larger or equal to gsize, add to the list
-            if is_valid:
+            if is_geq_than_gsize:
                 arg_settings.append(args_values)
-                if len(arg_settings) >= NUM_ARG_SELECTION: break
             n_tried += 1
-            if n_tried > MAX_ARG_TRY: break
+            if n_tried > 1000: break
                 
         return arg_settings
     
@@ -128,11 +175,11 @@ class KernelMemoryAnalyzer:
                 
             return result
         except Exception as e:
-            logger.error(f"ERROR: (`{self.kernel_path}`, args=`{scalars_setting}`) Get memory access dataset failed with error:\n{e}")
+            logger.error(f"ERROR: (`{self.kernel_path}`, gsize={gsize}, lsize={lsize}) Get memory access dataset failed with error:\n{e}")
             return {}
     
     def get_mem_access_dataset(self, scalars_setting):
-        launch_configs = list(self.get_analyze_config())
+        launch_configs = list(get_config())
         max_ids, min_ids, launch_configs = self.run_multiple_configs(launch_configs, scalars_setting)
         X = np.array(launch_configs)[:,0] # only use gsize
         X = np.expand_dims(X, axis=1) # expand to (2,1)
@@ -182,23 +229,10 @@ class KernelMemoryAnalyzer:
         max_list = df_group.agg({"id_access":'max'}).reset_index().to_dict("records")
         min_list = df_group.agg({"id_access":'min'}).reset_index().to_dict("records")
         return max_list, min_list
-    
-    def get_analyze_config(self):
-        local_sizes = [32]
-        global_sizes = [192, 512]
-
-        def gen_launch_configs():
-            launch_configs = []
-            for lsize in local_sizes:
-                for gsize in global_sizes:
-                    launch_configs.append((gsize, lsize))
-            return launch_configs
-        
-        return gen_launch_configs()
 
 
 def set_cuda_visible():
-    process_number = GPU_POOL[(multiprocessing.current_process()._identity[0] - 1) % NUM_GPU]
+    process_number = 0
     os.environ["CUDA_VISIBLE_DEVICES"] = str(process_number)
 
 def get_kernel_args_values(args):
@@ -212,7 +246,10 @@ def get_kernel_args_values(args):
         
         run_settings = analyzer.get_run_settings(gsize, lsize)
         save_dir = SUCCESS_DIR if len(run_settings) > 0 else FAIL_DIR
-        with open(os.path.join(save_dir, os.path.splitext(kernel)[0] + f"_{gsize}_{lsize}.json"), "w", encoding="utf-8") as f:
+
+        # save run_settings into [kernel_name].json 
+        # 
+        with open(os.path.join(save_dir, os.path.splitext(kernel)[0] + ".json"), "w", encoding="utf-8") as f:
             json.dump(run_settings, f)
     except Exception as e:
         logger.error(f"ERROR: Analyze kernel `{org_kernel_path}` failed with error:\n{e}")
@@ -235,8 +272,8 @@ if __name__ == "__main__":
     else:
         BACKUPED_LIST = set(os.path.splitext(kernel)[0] for kernel in os.listdir(SUCCESS_DIR))
         BACKUPED_LIST.update(os.path.splitext(kernel)[0] for kernel in os.listdir(FAIL_DIR))
-    with open(SELECTED_KERNELS_FILE, "r") as f:
-        SELECTED_KERNEL = set(os.path.splitext(os.path.basename(kernel))[0] for kernel in json.load(f))
+    #with open("selected_kernels-200k.json", "r") as f:
+        #SELECTED_KERNEL = set(os.path.splitext(os.path.basename(kernel))[0] for kernel in json.load(f))
     
     need_calculate = []
     for kernel in os.listdir(HOOK_INSERTED_KERNEL_DIR):
@@ -245,26 +282,20 @@ if __name__ == "__main__":
             kernel_code = f.read()
         if os.path.splitext(kernel_path)[1] != ".cl" \
             or os.path.splitext(kernel)[0] in BACKUPED_LIST \
-            or detect_kernel_dimensions(kernel_code) != "1D" \
-            or os.path.splitext(kernel)[0] not in SELECTED_KERNEL:
+            or detect_kernel_dimensions(kernel_code) != "1D" :
+            #or os.path.splitext(kernel)[0] not in SELECTED_KERNEL:
             continue
         need_calculate.append(kernel)
     
-    run_configs = []
-    for kernel in need_calculate:
-        kernel_path = os.path.join(HOOK_INSERTED_KERNEL_DIR, kernel)
-        launch_configs = gen_launch_configs(device_num_sm)
-        for gsize, lsize in launch_configs:
-            run_configs.append((kernel, gsize, lsize))
-    
-    print(f"Number of configs: {len(run_configs)}")
+    lsize = 32 * 3 # 96
+    gsize = lsize * 13 # 1248
 
     with multiprocessing.Pool(processes=NUM_PROCESS, initializer=set_cuda_visible) as pool:
         # Use the pool to map the process_element function to the elements
         
         pool.map(
             get_kernel_args_values, 
-            run_configs,
+            zip(need_calculate, itertools.repeat(gsize), itertools.repeat(lsize)),
             # chunksize=NUM_PROCESS
         )
             

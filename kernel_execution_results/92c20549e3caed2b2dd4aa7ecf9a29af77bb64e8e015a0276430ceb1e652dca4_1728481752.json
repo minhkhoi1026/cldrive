@@ -1,0 +1,6 @@
+{
+    "kernel": "92c20549e3caed2b2dd4aa7ecf9a29af77bb64e8e015a0276430ceb1e652dca4.cl",
+    "scalar_strategy": "('granularity', 'bound-check')",
+    "scalar_values": "(3, 10000)",
+    "runtime": 10240
+}

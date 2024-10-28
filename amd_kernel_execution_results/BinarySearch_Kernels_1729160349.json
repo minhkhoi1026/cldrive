@@ -1,0 +1,10 @@
+{
+    "kernel": "BinarySearch_Kernels.cl",
+    "scalar_strategy": [
+        "bound-check"
+    ],
+    "scalar_values": [
+        10000
+    ],
+    "runtime": 13312
+}

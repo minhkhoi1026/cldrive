@@ -1,0 +1,10 @@
+{
+    "kernel": "BinarySearch_Kernels.cl",
+    "scalar_strategy": [
+        "granularity"
+    ],
+    "scalar_values": [
+        4
+    ],
+    "runtime": 13216
+}

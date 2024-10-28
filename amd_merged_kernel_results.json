@@ -1,0 +1,3250 @@
+[
+    {
+        "kernel": "Template_Kernels.cl",
+        "scalar_strategy": [
+            "not-relevant"
+        ],
+        "scalar_values": [
+            10
+        ],
+        "runtime": 4096
+    },
+    {
+        "kernel": "BufferBandwidth_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            1,
+            -10,
+            3
+        ],
+        "runtime": 13312
+    },
+    {
+        "kernel": "TransferOverlap_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            4,
+            10,
+            2
+        ],
+        "runtime": 14304
+    },
+    {
+        "kernel": "BufferBandwidth_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            4,
+            -10,
+            4
+        ],
+        "runtime": 14336
+    },
+    {
+        "kernel": "TransferOverlap_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            1,
+            -10,
+            3
+        ],
+        "runtime": 13312
+    },
+    {
+        "kernel": "KernelLaunch_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            1,
+            -10,
+            4
+        ],
+        "runtime": 13312
+    },
+    {
+        "kernel": "NBody_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "not-relevant"
+        ],
+        "scalar_values": [
+            2,
+            -10,
+            -10
+        ],
+        "runtime": 18432
+    },
+    {
+        "kernel": "NBody_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "not-relevant"
+        ],
+        "scalar_values": [
+            2,
+            -10,
+            10
+        ],
+        "runtime": 16384
+    },
+    {
+        "kernel": "TransferOverlap_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            3,
+            10,
+            3
+        ],
+        "runtime": 16384
+    },
+    {
+        "kernel": "TransferOverlap_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            2,
+            0,
+            2
+        ],
+        "runtime": 14336
+    },
+    {
+        "kernel": "NBody_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "not-relevant"
+        ],
+        "scalar_values": [
+            4,
+            0,
+            -10
+        ],
+        "runtime": 16288
+    },
+    {
+        "kernel": "NBody_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "not-relevant"
+        ],
+        "scalar_values": [
+            1,
+            -10,
+            10
+        ],
+        "runtime": 5120
+    },
+    {
+        "kernel": "KernelLaunch_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            2,
+            10,
+            4
+        ],
+        "runtime": 16384
+    },
+    {
+        "kernel": "KernelLaunch_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            3,
+            10,
+            3
+        ],
+        "runtime": 16384
+    },
+    {
+        "kernel": "TransferOverlap_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            4,
+            0,
+            3
+        ],
+        "runtime": 15360
+    },
+    {
+        "kernel": "BlackScholesDP_Kernels.cl",
+        "scalar_strategy": [
+            "not-relevant"
+        ],
+        "scalar_values": [
+            0
+        ],
+        "runtime": 20480
+    },
+    {
+        "kernel": "KernelLaunch_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            1,
+            0,
+            1
+        ],
+        "runtime": 14336
+    },
+    {
+        "kernel": "TransferOverlap_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            1,
+            0,
+            2
+        ],
+        "runtime": 13312
+    },
+    {
+        "kernel": "KernelLaunch_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            4,
+            -10,
+            3
+        ],
+        "runtime": 17408
+    },
+    {
+        "kernel": "TransferOverlap_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            1,
+            0,
+            3
+        ],
+        "runtime": 12288
+    },
+    {
+        "kernel": "BufferBandwidth_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            2,
+            -10,
+            2
+        ],
+        "runtime": 13280
+    },
+    {
+        "kernel": "BufferBandwidth_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            3,
+            -10,
+            1
+        ],
+        "runtime": 15360
+    },
+    {
+        "kernel": "KernelLaunch_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            4,
+            -10,
+            4
+        ],
+        "runtime": 16416
+    },
+    {
+        "kernel": "TransferOverlap_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            4,
+            10,
+            3
+        ],
+        "runtime": 16352
+    },
+    {
+        "kernel": "BufferBandwidth_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            3,
+            10,
+            3
+        ],
+        "runtime": 17440
+    },
+    {
+        "kernel": "TransferOverlap_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            1,
+            -10,
+            4
+        ],
+        "runtime": 14336
+    },
+    {
+        "kernel": "SimpleConvolution_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "granularity"
+        ],
+        "scalar_values": [
+            2,
+            2
+        ],
+        "runtime": 14432
+    },
+    {
+        "kernel": "NBody_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "not-relevant"
+        ],
+        "scalar_values": [
+            3,
+            -10,
+            10
+        ],
+        "runtime": 17408
+    },
+    {
+        "kernel": "URNG_Kernels.cl",
+        "scalar_strategy": [
+            "not-relevant"
+        ],
+        "scalar_values": [
+            10
+        ],
+        "runtime": 14336
+    },
+    {
+        "kernel": "TransferOverlap_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            2,
+            -10,
+            3
+        ],
+        "runtime": 14336
+    },
+    {
+        "kernel": "NBody_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "not-relevant"
+        ],
+        "scalar_values": [
+            4,
+            0,
+            10
+        ],
+        "runtime": 17408
+    },
+    {
+        "kernel": "NBody_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "not-relevant"
+        ],
+        "scalar_values": [
+            2,
+            0,
+            0
+        ],
+        "runtime": 16384
+    },
+    {
+        "kernel": "SimpleGL_Kernels.cl",
+        "scalar_strategy": [
+            "not-relevant",
+            "not-relevant",
+            "not-relevant"
+        ],
+        "scalar_values": [
+            10,
+            -10,
+            -10
+        ],
+        "runtime": 13312
+    },
+    {
+        "kernel": "KernelLaunch_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            1,
+            0,
+            4
+        ],
+        "runtime": 14304
+    },
+    {
+        "kernel": "TransferOverlap_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            3,
+            -10,
+            4
+        ],
+        "runtime": 16384
+    },
+    {
+        "kernel": "SimpleGL_Kernels.cl",
+        "scalar_strategy": [
+            "not-relevant",
+            "not-relevant",
+            "not-relevant"
+        ],
+        "scalar_values": [
+            10,
+            10,
+            10
+        ],
+        "runtime": 13184
+    },
+    {
+        "kernel": "BlackScholes_Kernels.cl",
+        "scalar_strategy": [
+            "not-relevant"
+        ],
+        "scalar_values": [
+            0
+        ],
+        "runtime": 14336
+    },
+    {
+        "kernel": "KernelLaunch_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            3,
+            10,
+            2
+        ],
+        "runtime": 15360
+    },
+    {
+        "kernel": "TransferOverlap_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            4,
+            10,
+            4
+        ],
+        "runtime": 18400
+    },
+    {
+        "kernel": "NBody_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "not-relevant"
+        ],
+        "scalar_values": [
+            1,
+            0,
+            0
+        ],
+        "runtime": 5120
+    },
+    {
+        "kernel": "NBody_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "not-relevant"
+        ],
+        "scalar_values": [
+            1,
+            10,
+            0
+        ],
+        "runtime": 5120
+    },
+    {
+        "kernel": "BufferBandwidth_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            4,
+            0,
+            1
+        ],
+        "runtime": 14336
+    },
+    {
+        "kernel": "TransferOverlap_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            3,
+            0,
+            3
+        ],
+        "runtime": 15360
+    },
+    {
+        "kernel": "KernelLaunch_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            3,
+            10,
+            4
+        ],
+        "runtime": 17376
+    },
+    {
+        "kernel": "KernelLaunch_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            4,
+            -10,
+            1
+        ],
+        "runtime": 14304
+    },
+    {
+        "kernel": "KernelLaunch_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            2,
+            10,
+            2
+        ],
+        "runtime": 14304
+    },
+    {
+        "kernel": "TransferOverlap_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            2,
+            10,
+            1
+        ],
+        "runtime": 14336
+    },
+    {
+        "kernel": "SimpleGL_Kernels.cl",
+        "scalar_strategy": [
+            "not-relevant",
+            "not-relevant",
+            "not-relevant"
+        ],
+        "scalar_values": [
+            -10,
+            0,
+            -10
+        ],
+        "runtime": 11264
+    },
+    {
+        "kernel": "SimpleGL_Kernels.cl",
+        "scalar_strategy": [
+            "not-relevant",
+            "not-relevant",
+            "not-relevant"
+        ],
+        "scalar_values": [
+            -10,
+            0,
+            10
+        ],
+        "runtime": 11296
+    },
+    {
+        "kernel": "BufferBandwidth_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            2,
+            0,
+            2
+        ],
+        "runtime": 14368
+    },
+    {
+        "kernel": "SimpleConvolution_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "granularity"
+        ],
+        "scalar_values": [
+            3,
+            2
+        ],
+        "runtime": 13312
+    },
+    {
+        "kernel": "BufferBandwidth_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            2,
+            10,
+            2
+        ],
+        "runtime": 14336
+    },
+    {
+        "kernel": "NBody_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "not-relevant"
+        ],
+        "scalar_values": [
+            2,
+            0,
+            -10
+        ],
+        "runtime": 18432
+    },
+    {
+        "kernel": "SimpleGL_Kernels.cl",
+        "scalar_strategy": [
+            "not-relevant",
+            "not-relevant",
+            "not-relevant"
+        ],
+        "scalar_values": [
+            10,
+            0,
+            -10
+        ],
+        "runtime": 13312
+    },
+    {
+        "kernel": "BufferBandwidth_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            1,
+            10,
+            1
+        ],
+        "runtime": 14336
+    },
+    {
+        "kernel": "KernelLaunch_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            1,
+            -10,
+            2
+        ],
+        "runtime": 13344
+    },
+    {
+        "kernel": "NBody_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "not-relevant"
+        ],
+        "scalar_values": [
+            4,
+            0,
+            0
+        ],
+        "runtime": 17568
+    },
+    {
+        "kernel": "SimpleGL_Kernels.cl",
+        "scalar_strategy": [
+            "not-relevant",
+            "not-relevant",
+            "not-relevant"
+        ],
+        "scalar_values": [
+            0,
+            10,
+            10
+        ],
+        "runtime": 13312
+    },
+    {
+        "kernel": "SimpleGL_Kernels.cl",
+        "scalar_strategy": [
+            "not-relevant",
+            "not-relevant",
+            "not-relevant"
+        ],
+        "scalar_values": [
+            0,
+            -10,
+            0
+        ],
+        "runtime": 14336
+    },
+    {
+        "kernel": "SimpleConvolution_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "granularity"
+        ],
+        "scalar_values": [
+            1,
+            4
+        ],
+        "runtime": 12288
+    },
+    {
+        "kernel": "TransferOverlap_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            3,
+            0,
+            1
+        ],
+        "runtime": 15360
+    },
+    {
+        "kernel": "SimpleConvolution_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "granularity"
+        ],
+        "scalar_values": [
+            3,
+            3
+        ],
+        "runtime": 14304
+    },
+    {
+        "kernel": "SimpleGL_Kernels.cl",
+        "scalar_strategy": [
+            "not-relevant",
+            "not-relevant",
+            "not-relevant"
+        ],
+        "scalar_values": [
+            10,
+            0,
+            0
+        ],
+        "runtime": 29792
+    },
+    {
+        "kernel": "NBody_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "not-relevant"
+        ],
+        "scalar_values": [
+            1,
+            0,
+            -10
+        ],
+        "runtime": 5120
+    },
+    {
+        "kernel": "BufferBandwidth_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            3,
+            0,
+            2
+        ],
+        "runtime": 13280
+    },
+    {
+        "kernel": "SimpleGL_Kernels.cl",
+        "scalar_strategy": [
+            "not-relevant",
+            "not-relevant",
+            "not-relevant"
+        ],
+        "scalar_values": [
+            0,
+            0,
+            10
+        ],
+        "runtime": 13312
+    },
+    {
+        "kernel": "SimpleGL_Kernels.cl",
+        "scalar_strategy": [
+            "not-relevant",
+            "not-relevant",
+            "not-relevant"
+        ],
+        "scalar_values": [
+            -10,
+            -10,
+            0
+        ],
+        "runtime": 13312
+    },
+    {
+        "kernel": "KernelLaunch_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            4,
+            10,
+            3
+        ],
+        "runtime": 16384
+    },
+    {
+        "kernel": "SimpleGL_Kernels.cl",
+        "scalar_strategy": [
+            "not-relevant",
+            "not-relevant",
+            "not-relevant"
+        ],
+        "scalar_values": [
+            -10,
+            10,
+            10
+        ],
+        "runtime": 13312
+    },
+    {
+        "kernel": "BufferBandwidth_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            1,
+            0,
+            4
+        ],
+        "runtime": 15264
+    },
+    {
+        "kernel": "TransferOverlap_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            2,
+            0,
+            3
+        ],
+        "runtime": 14336
+    },
+    {
+        "kernel": "TransferOverlap_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            4,
+            -10,
+            4
+        ],
+        "runtime": 17440
+    },
+    {
+        "kernel": "SimpleGL_Kernels.cl",
+        "scalar_strategy": [
+            "not-relevant",
+            "not-relevant",
+            "not-relevant"
+        ],
+        "scalar_values": [
+            10,
+            -10,
+            10
+        ],
+        "runtime": 15360
+    },
+    {
+        "kernel": "NBody_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "not-relevant"
+        ],
+        "scalar_values": [
+            3,
+            10,
+            0
+        ],
+        "runtime": 17408
+    },
+    {
+        "kernel": "KernelLaunch_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            4,
+            0,
+            4
+        ],
+        "runtime": 16416
+    },
+    {
+        "kernel": "BufferBandwidth_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            3,
+            10,
+            2
+        ],
+        "runtime": 15392
+    },
+    {
+        "kernel": "SimpleGL_Kernels.cl",
+        "scalar_strategy": [
+            "not-relevant",
+            "not-relevant",
+            "not-relevant"
+        ],
+        "scalar_values": [
+            0,
+            -10,
+            -10
+        ],
+        "runtime": 14336
+    },
+    {
+        "kernel": "KernelLaunch_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            4,
+            -10,
+            2
+        ],
+        "runtime": 15392
+    },
+    {
+        "kernel": "NBody_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "not-relevant"
+        ],
+        "scalar_values": [
+            4,
+            -10,
+            10
+        ],
+        "runtime": 16480
+    },
+    {
+        "kernel": "TransferOverlap_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            4,
+            -10,
+            2
+        ],
+        "runtime": 14304
+    },
+    {
+        "kernel": "BinarySearch_Kernels.cl",
+        "scalar_strategy": [
+            "granularity"
+        ],
+        "scalar_values": [
+            1
+        ],
+        "runtime": 12288
+    },
+    {
+        "kernel": "BlackScholes_Kernels.cl",
+        "scalar_strategy": [
+            "not-relevant"
+        ],
+        "scalar_values": [
+            -10
+        ],
+        "runtime": 14336
+    },
+    {
+        "kernel": "TransferOverlap_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            4,
+            -10,
+            3
+        ],
+        "runtime": 18432
+    },
+    {
+        "kernel": "KernelLaunch_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            3,
+            -10,
+            2
+        ],
+        "runtime": 15328
+    },
+    {
+        "kernel": "TransferOverlap_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            3,
+            -10,
+            3
+        ],
+        "runtime": 15360
+    },
+    {
+        "kernel": "SimpleConvolution_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "granularity"
+        ],
+        "scalar_values": [
+            4,
+            2
+        ],
+        "runtime": 13280
+    },
+    {
+        "kernel": "NBody_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "not-relevant"
+        ],
+        "scalar_values": [
+            2,
+            10,
+            0
+        ],
+        "runtime": 17472
+    },
+    {
+        "kernel": "BufferBandwidth_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            4,
+            0,
+            2
+        ],
+        "runtime": 13280
+    },
+    {
+        "kernel": "SimpleGL_Kernels.cl",
+        "scalar_strategy": [
+            "not-relevant",
+            "not-relevant",
+            "not-relevant"
+        ],
+        "scalar_values": [
+            10,
+            10,
+            0
+        ],
+        "runtime": 13312
+    },
+    {
+        "kernel": "SimpleConvolution_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "granularity"
+        ],
+        "scalar_values": [
+            4,
+            1
+        ],
+        "runtime": 13280
+    },
+    {
+        "kernel": "TransferOverlap_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            1,
+            10,
+            1
+        ],
+        "runtime": 13312
+    },
+    {
+        "kernel": "TransferOverlap_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            1,
+            0,
+            1
+        ],
+        "runtime": 13408
+    },
+    {
+        "kernel": "TransferOverlap_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            4,
+            0,
+            4
+        ],
+        "runtime": 16384
+    },
+    {
+        "kernel": "SimpleGL_Kernels.cl",
+        "scalar_strategy": [
+            "not-relevant",
+            "not-relevant",
+            "not-relevant"
+        ],
+        "scalar_values": [
+            -10,
+            0,
+            0
+        ],
+        "runtime": 15360
+    },
+    {
+        "kernel": "SimpleConvolution_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "granularity"
+        ],
+        "scalar_values": [
+            1,
+            2
+        ],
+        "runtime": 13312
+    },
+    {
+        "kernel": "SimpleGL_Kernels.cl",
+        "scalar_strategy": [
+            "not-relevant",
+            "not-relevant",
+            "not-relevant"
+        ],
+        "scalar_values": [
+            0,
+            -10,
+            10
+        ],
+        "runtime": 12288
+    },
+    {
+        "kernel": "BufferBandwidth_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            3,
+            0,
+            1
+        ],
+        "runtime": 15360
+    },
+    {
+        "kernel": "NBody_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "not-relevant"
+        ],
+        "scalar_values": [
+            3,
+            0,
+            10
+        ],
+        "runtime": 17408
+    },
+    {
+        "kernel": "BufferBandwidth_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            3,
+            -10,
+            4
+        ],
+        "runtime": 16416
+    },
+    {
+        "kernel": "KernelLaunch_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            3,
+            -10,
+            3
+        ],
+        "runtime": 16384
+    },
+    {
+        "kernel": "KernelLaunch_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            3,
+            0,
+            4
+        ],
+        "runtime": 16416
+    },
+    {
+        "kernel": "NBody_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "not-relevant"
+        ],
+        "scalar_values": [
+            3,
+            -10,
+            -10
+        ],
+        "runtime": 17408
+    },
+    {
+        "kernel": "BufferBandwidth_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            1,
+            10,
+            2
+        ],
+        "runtime": 13312
+    },
+    {
+        "kernel": "SimpleGL_Kernels.cl",
+        "scalar_strategy": [
+            "not-relevant",
+            "not-relevant",
+            "not-relevant"
+        ],
+        "scalar_values": [
+            0,
+            0,
+            -10
+        ],
+        "runtime": 14336
+    },
+    {
+        "kernel": "KernelLaunch_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            4,
+            0,
+            1
+        ],
+        "runtime": 13312
+    },
+    {
+        "kernel": "TransferOverlap_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            2,
+            0,
+            4
+        ],
+        "runtime": 14336
+    },
+    {
+        "kernel": "BinarySearch_Kernels.cl",
+        "scalar_strategy": [
+            "granularity"
+        ],
+        "scalar_values": [
+            4
+        ],
+        "runtime": 13216
+    },
+    {
+        "kernel": "TransferOverlap_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            3,
+            10,
+            1
+        ],
+        "runtime": 14272
+    },
+    {
+        "kernel": "BufferBandwidth_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            4,
+            -10,
+            3
+        ],
+        "runtime": 15360
+    },
+    {
+        "kernel": "TransferOverlap_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            1,
+            -10,
+            2
+        ],
+        "runtime": 13344
+    },
+    {
+        "kernel": "SimpleConvolution_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "granularity"
+        ],
+        "scalar_values": [
+            2,
+            1
+        ],
+        "runtime": 12288
+    },
+    {
+        "kernel": "TransferOverlap_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            2,
+            -10,
+            1
+        ],
+        "runtime": 13376
+    },
+    {
+        "kernel": "NBody_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "not-relevant"
+        ],
+        "scalar_values": [
+            2,
+            -10,
+            0
+        ],
+        "runtime": 17408
+    },
+    {
+        "kernel": "NBody_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "not-relevant"
+        ],
+        "scalar_values": [
+            2,
+            10,
+            -10
+        ],
+        "runtime": 17408
+    },
+    {
+        "kernel": "KernelLaunch_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            2,
+            -10,
+            1
+        ],
+        "runtime": 13312
+    },
+    {
+        "kernel": "KernelLaunch_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            1,
+            10,
+            1
+        ],
+        "runtime": 14368
+    },
+    {
+        "kernel": "NBody_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "not-relevant"
+        ],
+        "scalar_values": [
+            1,
+            0,
+            10
+        ],
+        "runtime": 5120
+    },
+    {
+        "kernel": "KernelLaunch_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            4,
+            10,
+            2
+        ],
+        "runtime": 13344
+    },
+    {
+        "kernel": "SimpleConvolution_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "granularity"
+        ],
+        "scalar_values": [
+            1,
+            3
+        ],
+        "runtime": 13312
+    },
+    {
+        "kernel": "TransferOverlap_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            3,
+            10,
+            4
+        ],
+        "runtime": 16384
+    },
+    {
+        "kernel": "BlackScholesDP_Kernels.cl",
+        "scalar_strategy": [
+            "not-relevant"
+        ],
+        "scalar_values": [
+            10
+        ],
+        "runtime": 18432
+    },
+    {
+        "kernel": "KernelLaunch_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            2,
+            -10,
+            4
+        ],
+        "runtime": 15328
+    },
+    {
+        "kernel": "BinarySearch_Kernels.cl",
+        "scalar_strategy": [
+            "bound-check"
+        ],
+        "scalar_values": [
+            10000
+        ],
+        "runtime": 13312
+    },
+    {
+        "kernel": "NBody_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "not-relevant"
+        ],
+        "scalar_values": [
+            3,
+            0,
+            -10
+        ],
+        "runtime": 16384
+    },
+    {
+        "kernel": "BufferBandwidth_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            1,
+            10,
+            3
+        ],
+        "runtime": 14336
+    },
+    {
+        "kernel": "TransferOverlap_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            1,
+            -10,
+            1
+        ],
+        "runtime": 13312
+    },
+    {
+        "kernel": "TransferOverlap_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            3,
+            -10,
+            2
+        ],
+        "runtime": 14336
+    },
+    {
+        "kernel": "KernelLaunch_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            2,
+            0,
+            4
+        ],
+        "runtime": 15360
+    },
+    {
+        "kernel": "TransferOverlap_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            2,
+            10,
+            3
+        ],
+        "runtime": 14336
+    },
+    {
+        "kernel": "KernelLaunch_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            2,
+            0,
+            1
+        ],
+        "runtime": 14336
+    },
+    {
+        "kernel": "KernelLaunch_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            3,
+            -10,
+            1
+        ],
+        "runtime": 14336
+    },
+    {
+        "kernel": "SimpleConvolution_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "granularity"
+        ],
+        "scalar_values": [
+            4,
+            4
+        ],
+        "runtime": 13312
+    },
+    {
+        "kernel": "SimpleConvolution_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "granularity"
+        ],
+        "scalar_values": [
+            3,
+            1
+        ],
+        "runtime": 13312
+    },
+    {
+        "kernel": "KernelLaunch_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            1,
+            -10,
+            1
+        ],
+        "runtime": 14304
+    },
+    {
+        "kernel": "SimpleGL_Kernels.cl",
+        "scalar_strategy": [
+            "not-relevant",
+            "not-relevant",
+            "not-relevant"
+        ],
+        "scalar_values": [
+            10,
+            -10,
+            0
+        ],
+        "runtime": 13312
+    },
+    {
+        "kernel": "SimpleConvolution_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "granularity"
+        ],
+        "scalar_values": [
+            3,
+            4
+        ],
+        "runtime": 13312
+    },
+    {
+        "kernel": "AtomicCounters_Kernels.cl",
+        "scalar_strategy": [
+            "not-relevant"
+        ],
+        "scalar_values": [
+            10
+        ],
+        "runtime": 14336
+    },
+    {
+        "kernel": "KernelLaunch_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            2,
+            -10,
+            2
+        ],
+        "runtime": 15360
+    },
+    {
+        "kernel": "BinarySearch_Kernels.cl",
+        "scalar_strategy": [
+            "granularity"
+        ],
+        "scalar_values": [
+            3
+        ],
+        "runtime": 13312
+    },
+    {
+        "kernel": "BlackScholesDP_Kernels.cl",
+        "scalar_strategy": [
+            "not-relevant"
+        ],
+        "scalar_values": [
+            -10
+        ],
+        "runtime": 19456
+    },
+    {
+        "kernel": "NBody_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "not-relevant"
+        ],
+        "scalar_values": [
+            1,
+            10,
+            10
+        ],
+        "runtime": 4096
+    },
+    {
+        "kernel": "KernelLaunch_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            1,
+            10,
+            3
+        ],
+        "runtime": 13344
+    },
+    {
+        "kernel": "KernelLaunch_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            2,
+            0,
+            3
+        ],
+        "runtime": 14368
+    },
+    {
+        "kernel": "BufferBandwidth_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            3,
+            10,
+            1
+        ],
+        "runtime": 13344
+    },
+    {
+        "kernel": "NBody_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "not-relevant"
+        ],
+        "scalar_values": [
+            1,
+            -10,
+            -10
+        ],
+        "runtime": 5120
+    },
+    {
+        "kernel": "SimpleGL_Kernels.cl",
+        "scalar_strategy": [
+            "not-relevant",
+            "not-relevant",
+            "not-relevant"
+        ],
+        "scalar_values": [
+            -10,
+            10,
+            -10
+        ],
+        "runtime": 12288
+    },
+    {
+        "kernel": "BufferBandwidth_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            2,
+            -10,
+            4
+        ],
+        "runtime": 16352
+    },
+    {
+        "kernel": "KernelLaunch_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            3,
+            10,
+            1
+        ],
+        "runtime": 15360
+    },
+    {
+        "kernel": "KernelLaunch_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            4,
+            0,
+            2
+        ],
+        "runtime": 15360
+    },
+    {
+        "kernel": "BufferBandwidth_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            4,
+            0,
+            3
+        ],
+        "runtime": 16416
+    },
+    {
+        "kernel": "BufferBandwidth_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            1,
+            0,
+            1
+        ],
+        "runtime": 13312
+    },
+    {
+        "kernel": "TransferOverlap_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            4,
+            -10,
+            1
+        ],
+        "runtime": 15392
+    },
+    {
+        "kernel": "KernelLaunch_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            4,
+            0,
+            3
+        ],
+        "runtime": 16384
+    },
+    {
+        "kernel": "BufferBandwidth_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            2,
+            0,
+            3
+        ],
+        "runtime": 14336
+    },
+    {
+        "kernel": "KernelLaunch_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            2,
+            10,
+            3
+        ],
+        "runtime": 15360
+    },
+    {
+        "kernel": "BufferBandwidth_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            2,
+            0,
+            1
+        ],
+        "runtime": 13280
+    },
+    {
+        "kernel": "KernelLaunch_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            1,
+            10,
+            4
+        ],
+        "runtime": 14336
+    },
+    {
+        "kernel": "TransferOverlap_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            3,
+            -10,
+            1
+        ],
+        "runtime": 15360
+    },
+    {
+        "kernel": "BufferBandwidth_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            4,
+            10,
+            1
+        ],
+        "runtime": 16384
+    },
+    {
+        "kernel": "BufferBandwidth_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            3,
+            -10,
+            3
+        ],
+        "runtime": 15392
+    },
+    {
+        "kernel": "TransferOverlap_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            1,
+            10,
+            3
+        ],
+        "runtime": 14336
+    },
+    {
+        "kernel": "TransferOverlap_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            4,
+            0,
+            2
+        ],
+        "runtime": 16384
+    },
+    {
+        "kernel": "BufferBandwidth_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            3,
+            -10,
+            2
+        ],
+        "runtime": 16320
+    },
+    {
+        "kernel": "SimpleGL_Kernels.cl",
+        "scalar_strategy": [
+            "not-relevant",
+            "not-relevant",
+            "not-relevant"
+        ],
+        "scalar_values": [
+            10,
+            0,
+            10
+        ],
+        "runtime": 13152
+    },
+    {
+        "kernel": "BufferBandwidth_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            2,
+            -10,
+            1
+        ],
+        "runtime": 14336
+    },
+    {
+        "kernel": "BinarySearch_Kernels.cl",
+        "scalar_strategy": [
+            "bound-check"
+        ],
+        "scalar_values": [
+            10000000
+        ],
+        "runtime": 14336
+    },
+    {
+        "kernel": "BufferBandwidth_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            2,
+            10,
+            1
+        ],
+        "runtime": 14368
+    },
+    {
+        "kernel": "NBody_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "not-relevant"
+        ],
+        "scalar_values": [
+            3,
+            10,
+            10
+        ],
+        "runtime": 18432
+    },
+    {
+        "kernel": "SimpleConvolution_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "granularity"
+        ],
+        "scalar_values": [
+            4,
+            3
+        ],
+        "runtime": 16384
+    },
+    {
+        "kernel": "AtomicCounters_Kernels.cl",
+        "scalar_strategy": [
+            "not-relevant"
+        ],
+        "scalar_values": [
+            0
+        ],
+        "runtime": 11296
+    },
+    {
+        "kernel": "SimpleConvolution_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "granularity"
+        ],
+        "scalar_values": [
+            2,
+            4
+        ],
+        "runtime": 12352
+    },
+    {
+        "kernel": "SimpleGL_Kernels.cl",
+        "scalar_strategy": [
+            "not-relevant",
+            "not-relevant",
+            "not-relevant"
+        ],
+        "scalar_values": [
+            -10,
+            10,
+            0
+        ],
+        "runtime": 12352
+    },
+    {
+        "kernel": "NBody_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "not-relevant"
+        ],
+        "scalar_values": [
+            3,
+            -10,
+            0
+        ],
+        "runtime": 17408
+    },
+    {
+        "kernel": "KernelLaunch_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            2,
+            10,
+            1
+        ],
+        "runtime": 14336
+    },
+    {
+        "kernel": "KernelLaunch_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            1,
+            0,
+            3
+        ],
+        "runtime": 14368
+    },
+    {
+        "kernel": "NBody_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "not-relevant"
+        ],
+        "scalar_values": [
+            3,
+            10,
+            -10
+        ],
+        "runtime": 17408
+    },
+    {
+        "kernel": "NBody_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "not-relevant"
+        ],
+        "scalar_values": [
+            2,
+            0,
+            10
+        ],
+        "runtime": 17440
+    },
+    {
+        "kernel": "KernelLaunch_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            3,
+            0,
+            3
+        ],
+        "runtime": 15360
+    },
+    {
+        "kernel": "NBody_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "not-relevant"
+        ],
+        "scalar_values": [
+            2,
+            10,
+            10
+        ],
+        "runtime": 18432
+    },
+    {
+        "kernel": "BufferBandwidth_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            4,
+            -10,
+            1
+        ],
+        "runtime": 13280
+    },
+    {
+        "kernel": "TransferOverlap_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            1,
+            10,
+            2
+        ],
+        "runtime": 14336
+    },
+    {
+        "kernel": "NBody_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "not-relevant"
+        ],
+        "scalar_values": [
+            1,
+            10,
+            -10
+        ],
+        "runtime": 4096
+    },
+    {
+        "kernel": "KernelLaunch_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            4,
+            10,
+            1
+        ],
+        "runtime": 13344
+    },
+    {
+        "kernel": "TransferOverlap_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            1,
+            0,
+            4
+        ],
+        "runtime": 14336
+    },
+    {
+        "kernel": "BufferBandwidth_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            4,
+            10,
+            2
+        ],
+        "runtime": 14368
+    },
+    {
+        "kernel": "Template_Kernels.cl",
+        "scalar_strategy": [
+            "not-relevant"
+        ],
+        "scalar_values": [
+            -10
+        ],
+        "runtime": 5120
+    },
+    {
+        "kernel": "BufferBandwidth_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            2,
+            -10,
+            3
+        ],
+        "runtime": 15328
+    },
+    {
+        "kernel": "BufferBandwidth_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            4,
+            10,
+            4
+        ],
+        "runtime": 14304
+    },
+    {
+        "kernel": "BufferBandwidth_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            1,
+            -10,
+            1
+        ],
+        "runtime": 13312
+    },
+    {
+        "kernel": "TransferOverlap_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            4,
+            10,
+            1
+        ],
+        "runtime": 13312
+    },
+    {
+        "kernel": "SimpleGL_Kernels.cl",
+        "scalar_strategy": [
+            "not-relevant",
+            "not-relevant",
+            "not-relevant"
+        ],
+        "scalar_values": [
+            -10,
+            -10,
+            -10
+        ],
+        "runtime": 12352
+    },
+    {
+        "kernel": "SimpleConvolution_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "granularity"
+        ],
+        "scalar_values": [
+            2,
+            3
+        ],
+        "runtime": 14336
+    },
+    {
+        "kernel": "BufferBandwidth_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            4,
+            -10,
+            2
+        ],
+        "runtime": 13312
+    },
+    {
+        "kernel": "KernelLaunch_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            2,
+            0,
+            2
+        ],
+        "runtime": 14336
+    },
+    {
+        "kernel": "URNG_Kernels.cl",
+        "scalar_strategy": [
+            "not-relevant"
+        ],
+        "scalar_values": [
+            -10
+        ],
+        "runtime": 13280
+    },
+    {
+        "kernel": "TransferOverlap_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            2,
+            10,
+            2
+        ],
+        "runtime": 13472
+    },
+    {
+        "kernel": "TransferOverlap_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            1,
+            10,
+            4
+        ],
+        "runtime": 14336
+    },
+    {
+        "kernel": "KernelLaunch_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            1,
+            -10,
+            3
+        ],
+        "runtime": 14336
+    },
+    {
+        "kernel": "NBody_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "not-relevant"
+        ],
+        "scalar_values": [
+            3,
+            0,
+            0
+        ],
+        "runtime": 16384
+    },
+    {
+        "kernel": "NBody_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "not-relevant"
+        ],
+        "scalar_values": [
+            4,
+            -10,
+            -10
+        ],
+        "runtime": 18400
+    },
+    {
+        "kernel": "TransferOverlap_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            4,
+            0,
+            1
+        ],
+        "runtime": 16384
+    },
+    {
+        "kernel": "KernelLaunch_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            3,
+            0,
+            1
+        ],
+        "runtime": 15360
+    },
+    {
+        "kernel": "NBody_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "not-relevant"
+        ],
+        "scalar_values": [
+            4,
+            -10,
+            0
+        ],
+        "runtime": 17408
+    },
+    {
+        "kernel": "SimpleConvolution_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "granularity"
+        ],
+        "scalar_values": [
+            1,
+            1
+        ],
+        "runtime": 12288
+    },
+    {
+        "kernel": "TransferOverlap_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            3,
+            10,
+            2
+        ],
+        "runtime": 15360
+    },
+    {
+        "kernel": "BufferBandwidth_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            2,
+            10,
+            4
+        ],
+        "runtime": 15360
+    },
+    {
+        "kernel": "KernelLaunch_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            4,
+            10,
+            4
+        ],
+        "runtime": 17376
+    },
+    {
+        "kernel": "TransferOverlap_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            2,
+            10,
+            4
+        ],
+        "runtime": 15392
+    },
+    {
+        "kernel": "NBody_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "not-relevant"
+        ],
+        "scalar_values": [
+            4,
+            10,
+            10
+        ],
+        "runtime": 17408
+    },
+    {
+        "kernel": "TransferOverlap_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            3,
+            0,
+            4
+        ],
+        "runtime": 17408
+    },
+    {
+        "kernel": "BufferBandwidth_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            1,
+            10,
+            4
+        ],
+        "runtime": 12352
+    },
+    {
+        "kernel": "BufferBandwidth_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            1,
+            0,
+            3
+        ],
+        "runtime": 13312
+    },
+    {
+        "kernel": "KernelLaunch_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            2,
+            -10,
+            3
+        ],
+        "runtime": 15392
+    },
+    {
+        "kernel": "TransferOverlap_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            2,
+            -10,
+            4
+        ],
+        "runtime": 16256
+    },
+    {
+        "kernel": "BlackScholes_Kernels.cl",
+        "scalar_strategy": [
+            "not-relevant"
+        ],
+        "scalar_values": [
+            10
+        ],
+        "runtime": 13312
+    },
+    {
+        "kernel": "NBody_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "not-relevant"
+        ],
+        "scalar_values": [
+            4,
+            10,
+            -10
+        ],
+        "runtime": 18400
+    },
+    {
+        "kernel": "SimpleGL_Kernels.cl",
+        "scalar_strategy": [
+            "not-relevant",
+            "not-relevant",
+            "not-relevant"
+        ],
+        "scalar_values": [
+            0,
+            10,
+            -10
+        ],
+        "runtime": 12288
+    },
+    {
+        "kernel": "KernelLaunch_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            3,
+            0,
+            2
+        ],
+        "runtime": 15328
+    },
+    {
+        "kernel": "NBody_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "not-relevant"
+        ],
+        "scalar_values": [
+            4,
+            10,
+            0
+        ],
+        "runtime": 18432
+    },
+    {
+        "kernel": "KernelLaunch_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            1,
+            10,
+            2
+        ],
+        "runtime": 12320
+    },
+    {
+        "kernel": "BufferBandwidth_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            4,
+            0,
+            4
+        ],
+        "runtime": 12288
+    },
+    {
+        "kernel": "BinarySearch_Kernels.cl",
+        "scalar_strategy": [
+            "granularity"
+        ],
+        "scalar_values": [
+            2
+        ],
+        "runtime": 13248
+    },
+    {
+        "kernel": "KernelLaunch_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            3,
+            -10,
+            4
+        ],
+        "runtime": 17408
+    },
+    {
+        "kernel": "BufferBandwidth_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            3,
+            10,
+            4
+        ],
+        "runtime": 15328
+    },
+    {
+        "kernel": "BufferBandwidth_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            3,
+            0,
+            4
+        ],
+        "runtime": 15328
+    },
+    {
+        "kernel": "BufferBandwidth_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            1,
+            -10,
+            2
+        ],
+        "runtime": 13312
+    },
+    {
+        "kernel": "BufferBandwidth_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            3,
+            0,
+            3
+        ],
+        "runtime": 15360
+    },
+    {
+        "kernel": "BufferBandwidth_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            1,
+            0,
+            2
+        ],
+        "runtime": 12288
+    },
+    {
+        "kernel": "NBody_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "not-relevant"
+        ],
+        "scalar_values": [
+            1,
+            -10,
+            0
+        ],
+        "runtime": 5120
+    },
+    {
+        "kernel": "TransferOverlap_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            2,
+            -10,
+            2
+        ],
+        "runtime": 14336
+    },
+    {
+        "kernel": "BufferBandwidth_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            4,
+            10,
+            3
+        ],
+        "runtime": 14368
+    },
+    {
+        "kernel": "KernelLaunch_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            1,
+            0,
+            2
+        ],
+        "runtime": 16352
+    },
+    {
+        "kernel": "BufferBandwidth_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            2,
+            0,
+            4
+        ],
+        "runtime": 13344
+    },
+    {
+        "kernel": "BufferBandwidth_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            2,
+            10,
+            3
+        ],
+        "runtime": 14368
+    },
+    {
+        "kernel": "BufferBandwidth_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            1,
+            -10,
+            4
+        ],
+        "runtime": 14368
+    },
+    {
+        "kernel": "SimpleGL_Kernels.cl",
+        "scalar_strategy": [
+            "not-relevant",
+            "not-relevant",
+            "not-relevant"
+        ],
+        "scalar_values": [
+            0,
+            0,
+            0
+        ],
+        "runtime": 13312
+    },
+    {
+        "kernel": "AtomicCounters_Kernels.cl",
+        "scalar_strategy": [
+            "not-relevant"
+        ],
+        "scalar_values": [
+            -10
+        ],
+        "runtime": 14304
+    },
+    {
+        "kernel": "URNG_Kernels.cl",
+        "scalar_strategy": [
+            "not-relevant"
+        ],
+        "scalar_values": [
+            0
+        ],
+        "runtime": 13312
+    },
+    {
+        "kernel": "TransferOverlap_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            2,
+            0,
+            1
+        ],
+        "runtime": 13312
+    },
+    {
+        "kernel": "TransferOverlap_Kernels.cl",
+        "scalar_strategy": [
+            "granularity",
+            "not-relevant",
+            "granularity"
+        ],
+        "scalar_values": [
+            3,
+            0,
+            2
+        ],
+        "runtime": 15360
+    }
+]

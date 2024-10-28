@@ -1,0 +1,46 @@
+//{"img_cols":2,"img_rows":1,"img_sums_c0":9,"img_sums_c1":10,"img_sums_c2":11,"img_sums_c3":12,"img_sums_offset":13,"img_sums_step":14,"res":0,"res_cols":6,"res_offset":7,"res_rows":5,"res_step":8,"tpl_cols":4,"tpl_rows":3,"tpl_sum_c0":15,"tpl_sum_c1":16,"tpl_sum_c2":17,"tpl_sum_c3":18}
+int hook(int argId, int id) {
+	int gID = get_global_id(0);
+	printf("%d,%d,%d\n", gID, argId, id);
+	return id;
+}
+inline float normAcc(float num, float denum) {
+  if (fabs(num) < denum) {
+    return num / denum;
+  }
+  if (fabs(num) < denum * 1.125f) {
+    return num > 0 ? 1 : -1;
+  }
+  return 0;
+}
+
+inline float normAcc_SQDIFF(float num, float denum) {
+  if (fabs(num) < denum) {
+    return num / denum;
+  }
+  if (fabs(num) < denum * 1.125f) {
+    return num > 0 ? 1 : -1;
+  }
+  return 1;
+}
+
+kernel void matchTemplate_Prepared_CCOFF_C4_D0(global float* res, int img_rows, int img_cols, int tpl_rows, int tpl_cols, int res_rows, int res_cols, int res_offset, int res_step, global const unsigned int* img_sums_c0, global const unsigned int* img_sums_c1, global const unsigned int* img_sums_c2, global const unsigned int* img_sums_c3, int img_sums_offset, int img_sums_step, float tpl_sum_c0, float tpl_sum_c1, float tpl_sum_c2, float tpl_sum_c3) {
+  int gidx = get_global_id(0);
+  int gidy = get_global_id(1);
+
+  img_sums_offset /= sizeof(*img_sums_c0);
+  img_sums_step /= sizeof(*img_sums_c0);
+  res_step /= sizeof(*res);
+  res_offset /= sizeof(*res);
+
+  int res_idx = mad24(gidy, res_step, res_offset + gidx);
+
+  if (gidx < res_cols && gidy < res_rows) {
+    float ccorr = res[hook(0, res_idx)];
+    ccorr -= tpl_sum_c0 * (float)((img_sums_c0[hook(9, mad24(gidy + tpl_rows, img_sums_step, gidx + img_sums_offset + tpl_cols))] - img_sums_c0[hook(9, mad24(gidy + 0, img_sums_step, gidx + img_sums_offset + tpl_cols))]) - (img_sums_c0[hook(9, mad24(gidy + tpl_rows, img_sums_step, gidx + img_sums_offset + 0))] - img_sums_c0[hook(9, mad24(gidy + 0, img_sums_step, gidx + img_sums_offset + 0))]));
+    ccorr -= tpl_sum_c1 * (float)((img_sums_c1[hook(10, mad24(gidy + tpl_rows, img_sums_step, gidx + img_sums_offset + tpl_cols))] - img_sums_c1[hook(10, mad24(gidy + 0, img_sums_step, gidx + img_sums_offset + tpl_cols))]) - (img_sums_c1[hook(10, mad24(gidy + tpl_rows, img_sums_step, gidx + img_sums_offset + 0))] - img_sums_c1[hook(10, mad24(gidy + 0, img_sums_step, gidx + img_sums_offset + 0))]));
+    ccorr -= tpl_sum_c2 * (float)((img_sums_c2[hook(11, mad24(gidy + tpl_rows, img_sums_step, gidx + img_sums_offset + tpl_cols))] - img_sums_c2[hook(11, mad24(gidy + 0, img_sums_step, gidx + img_sums_offset + tpl_cols))]) - (img_sums_c2[hook(11, mad24(gidy + tpl_rows, img_sums_step, gidx + img_sums_offset + 0))] - img_sums_c2[hook(11, mad24(gidy + 0, img_sums_step, gidx + img_sums_offset + 0))]));
+    ccorr -= tpl_sum_c3 * (float)((img_sums_c3[hook(12, mad24(gidy + tpl_rows, img_sums_step, gidx + img_sums_offset + tpl_cols))] - img_sums_c3[hook(12, mad24(gidy + 0, img_sums_step, gidx + img_sums_offset + tpl_cols))]) - (img_sums_c3[hook(12, mad24(gidy + tpl_rows, img_sums_step, gidx + img_sums_offset + 0))] - img_sums_c3[hook(12, mad24(gidy + 0, img_sums_step, gidx + img_sums_offset + 0))]));
+    res[hook(0, res_idx)] = ccorr;
+  }
+}

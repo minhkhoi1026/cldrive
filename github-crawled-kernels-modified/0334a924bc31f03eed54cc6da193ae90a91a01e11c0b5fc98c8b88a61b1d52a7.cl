@@ -1,0 +1,16 @@
+//{"((__global float *)data_vec)":2,"data":1,"data_vec":0}
+int hook(int argId, int id) {
+	int gID = get_global_id(0);
+	printf("%d,%d,%d\n", gID, argId, id);
+	return id;
+}
+kernel void default_functionkernel0(global void* restrict data_vec, global float* restrict data) {
+  for (int vh = 0; vh < 3; ++vh) {
+    ((global float*)data_vec)[hook(2, (((((((((int)get_group_id(2)) * 14) + ((int)get_group_id(1))) * 256) + ((int)get_group_id(0))) * 3) + vh) * 6))] = ((((((1 - vh) <= ((int)get_group_id(2))) && (((int)get_group_id(2)) < (57 - vh))) && (1 <= ((int)get_group_id(1)))) && (((int)get_group_id(1)) < 15)) ? data[hook(1, ((((((((int)get_group_id(2)) * 14) + ((int)get_group_id(1))) + (((int)get_group_id(0)) * 784)) + (vh * 14)) * 4) + -57))] : 0.000000e+00f);
+    ((global float*)data_vec)[hook(2, ((((((((((int)get_group_id(2)) * 14) + ((int)get_group_id(1))) * 256) + ((int)get_group_id(0))) * 3) + vh) * 6) + 1))] = ((((((1 - vh) <= ((int)get_group_id(2))) && (((int)get_group_id(2)) < (57 - vh))) && (0 <= ((int)get_group_id(1)))) && (((int)get_group_id(1)) < 14)) ? data[hook(1, ((((((((int)get_group_id(2)) * 14) + ((int)get_group_id(1))) + (((int)get_group_id(0)) * 784)) + (vh * 14)) * 4) + -56))] : 0.000000e+00f);
+    ((global float*)data_vec)[hook(2, ((((((((((int)get_group_id(2)) * 14) + ((int)get_group_id(1))) * 256) + ((int)get_group_id(0))) * 3) + vh) * 6) + 2))] = ((((((1 - vh) <= ((int)get_group_id(2))) && (((int)get_group_id(2)) < (57 - vh))) && (0 <= ((int)get_group_id(1)))) && (((int)get_group_id(1)) < 14)) ? data[hook(1, ((((((((int)get_group_id(2)) * 14) + ((int)get_group_id(1))) + (((int)get_group_id(0)) * 784)) + (vh * 14)) * 4) + -55))] : 0.000000e+00f);
+    ((global float*)data_vec)[hook(2, ((((((((((int)get_group_id(2)) * 14) + ((int)get_group_id(1))) * 256) + ((int)get_group_id(0))) * 3) + vh) * 6) + 3))] = ((((((1 - vh) <= ((int)get_group_id(2))) && (((int)get_group_id(2)) < (57 - vh))) && (0 <= ((int)get_group_id(1)))) && (((int)get_group_id(1)) < 14)) ? data[hook(1, ((((((((int)get_group_id(2)) * 14) + ((int)get_group_id(1))) + (((int)get_group_id(0)) * 784)) + (vh * 14)) * 4) + -54))] : 0.000000e+00f);
+    ((global float*)data_vec)[hook(2, ((((((((((int)get_group_id(2)) * 14) + ((int)get_group_id(1))) * 256) + ((int)get_group_id(0))) * 3) + vh) * 6) + 4))] = ((((((1 - vh) <= ((int)get_group_id(2))) && (((int)get_group_id(2)) < (57 - vh))) && (0 <= ((int)get_group_id(1)))) && (((int)get_group_id(1)) < 14)) ? data[hook(1, ((((((((int)get_group_id(2)) * 14) + ((int)get_group_id(1))) + (((int)get_group_id(0)) * 784)) + (vh * 14)) * 4) + -53))] : 0.000000e+00f);
+    ((global float*)data_vec)[hook(2, ((((((((((int)get_group_id(2)) * 14) + ((int)get_group_id(1))) * 256) + ((int)get_group_id(0))) * 3) + vh) * 6) + 5))] = ((((((1 - vh) <= ((int)get_group_id(2))) && (((int)get_group_id(2)) < (57 - vh))) && (-1 <= ((int)get_group_id(1)))) && (((int)get_group_id(1)) < 13)) ? data[hook(1, ((((((((int)get_group_id(2)) * 14) + ((int)get_group_id(1))) + (((int)get_group_id(0)) * 784)) + (vh * 14)) * 4) + -52))] : 0.000000e+00f);
+  }
+}
