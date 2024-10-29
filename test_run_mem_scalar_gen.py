@@ -336,7 +336,7 @@ if __name__ == "__main__":
     parser.add_argument('--input_folder', type=str, required=True, help='Path to the input folder containing kernel files')
     args = parser.parse_args()
 
-    dataset_name = os.path.split(args.input_folder)[0]
+    dataset_name = os.path.split(args.input_folder)[1]
     log_file_name = f"{dataset_name}_scalar_gen.log"
     logger.add(log_file_name, level="INFO")
     logger.add(sys.stderr, level="DEBUG")
