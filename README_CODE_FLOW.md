@@ -5,14 +5,16 @@ This repository contains several test scripts used for preprocessing, generating
 ## Scripts
 
 ### `test_preprocess.py`
-- Purpose: Removes 2D and 3D arrays and eliminates duplicates in the data.
+- Purpose: Removes 2D, 3D and duplicated kernels + remove comment, which may contain non-utf8 in dataset.
+- **Input**: : folder contain kernel code
+- **Output** : csv file contain selected kernel paths
 
 ### `test_utils.py`
 - Purpose: Currently under development, aimed at simplifying code for the main script `test_run_mem_scalar_gen.py`.
 
 ### `test_run_mem_scalar_gen.py`
 - Purpose: Identifies scalar values in a dataset of `.cl` files.
-  - **Input**: A folder containing kernel code.
+  - **Input**: A csv from `test_preprocess.py` or any csv contain kernel path
   - **Output**: A JSON file structured as follows:
     ```json
     {
@@ -20,7 +22,7 @@ This repository contains several test scripts used for preprocessing, generating
       "validity": "...",
       "scalar_strategy_found": "...",
       "scalars_value": "...",
-      "runtime": "..."
+      "runtime": "..." 
     }
     ```
 
