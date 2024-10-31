@@ -1,23 +1,9 @@
-/*******************************************************************************
- * Copyright (c) 2018-2020 The Khronos Group Inc.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- ******************************************************************************/
+
 
 #ifndef __CL_VERSION_H
 #define __CL_VERSION_H
 
-/* Detect which version to target */
+
 #if !defined(CL_TARGET_OPENCL_VERSION)
 #pragma message("cl_version.h: CL_TARGET_OPENCL_VERSION is not defined. Defaulting to 300 (OpenCL 3.0)")
 #define CL_TARGET_OPENCL_VERSION 300
@@ -35,7 +21,7 @@
 #endif
 
 
-/* OpenCL Version */
+
 #if CL_TARGET_OPENCL_VERSION >= 300 && !defined(CL_VERSION_3_0)
 #define CL_VERSION_3_0  1
 #endif
@@ -58,7 +44,7 @@
 #define CL_VERSION_1_0  1
 #endif
 
-/* Allow deprecated APIs for older OpenCL versions. */
+
 #if CL_TARGET_OPENCL_VERSION <= 220 && !defined(CL_USE_DEPRECATED_OPENCL_2_2_APIS)
 #define CL_USE_DEPRECATED_OPENCL_2_2_APIS
 #endif
@@ -78,4 +64,4 @@
 #define CL_USE_DEPRECATED_OPENCL_1_0_APIS
 #endif
 
-#endif  /* __CL_VERSION_H */
+#endif  

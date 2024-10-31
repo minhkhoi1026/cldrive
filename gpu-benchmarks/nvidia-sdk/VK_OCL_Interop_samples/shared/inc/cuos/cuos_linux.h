@@ -1,9 +1,4 @@
-/* 
- * Copyright 2006-2014 by NVIDIA Corporation.  All rights reserved.  All
- * information contained herein is proprietary and confidential to NVIDIA
- * Corporation.  Any use, reproduction, or disclosure without the written
- * permission of NVIDIA Corporation is prohibited.
- */
+
 
 #ifndef _CUOS_H_
 #error "Use cuos.h, not cuos_*.h"
@@ -15,8 +10,8 @@
 #include "cuos_common_posix.h"
 
 #ifndef _GNU_SOURCE
-#define _GNU_SOURCE // Needed for struct ucred and SCM_CREDENTIALS
-#define __USE_GNU 1 // Workaround if the features.h has already been included
+#define _GNU_SOURCE 
+#define __USE_GNU 1 
 #endif
 
 #include <semaphore.h>
@@ -39,23 +34,23 @@ typedef struct cuostimer {
 typedef struct cuosEvent {
     unsigned createdByCuos : 1;
     unsigned ipcEvent    : 1;
-    // Indicates the event gets signaled in poll() only once when the event occurs.
-    // To make sure it's handled, cuosEventWaitMultiple() saves the signal in
-    // signalCount if it's not returned immediately.
+    
+    
+    
     unsigned isEdgeTriggered: 1;
-    // Indicated that a signaled event should not reset automatically after waiting
+    
     unsigned isManualReset: 1;
     unsigned needsWarForBug1938043: 1;
     int readFd;
-    int writeFd; // Unused unless this is a created pipe
+    int writeFd; 
     unsigned int signalCount;
 } cuosEvent;
 
-// Specify the reader or writer mode for IPC event.
+
 typedef enum {
-    CUOS_EVENT_SIGNAL_MODE          = 1, // Event is opened in blocking write-only mode.
-    CUOS_EVENT_WAIT_MODE            = 2, // Event is opened in blocking read-only mode.
-    CUOS_EVENT_WAIT_MODE_NONBLOCK   = 3  // Event is opened in non-blocking read-only mode.
+    CUOS_EVENT_SIGNAL_MODE          = 1, 
+    CUOS_EVENT_WAIT_MODE            = 2, 
+    CUOS_EVENT_WAIT_MODE_NONBLOCK   = 3  
 } cuosEventMode_t;
 
 typedef struct {
@@ -88,11 +83,11 @@ typedef struct {
 #endif
 } CUOSsocketMsg;
 
-/* Return the number of bytes needed for a mask of the processors in the system */
+
 size_t cuosProcessorMaskSize(void);
 
-// Those functions should be properly abstracted - for example use HANDLE instead of int.
-// For now keep them OS-specific.
+
+
 int cuosSocketRecvFd(CUOSsocket *socket, int *recvFd);
 int cuosSocketSendFd(CUOSsocket *socket, int sendFd);
 int cuosSocketRecvCred(CUOSsocket *socket, CUOSPid *pid, CUOSUid *uid, CUOSGid *gid);
@@ -112,17 +107,13 @@ static inline int cuosSocketMsgAddSizedIO(CUOSsocketMsg *msg, void *data, size_t
 
 int cuosLinuxKernelVersion(int *kernelVersion, int *majorRevision, int *minorRevision);
 
-// Returns CUOS_SUCCESS on succerss or CUOS_FAILURE on error. Note that a
-// failure can occur if the namespace is not supported by the OS.
+
+
 int cuosGetLinuxNamespaceInode(const char *ns, const CUOSPid *pid, long long *inodeRet);
 
-/**
- *
- * OpenGL types
- *
- */
 
-// Name of library to cuosLoadLibrary to load GL
+
+
 #if defined(__ANDROID__) || defined(__QNX__) || defined(__APPLE__)
 #define CUOS_EGL_LIBRARY_NAME           "libEGL.so"
 #else
@@ -131,27 +122,27 @@ int cuosGetLinuxNamespaceInode(const char *ns, const CUOSPid *pid, long long *in
 #define CUOS_GL_LIBRARY_NAME            "libGL.so.1"
 #define CUOS_GL_VENDOR_LIBRARY_NAME     "libGLX_nvidia.so.0"
 
-// Name to pass to cuosGetProcAddress for GL's get proc address
+
 #define CUOS_EGL_GET_PROC_ADDRESS_FUNC_NAME     "eglGetProcAddress"
 #define CUOS_GL_GET_PROC_ADDRESS_FUNC_NAME      "glXGetProcAddressARB"
 
-// Name to pass to cuosGetProcAddress for GL's get current context
+
 #define CUOS_EGL_GET_CURRENT_CONTEXT_FUNC_NAME   "eglGetCurrentContext"
 #define CUOS_GL_GET_CURRENT_CONTEXT_FUNC_NAME    "glXGetCurrentContext"
 
-// Type to cast the result to
+
 typedef void (*CUOSglProcFn)(void);
 typedef CUOSglProcFn (*CUOSglGetProcAddressFn)(const char *);
 
 
-// Type to cast the result to
+
 typedef void * (*CUOSglGetCurrentContextFn)(void);
 
 #define cuosThreadIdPrintFormat "%lu"
 #define cuosThreadIdPrintArguments(tid) tid
 
 #if defined(__cplusplus)
-} // namespace or extern "C"
+} 
 #endif
 
-#endif // _CUOS_LINUX_H_
+#endif 

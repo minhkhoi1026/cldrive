@@ -1,13 +1,4 @@
-/*
- * Copyright 1993-2010 NVIDIA Corporation.  All rights reserved.
- *
- * Please refer to the NVIDIA end user license agreement (EULA) associated
- * with this source code for terms and conditions that govern your use of
- * this software. Any use, reproduction, disclosure, or distribution of
- * this software and related documentation outside the terms of the EULA
- * is strictly prohibited.
- *
- */
+
 
 #ifndef _HMM_H_
 #define _HMM_H_
@@ -37,9 +28,9 @@ public:
 	double getKTime() {return kTime;}
 
 private:
-    cl_context cxGPUContext;             // OpenCL context
-    cl_command_queue cqCommandQue;       // OpenCL command que 
-    cl_program cpProgram;                // OpenCL program
+    cl_context cxGPUContext;             
+    cl_command_queue cqCommandQue;       
+    cl_program cpProgram;                
     cl_kernel ckViterbiOneStep;
     cl_kernel ckViterbiPath;
     cl_mem d_maxProbNew;

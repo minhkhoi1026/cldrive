@@ -8,7 +8,7 @@
 extern "C" {
 #endif
 
-// Get environment bitness
+
 #if _WIN32 || _WIN64
   #if _WIN64
      #define ENVIRONMENT64BIT
@@ -25,7 +25,7 @@ extern "C" {
   #endif
 #endif
 
-//openCL version check
+
 cl_bool isOpenCLVersion_1_1_OrHigher(cl_platform_id* platform);
 cl_int isComputeCapabilityAtLeast(cl_device_id device, cl_uint major, cl_uint minor, cl_bool* result);
 cl_int nvDriverSupportsCL12Plus(cl_device_id device, cl_bool* result); 

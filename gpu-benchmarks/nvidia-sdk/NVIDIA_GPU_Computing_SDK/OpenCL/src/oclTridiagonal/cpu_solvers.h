@@ -1,23 +1,6 @@
-/*
- * Copyright 1993-2010 NVIDIA Corporation.  All rights reserved.
- *
- * Please refer to the NVIDIA end user license agreement (EULA) associated
- * with this source code for terms and conditions that govern your use of
- * this software. Any use, reproduction, disclosure, or distribution of
- * this software and related documentation outside the terms of the EULA
- * is strictly prohibited.
- *
- */
+
  
- /*
- * Copyright 1993-2010 NVIDIA Corporation.  All rights reserved.
- * 
- * Tridiagonal solvers.
- * CPU serial solver.
- *
- * UC Davis, Yao Zhang, 2009.
- * NVIDIA, Nikolai Sakharnykh, 2009.
- */
+ 
 
 #ifndef _CPU_SOLVERS_
 #define _CPU_SOLVERS_
@@ -48,7 +31,7 @@ double serial_small_systems(float *a, float *b, float *c, float *d, float *x, in
 {
 	const unsigned int mem_size = sizeof(float) * num_systems * system_size;
 
-	// duplicate c & d arrays as we'll ovewrite them in cpu solver
+	
 	float *cc = (float*)malloc(mem_size);
 	float *dd = (float*)malloc(mem_size);
 	memcpy(cc, c, mem_size);

@@ -1,4 +1,4 @@
-// This is a platform specific header file where we include the GL headers.
+
 #ifndef _gl_headers_h
 #define _gl_headers_h
 
@@ -28,10 +28,10 @@
 #endif
 
 #ifdef _WIN32
-    // No glutGetProcAddress in the standard glut v3.7.
+    
     #define glutGetProcAddress(procName) wglGetProcAddress(procName)
 #endif
 
 
-#endif	// __gl_headers_h
+#endif	
 

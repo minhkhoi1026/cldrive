@@ -1,17 +1,8 @@
-/*
- * Copyright 1993-2010 NVIDIA Corporation.  All rights reserved.
- *
- * Please refer to the NVIDIA end user license agreement (EULA) associated
- * with this source code for terms and conditions that govern your use of
- * this software. Any use, reproduction, disclosure, or distribution of
- * this software and related documentation outside the terms of the EULA
- * is strictly prohibited.
- *
- */
 
-// Find the max in local memory array. 
-// On return, the max value is in maxValue[0], the index of max element is in maxInd[0]
-//*****************************************************************************
+
+
+
+
 void maxOneBlock(__local float maxValue[],
                  __local int   maxInd[])
 {
@@ -34,7 +25,7 @@ void maxOneBlock(__local float maxValue[],
         barrier(CLK_LOCAL_MEM_FENCE);
     }
 
-    // unroll the final warp to reduce loop and sync overheads
+    
     if (localId < 32)
     {
         m1 = maxValue[localId];
@@ -100,7 +91,7 @@ __kernel void ViterbiOneStep(__global float *maxProbNew,
 
     uint iState = groupId;
 
-    // loop through all previous states, calculating the max
+    
     float mValue = -1.0f;
     int mInd = -1;
     float value;
@@ -119,7 +110,7 @@ __kernel void ViterbiOneStep(__global float *maxProbNew,
     
     maxOneBlock(maxValue, maxInd);
     
-    // copy results from local to global memory
+    
     if (localId == 0) 
     {
         maxProbNew[iState] = maxValue[0] + mtEmit[obs*nState + iState];
@@ -135,7 +126,7 @@ __kernel void ViterbiPath(__global float *vProb,
                           int nState,
                           int nObs)
 {
-    // find the final most probable state
+    
     if (get_global_id(0) == 0) 
     {
         float maxProb = 0.0;
@@ -150,7 +141,7 @@ __kernel void ViterbiPath(__global float *vProb,
         }
         *vProb = maxProb;
 
-        // backtrace to find the Viterbi path
+        
         vPath[nObs-1] = maxState;
         mem_fence(CLK_GLOBAL_MEM_FENCE);
         for (int t = nObs-2; t >= 0; t--) 

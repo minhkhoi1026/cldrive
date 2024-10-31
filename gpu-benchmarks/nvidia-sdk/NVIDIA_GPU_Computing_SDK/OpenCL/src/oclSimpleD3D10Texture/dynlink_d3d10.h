@@ -1,63 +1,54 @@
-/*
- * Copyright 1993-2010 NVIDIA Corporation.  All rights reserved.
- *
- * Please refer to the NVIDIA end user license agreement (EULA) associated
- * with this source code for terms and conditions that govern your use of
- * this software. Any use, reproduction, disclosure, or distribution of
- * this software and related documentation outside the terms of the EULA
- * is strictly prohibited.
- *
- */
+
  
- //--------------------------------------------------------------------------------------
-// File: dynlink_d3d10.h
-//
-// Shortcut macros and functions for using DX objects
-//
-// Copyright (c) Microsoft Corporation. All rights reserved
-//--------------------------------------------------------------------------------------
+ 
+
+
+
+
+
+
 
 #ifndef _DYNLINK_D3D10_H_
 #define _DYNLINK_D3D10_H_
 
-// Standard Windows includes
+
 #include <windows.h>
 #include <initguid.h>
 #include <assert.h>
 #include <wchar.h>
 #include <mmsystem.h>
-#include <commctrl.h> // for InitCommonControls() 
-#include <shellapi.h> // for ExtractIcon()
-#include <new.h>      // for placement new
+#include <commctrl.h> 
+#include <shellapi.h> 
+#include <new.h>      
 #include <shlobj.h>
 #include <math.h>      
 #include <limits.h>      
 #include <stdio.h>
 
-// CRT's memory leak detection
+
 #if defined(DEBUG) || defined(_DEBUG)
 #include <crtdbg.h>
 #endif
 
-// Direct3D9 includes
+
 #include <d3d9.h>
 #include <d3dx9.h>
 
-// Direct3D10 includes
+
 #include <dxgi.h>
 #include <d3d10_1.h>
 #include <d3d10.h>
 #include <d3dx10.h>
 
-// XInput includes
+
 #include <xinput.h>
 
-// HRESULT translation for Direct3D10 and other APIs 
+
 #include <dxerr.h>
 
-// strsafe.h deprecates old unsecure string functions.  If you 
-// really do not want to it to (not recommended), then uncomment the next line 
-//#define STRSAFE_NO_DEPRECATE
+
+
+
 
 #ifndef STRSAFE_NO_DEPRECATE
 #pragma deprecated("strncpy")
@@ -68,13 +59,13 @@
 #pragma deprecated("_tcsncat")
 #endif
 
-#pragma warning( disable : 4996 ) // disable deprecated warning 
+#pragma warning( disable : 4996 ) 
 #include <strsafe.h>
 #pragma warning( default : 4996 ) 
 
-//--------------------------------------------------------------------------------------
-// Structs
-//--------------------------------------------------------------------------------------
+
+
+
 struct DXUTD3D9DeviceSettings
 {
     UINT AdapterOrdinal;
@@ -93,7 +84,7 @@ struct DXUTD3D10DeviceSettings
     UINT32 CreateFlags;
     UINT32 SyncInterval;
     DWORD PresentFlags;
-    bool AutoCreateDepthStencil; // DXUT will create the a depth stencil resource and view if true
+    bool AutoCreateDepthStencil; 
     DXGI_FORMAT AutoDepthStencilFormat;
 };
 
@@ -103,15 +94,15 @@ struct DXUTDeviceSettings
     DXUTDeviceVersion ver;
     union
     {
-        DXUTD3D9DeviceSettings d3d9; // only valid if ver == DXUT_D3D9_DEVICE
-        DXUTD3D10DeviceSettings d3d10; // only valid if ver == DXUT_D3D10_DEVICE
+        DXUTD3D9DeviceSettings d3d9; 
+        DXUTD3D10DeviceSettings d3d10; 
     };
 };
 
 
-//--------------------------------------------------------------------------------------
-// Error codes
-//--------------------------------------------------------------------------------------
+
+
+
 #define DXUTERR_NODIRECT3D              MAKE_HRESULT(SEVERITY_ERROR, FACILITY_ITF, 0x0901)
 #define DXUTERR_NOCOMPATIBLEDEVICES     MAKE_HRESULT(SEVERITY_ERROR, FACILITY_ITF, 0x0902)
 #define DXUTERR_MEDIANOTFOUND           MAKE_HRESULT(SEVERITY_ERROR, FACILITY_ITF, 0x0903)
@@ -177,13 +168,13 @@ typedef HRESULT ( WINAPI* LPD3D10CREATEDEVICEANDSWAPCHAIN1 )(   IDXGIAdapter *pA
                                                                 IDXGISwapChain **ppSwapChain,
                                                                 ID3D10Device1 **ppDevice );
 
-// Build a perspective projection matrix. (left-handed)
+
 typedef D3DXMATRIX* ( WINAPI* LPD3DXMATRIXPERSPECTIVEFOVLH )( D3DXMATRIX *pOut, FLOAT fovy, FLOAT Aspect, FLOAT zn, FLOAT zf );
 
-// Build a lookat matrix. (left-handed)
+
 typedef D3DXMATRIX* ( WINAPI* LPD3DXMATRIXLOOKATLH ) ( D3DXMATRIX *pOut, CONST D3DXVECTOR3 *pEye, CONST D3DXVECTOR3 *pAt, CONST D3DXVECTOR3 *pUp );
 
-// Module and function pointers
+
 static HMODULE                              g_hModDXGI = NULL;
 static HMODULE                              g_hModD3DX10 = NULL;
 static HMODULE                              g_hModD3D10 = NULL;
@@ -208,7 +199,7 @@ static LPD3D10CREATEDEVICEANDSWAPCHAIN1     sFnPtr_D3D10CreateDeviceAndSwapChain
 static LPD3DXMATRIXPERSPECTIVEFOVLH         sFnPtr_D3DXMatrixPerspectiveFovLH = NULL;
 static LPD3DXMATRIXLOOKATLH                 sFnPtr_D3DXMatrixLookAtLH = NULL;
 
-// unload the D3D10 DLLs
+
 static bool dynlinkUnloadD3D10API( void )
 {
     if (g_hModD3D10) {
@@ -226,11 +217,11 @@ static bool dynlinkUnloadD3D10API( void )
     return true;
 }
 
-// Dynamically load the D3D10 DLLs loaded and map the function pointers
+
 static bool dynlinkLoadD3D10API( void )
 {
-    // First check to see if the D3D10 Library is present.
-    // if it succeeds, then we can call GetProcAddress to grab all of the DX10 functions
+    
+    
     g_hModD3D10 = LoadLibrary("d3d10.dll");
     if( g_hModD3D10 != NULL ) 
     {
@@ -267,7 +258,7 @@ static bool dynlinkLoadD3D10API( void )
         sFnPtr_CreateDXGIFactory                 = ( LPCREATEDXGIFACTORY )           GetProcAddress( g_hModDXGI , "CreateDXGIFactory" );
     }
 
-    // This may fail if this machine isn't Windows Vista SP1 or later
+    
     g_hModD3D101 = LoadLibrary( "d3d10_1.dll" );
     if( g_hModD3D101 != NULL )
     {

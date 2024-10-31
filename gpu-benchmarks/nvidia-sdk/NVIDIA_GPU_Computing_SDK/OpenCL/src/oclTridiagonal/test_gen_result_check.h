@@ -1,22 +1,6 @@
-/*
- * Copyright 1993-2010 NVIDIA Corporation.  All rights reserved.
- *
- * Please refer to the NVIDIA end user license agreement (EULA) associated
- * with this source code for terms and conditions that govern your use of
- * this software. Any use, reproduction, disclosure, or distribution of
- * this software and related documentation outside the terms of the EULA
- * is strictly prohibited.
- *
- */
+
  
- /*
- * Copyright 1993-2010 NVIDIA Corporation.  All rights reserved.
- * 
- * Tridiagonal solvers.
- * Test-rig code by UC Davis, Yao Zhang, 2009.
- *
- * NVIDIA, Nikolai Sakharnykh, 2009.
- */
+ 
 
 #ifndef _TEST_GEN_RESULT_CHECK_
 #define _TEST_GEN_RESULT_CHECK_ 
@@ -35,7 +19,7 @@ float rand01()
 
 void test_gen_cyclic(float *a, float *b, float *c, float *d, float *x, int system_size, int choice)
 {
-    //fixed value, stable (no overflow, inf, nan etc)
+    
     if (choice==0)
     {
       for (int j = 0; j < system_size; j++)
@@ -51,7 +35,7 @@ void test_gen_cyclic(float *a, float *b, float *c, float *d, float *x, int syste
       c[system_size-1] = 0.0f;
     }
 
-    //random
+    
     if (choice==1)
     {
       for (int j = 0; j < system_size; j++)
@@ -66,7 +50,7 @@ void test_gen_cyclic(float *a, float *b, float *c, float *d, float *x, int syste
       c[system_size-1] = 0.0f;
     }
 
-    //diagonally dominant
+    
     if (choice==2)
     {
       for (int j = 0; j < system_size; j++)
@@ -82,7 +66,7 @@ void test_gen_cyclic(float *a, float *b, float *c, float *d, float *x, int syste
       c[system_size-1] = 0.0f;
     }
 
-    //random not stable for cyclic reduction
+    
     if (choice==3)
     {
       for (int j = 0; j < system_size; j++)
@@ -98,10 +82,10 @@ void test_gen_cyclic(float *a, float *b, float *c, float *d, float *x, int syste
 
     }
 
-    //1d wave equation, shallow water
+    
     if (choice==4)
     {
-        //the files have to be in ANSI format
+        
         file_read_array(a, system_size, "a256.txt");
         file_read_array(b, system_size, "b256.txt");
         file_read_array(c, system_size, "c256.txt");
@@ -112,7 +96,7 @@ void test_gen_cyclic(float *a, float *b, float *c, float *d, float *x, int syste
 
     if (choice==5)
     {
-        //the files have to be in ANSI format
+        
         file_read_array(a, system_size, "a512.txt");
         file_read_array(b, system_size, "b512.txt");
         file_read_array(c, system_size, "c512.txt");
@@ -125,7 +109,7 @@ void test_gen_cyclic(float *a, float *b, float *c, float *d, float *x, int syste
 
 void test_gen_doubling(float *a,float *b,float *c,float *d,float *x,int system_size,int choice)
 {
-    //fixed value, stable (no overflow, inf, nan etc)
+    
     if (choice==0)
     {
       for (int j = 0; j < system_size; j++)
@@ -140,7 +124,7 @@ void test_gen_doubling(float *a,float *b,float *c,float *d,float *x,int system_s
       c[system_size-1] = 1.0f;
     }
 
-    //random
+    
     if (choice==1)
     {
       for (int j = 0; j < system_size; j++)
@@ -155,7 +139,7 @@ void test_gen_doubling(float *a,float *b,float *c,float *d,float *x,int system_s
       c[system_size-1] = 1.0f;
     }
 
-    //diagonally dominant, not stable for doubling recursive
+    
     if (choice==2)
     {
       for (int j = 0; j < system_size; j++)
@@ -171,7 +155,7 @@ void test_gen_doubling(float *a,float *b,float *c,float *d,float *x,int system_s
       c[system_size-1] = 1.0f;
     }
 
-    //stable for doubling recursive
+    
     if (choice==3)
     {
       for (int j = 0; j < system_size; j++)
@@ -186,10 +170,10 @@ void test_gen_doubling(float *a,float *b,float *c,float *d,float *x,int system_s
       c[system_size-1] = 1.0f;
     }
 
-    //1d wave equation, shallow water
+    
     if (choice==4)
     {
-        //the files have to in ANSI format
+        
         file_read_array(a, system_size, "a256.txt");
         file_read_array(b, system_size, "b256.txt");
         file_read_array(c, system_size, "c256.txt");
@@ -200,7 +184,7 @@ void test_gen_doubling(float *a,float *b,float *c,float *d,float *x,int system_s
 
     if (choice==5)
     {
-        //the files have to be in ANSI format
+        
         file_read_array(a, system_size, "a512.txt");
         file_read_array(b, system_size, "b512.txt");
         file_read_array(c, system_size, "c512.txt");
@@ -212,9 +196,9 @@ void test_gen_doubling(float *a,float *b,float *c,float *d,float *x,int system_s
 
 float compare(float *x1, float *x2, int num_elements)
 {
-    float mean = 0.0f; //mean error
-    float root = 0.0f;//root mean square error
-    float max = 0.0f; //max error
+    float mean = 0.0f; 
+    float root = 0.0f;
+    float max = 0.0f; 
     for (int i = 0; i < num_elements; i++)
     {
       root += (x1[i] - x2[i]) * (x1[i] - x2[i]);
@@ -224,8 +208,8 @@ float compare(float *x1, float *x2, int num_elements)
     mean /= (float)num_elements;
     root /= (float)num_elements;
     root = sqrt(root); 
-    //printf("mean=%f|root mean square=%f|max=%f\n",mean,root,max);
-    //return max;
+    
+    
     return root;
 }
 
@@ -236,13 +220,13 @@ void compare_small_systems(float *x1,float *x2,int system_size, int num_systems)
     for (int i = 0; i < num_systems; i++)
     {
       float diff = compare(&x1[i * system_size], &x2[i * system_size], system_size);
-      //printf("i=%d max error=%f\n",i,diff);
-      //printf("i=%d root mean square error=%f\n",i,diff);
+      
+      
 
       avg_of_all_systems = avg_of_all_systems + diff;
       
-      //if(diff>0.01)
-          //printf("large error,i=%d root mean square error * 1000000 =%f\n",i,diff*1000000);
+      
+          
     }
 
     avg_of_all_systems /= (float)num_systems;

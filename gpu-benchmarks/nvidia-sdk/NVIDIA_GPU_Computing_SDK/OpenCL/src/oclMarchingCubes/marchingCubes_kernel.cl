@@ -1,28 +1,19 @@
-/*
- * Copyright 1993-2010 NVIDIA Corporation.  All rights reserved.
- *
- * Please refer to the NVIDIA end user license agreement (EULA) associated
- * with this source code for terms and conditions that govern your use of
- * this software. Any use, reproduction, disclosure, or distribution of
- * this software and related documentation outside the terms of the EULA
- * is strictly prohibited.
- *
- */
-
-// #include "defines.h"
-// #include "tables.h"
 
 
-// The number of threads to use for triangle generation (limited by shared memory size)
+
+
+
+
+
 #define NTHREADS 32
 
-// volume data
+
 sampler_t volumeSampler = CLK_NORMALIZED_COORDS_FALSE | CLK_ADDRESS_CLAMP_TO_EDGE | CLK_FILTER_NEAREST;
 sampler_t tableSampler = CLK_NORMALIZED_COORDS_FALSE | CLK_ADDRESS_CLAMP_TO_EDGE | CLK_FILTER_NEAREST;
 
 
-// compute position in 3d grid from 1d index
-// only works for power of 2 sizes
+
+
 int4 calcGridPos(uint i, uint4 gridSizeShift, uint4 gridSizeMask)
 {
     int4 gridPos;
@@ -32,8 +23,8 @@ int4 calcGridPos(uint i, uint4 gridSizeShift, uint4 gridSizeMask)
     return gridPos;
 }
 
-// classify voxel based on number of vertices it will generate
-// one thread per voxel
+
+
 __kernel
 void
 classifyVoxel(__global uint* voxelVerts, __global uint *voxelOccupied, __read_only image3d_t volume,
@@ -45,7 +36,7 @@ classifyVoxel(__global uint* voxelVerts, __global uint *voxelOccupied, __read_on
 
     int4 gridPos = calcGridPos(i, gridSizeShift, gridSizeMask);
 
-    // read field values at neighbouring grid vertices
+    
     float field[8];
     field[0] = read_imagef(volume, volumeSampler, gridPos).x;
     field[1] = read_imagef(volume, volumeSampler, gridPos + (int4)(1, 0, 0 ,0)).x;
@@ -56,7 +47,7 @@ classifyVoxel(__global uint* voxelVerts, __global uint *voxelOccupied, __read_on
     field[6] = read_imagef(volume, volumeSampler, gridPos + (int4)(1, 1, 1,0)).x;
     field[7] = read_imagef(volume, volumeSampler, gridPos + (int4)(0, 1, 1,0)).x;
 
-    // calculate flag indicating if each vertex is inside or outside isosurface
+    
     int cubeindex;
 	cubeindex =  (field[0] < isoValue); 
 	cubeindex += (field[1] < isoValue)*2; 
@@ -67,7 +58,7 @@ classifyVoxel(__global uint* voxelVerts, __global uint *voxelOccupied, __read_on
 	cubeindex += (field[6] < isoValue)*64; 
 	cubeindex += (field[7] < isoValue)*128;
 
-    // read number of vertices from texture
+    
     uint numVerts = read_imageui(numVertsTex, tableSampler, (int2)(cubeindex,0)).x;
 
     if (i < numVoxels) {
@@ -77,7 +68,7 @@ classifyVoxel(__global uint* voxelVerts, __global uint *voxelOccupied, __read_on
 }
      
 
-// compact voxel array
+
 __kernel
 void
 compactVoxels(__global uint *compactedVoxelArray, __global uint *voxelOccupied, __global uint *voxelOccupiedScan, uint numVoxels)
@@ -91,14 +82,14 @@ compactVoxels(__global uint *compactedVoxelArray, __global uint *voxelOccupied, 
 
 
 
-// compute interpolated vertex along an edge
+
 float4 vertexInterp(float isolevel, float4 p0, float4 p1, float f0, float f1)
 {
     float t = (isolevel - f0) / (f1 - f0);
 	return mix(p0, p1, t);
 } 
 
-// compute interpolated vertex position and normal along an edge
+
 void vertexInterp2(float isolevel, float4 p0, float4 p1, float4 f0, float4 f1, float4* p, float4* n)
 {
     float t = (isolevel - f0.w) / (f1.w - f0.w);
@@ -106,21 +97,21 @@ void vertexInterp2(float isolevel, float4 p0, float4 p1, float4 f0, float4 f1, f
     (*n).x = mix(f0.x, f1.x, t);
     (*n).y = mix(f0.y, f1.y, t);
     (*n).z = mix(f0.z, f1.z, t);
-//    n = normalize(n);
+
 } 
 
 
 
-// calculate triangle normal
+
 float4 calcNormal(float4 v0, float4 v1, float4 v2)
 {
     float4 edge0 = v1 - v0;
     float4 edge1 = v2 - v0;
-    // note - it's faster to perform normalization in vertex shader rather than here
+    
     return cross(edge0, edge1);
 }
 
-// version that calculates flat surface normal for each triangle
+
 __kernel
 void
 generateTriangles2(__global float4 *pos, __global float4 *norm, __global uint *compactedVoxelArray, __global uint *numVertsScanned, 
@@ -138,7 +129,7 @@ generateTriangles2(__global float4 *pos, __global float4 *norm, __global uint *c
 
     uint voxel = compactedVoxelArray[i];
 
-    // compute position in 3d grid
+    
     int4 gridPos = calcGridPos(voxel, gridSizeShift, gridSizeMask);
 
     float4 p;
@@ -147,7 +138,7 @@ generateTriangles2(__global float4 *pos, __global float4 *norm, __global uint *c
     p.z = -1.0f + (gridPos.z * voxelSize.z);
     p.w = 1.0f;
 
-    // calculate cell vertex positions
+    
     float4 v[8];
     v[0] = p;
     v[1] = p + (float4)(voxelSize.x, 0, 0,0);
@@ -168,7 +159,7 @@ generateTriangles2(__global float4 *pos, __global float4 *norm, __global uint *c
     field[6] = read_imagef(volume, volumeSampler, gridPos + (int4)(1, 1, 1,0)).x;
     field[7] = read_imagef(volume, volumeSampler, gridPos + (int4)(0, 1, 1,0)).x;
 
-    // recalculate flag
+    
     int cubeindex;
 	cubeindex =  (field[0] < isoValue); 
 	cubeindex += (field[1] < isoValue)*2; 
@@ -179,7 +170,7 @@ generateTriangles2(__global float4 *pos, __global float4 *norm, __global uint *c
 	cubeindex += (field[6] < isoValue)*64; 
 	cubeindex += (field[7] < isoValue)*128;
 
-	// find the vertices where the surface intersects the cube 
+	
 	__local float4 vertlist[16*NTHREADS];
 
 	vertlist[tid] = vertexInterp(isoValue, v[0], v[1], field[0], field[1]);
@@ -196,7 +187,7 @@ generateTriangles2(__global float4 *pos, __global float4 *norm, __global uint *c
     vertlist[(NTHREADS*11)+tid] = vertexInterp(isoValue, v[3], v[7], field[3], field[7]);
     barrier(CLK_LOCAL_MEM_FENCE);
 
-    // output triangle vertices
+    
     uint numVerts = read_imageui(numVertsTex, tableSampler, (int2)(cubeindex,0)).x;
 
     for(int i=0; i<numVerts; i+=3) {
@@ -213,7 +204,7 @@ generateTriangles2(__global float4 *pos, __global float4 *norm, __global uint *c
         edge = read_imageui(triTex, tableSampler, (int2)(i+2,cubeindex)).x;
         v[2] = vertlist[(edge*NTHREADS)+tid];
 
-        // calculate triangle surface normal
+        
         float4 n = calcNormal(v[0], v[1], v[2]);
 
         if (index < (maxVerts - 3)) {

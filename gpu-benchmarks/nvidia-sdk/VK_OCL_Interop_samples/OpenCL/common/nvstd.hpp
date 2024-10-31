@@ -1,17 +1,17 @@
 #ifndef __NVSTD_HPP__
 #define __NVSTD_HPP__
 
-// For GCC_DIAG_PRAGMA
+
 #include <cuos.h>
 GCC_DIAG_PRAGMA(push)
 GCC_DIAG_PRAGMA(ignored "-Wcast-align")
-// Earlier versions may complain placement-new is unrecognized
+
 #if __GNUC__ * 100 >= 600
 GCC_DIAG_PRAGMA(ignored "-Wplacement-new")
 #endif
 
-// WAR - toolkit on ARMv7 uses 4.5 which is too old for push/po
-// we just disable globally (see https://gcc.gnu.org/bugzilla/show_bug.cgi?id=47347)
+
+
 #if ((__GNUC__ * 100) + __GNUC_MINOR__) == 405
 #pragma GCC diagnostic ignored "-Wcast-align"
 #endif
@@ -29,7 +29,7 @@ GCC_DIAG_PRAGMA(ignored "-Wplacement-new")
 #endif
 
 
-// gcc 4.1 and MSVC 2010 has broken bind which does not support nesting
+
 #if __cplusplus >= 201100
   #include <functional>
   namespace nvstd {
@@ -50,7 +50,7 @@ GCC_DIAG_PRAGMA(ignored "-Wplacement-new")
     using ::boost::ref;
     using ::boost::cref;
     namespace placeholders {
-      // Boost 1.5x have placeholders in anonymous namespace
+      
       static boost::arg<1> _1;
       static boost::arg<2> _2;
       static boost::arg<3> _3;
@@ -65,4 +65,4 @@ GCC_DIAG_PRAGMA(ignored "-Wplacement-new")
 #endif
 GCC_DIAG_PRAGMA(pop)
 
-#endif // __NVSTD_HPP__
+#endif 

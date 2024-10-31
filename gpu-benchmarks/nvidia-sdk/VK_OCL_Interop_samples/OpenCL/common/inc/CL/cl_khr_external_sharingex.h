@@ -58,8 +58,8 @@ typedef enum _cl_semaphore_type__enum {
 } cl_semaphore_type;
 
 typedef enum _cl_external_mem_properties {
-    CL_EXTERNAL_MEMORY_HANDLE_TYPE = 1, // Value should be of type cl_external_mem_handle_type
-    CL_EXTERNAL_MEMORY_HANDLE_SIZE = 2, // Value should be of type cl_uint
+    CL_EXTERNAL_MEMORY_HANDLE_TYPE = 1, 
+    CL_EXTERNAL_MEMORY_HANDLE_SIZE = 2, 
 } cl_external_mem_properties;
 
 
@@ -73,9 +73,9 @@ typedef struct _cl_external_mem_desc_st {
 
 
 typedef enum _cl_semaphore_properties_khr {
-    CL_SEMAPHORE_HANDLE_TYPE = 1, // Value should be of type cl_semaphore_handle_type
-    CL_SEMAPHORE_HANDLE_SIZE = 2, // Value should be of type cl_uint
-    CL_SEMAPHORE_TYPE= 3, // Value should be of type cl_semaphore_type
+    CL_SEMAPHORE_HANDLE_TYPE = 1, 
+    CL_SEMAPHORE_HANDLE_SIZE = 2, 
+    CL_SEMAPHORE_TYPE= 3, 
 } cl_semaphore_properties_khr;
 
 typedef struct _cl_semaphore_desc_st {
@@ -156,5 +156,5 @@ clReleaseSemaphoreObjectKHR (cl_semaphore sema_object) CL_API_SUFFIX__VERSION_1_
 #ifdef __cplusplus
 }
 #endif
-#endif /*__OPENCL_CL_EXTERNAL_H*/
+#endif 
 

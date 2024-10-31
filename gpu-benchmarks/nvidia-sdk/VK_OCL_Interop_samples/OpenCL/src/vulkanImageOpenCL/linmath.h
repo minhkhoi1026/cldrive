@@ -1,32 +1,14 @@
-/*
- * Copyright (c) 2015-2016 The Khronos Group Inc.
- * Copyright (c) 2015-2016 Valve Corporation
- * Copyright (c) 2015-2016 LunarG, Inc.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- * Relicensed from the WTFPL (http://www.wtfpl.net/faq/).
- */
+
 
 #ifndef LINMATH_H
 #define LINMATH_H
 
 #include <math.h>
 
-// Converts degrees to radians.
+
 #define degreesToRadians(angleDegrees) (angleDegrees * M_PI / 180.0)
 
-// Converts radians to degrees.
+
 #define radiansToDegrees(angleRadians) (angleRadians * 180.0 / M_PI)
 
 typedef float vec3[3];
@@ -243,7 +225,7 @@ static inline void mat4x4_invert(mat4x4 T, mat4x4 M) {
     c[4] = M[2][1] * M[3][3] - M[3][1] * M[2][3];
     c[5] = M[2][2] * M[3][3] - M[3][2] * M[2][3];
 
-    /* Assumes it is invertible */
+    
     float idet = 1.0f / (s[0] * c[5] - s[1] * c[4] + s[2] * c[3] + s[3] * c[2] - s[4] * c[1] + s[5] * c[0]);
 
     T[0][0] = (M[1][1] * c[5] - M[1][2] * c[4] + M[1][3] * c[3]) * idet;
@@ -320,8 +302,7 @@ static inline void mat4x4_ortho(mat4x4 M, float l, float r, float b, float t, fl
     M[3][3] = 1.f;
 }
 static inline void mat4x4_perspective(mat4x4 m, float y_fov, float aspect, float n, float f) {
-    /* NOTE: Degrees are an unhandy unit to work with.
-     * linmath.h uses radians for everything! */
+    
     float const a = (float)(1.f / tan(y_fov / 2.f));
 
     m[0][0] = a / aspect;
@@ -345,12 +326,11 @@ static inline void mat4x4_perspective(mat4x4 m, float y_fov, float aspect, float
     m[3][3] = 0.f;
 }
 static inline void mat4x4_look_at(mat4x4 m, vec3 eye, vec3 center, vec3 up) {
-    /* Adapted from Android's OpenGL Matrix.java.                        */
-    /* See the OpenGL GLUT documentation for gluLookAt for a description */
-    /* of the algorithm. We implement it in a straightforward way:       */
+    
+    
+    
 
-    /* TODO: The negation of of can be spared by swapping the order of
-     *       operands in the following cross products in the right way. */
+    
     vec3 f;
     vec3_sub(f, center, eye);
     vec3_norm(f, f);
@@ -461,8 +441,8 @@ static inline void mat4x4_from_quat(mat4x4 M, quat q) {
 }
 
 static inline void mat4x4o_mul_quat(mat4x4 R, mat4x4 M, quat q) {
-    /*  XXX: The way this is written only works for othogonal matrices. */
-    /* TODO: Take care of non-orthogonal case. */
+    
+    
     quat_mul_vec3(R[0], q, M[0]);
     quat_mul_vec3(R[1], q, M[1]);
     quat_mul_vec3(R[2], q, M[2]);

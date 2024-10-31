@@ -1,21 +1,9 @@
-/*
- * Copyright 1993-2010 NVIDIA Corporation.  All rights reserved.
- *
- * Please refer to the NVIDIA end user license agreement (EULA) associated
- * with this source code for terms and conditions that govern your use of
- * this software. Any use, reproduction, disclosure, or distribution of
- * this software and related documentation outside the terms of the EULA
- * is strictly prohibited.
- *
- */
- 
- /*
-    Tables for Marching Cubes
-    http://local.wasp.uwa.edu.au/~pbourke/geometry/polygonise/
-*/
 
-// edge table maps 8-bit flag representing which cube vertices are inside
-// the isosurface to 12-bit number indicating which edges are intersected
+ 
+ 
+
+
+
 uint edgeTable[256] = {
 	0x0  , 0x109, 0x203, 0x30a, 0x406, 0x50f, 0x605, 0x70c,
 	0x80c, 0x905, 0xa0f, 0xb06, 0xc0a, 0xd03, 0xe09, 0xf00,
@@ -51,8 +39,8 @@ uint edgeTable[256] = {
 	0x70c, 0x605, 0x50f, 0x406, 0x30a, 0x203, 0x109, 0x0
 };
 
-// triangle table maps same cube vertex index to a list of up to 5 triangles
-// which are built from the interpolated edge vertices
+
+
 #define X 255
 uchar triTable[256][16] = {
     {X, X, X, X, X, X, X, X, X, X, X, X, X, X, X, X},
@@ -314,7 +302,7 @@ uchar triTable[256][16] = {
 };
 #undef X
 
-// number of vertices for each case above
+
 uchar numVertsTable[256] = {
     0,
     3,

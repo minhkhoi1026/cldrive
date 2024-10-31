@@ -1,13 +1,4 @@
-/*
- * Copyright 1993-2010 NVIDIA Corporation.  All rights reserved.
- *
- * Please refer to the NVIDIA end user license agreement (EULA) associated
- * with this source code for terms and conditions that govern your use of
- * this software. Any use, reproduction, disclosure, or distribution of
- * this software and related documentation outside the terms of the EULA
- * is strictly prohibited.
- *
- */
+
 
 
 
@@ -135,9 +126,9 @@ struct ulong1{
 struct
     #ifdef _WIN32
         __builtin_align__(8)
-    #else /* _WIN32 */
+    #else 
         __builtin_align__(2*sizeof(long int))
-    #endif /* _WIN32 */
+    #endif 
 
 long2{
     long int x, y;
@@ -147,9 +138,9 @@ long2{
 struct
     #ifdef _WIN32
        __builtin_align__(8)
-    #else /* _WIN32 */
+    #else 
        __builtin_align__(2*sizeof(unsigned long int))
-    #endif /* _WIN32 */
+    #endif 
 
 ulong2{
     unsigned long int x, y;
@@ -173,7 +164,7 @@ struct __builtin_align__(16) ulong4{
     unsigned long int x, y, z, w;
 };
 
-#endif /* !__LP64__ */
+#endif 
 
 
 struct float1{
@@ -216,11 +207,7 @@ struct __builtin_align__(16) double2{
     double x, y;
 };
 
-/*******************************************************************************
-*                                                                              *
-*                                                                              *
-*                                                                              *
-*******************************************************************************/
+
 
 
 typedef struct char1 char1;
@@ -307,11 +294,7 @@ typedef struct double1 double1;
 
 typedef struct double2 double2;
 
-/*******************************************************************************
-*                                                                              *
-*                                                                              *
-*                                                                              *
-*******************************************************************************/
+
 
 
 typedef struct dim3 dim3;
@@ -460,7 +443,7 @@ static __inline__ __host__ __device__ ulong4 make_ulong4(unsigned long int x, un
     ulong4 t; t.x = x; t.y = y; t.z = z; t.w = w; return t;
 }
 
-#endif /* !__LP64__ */
+#endif 
 
 static __inline__ __host__ __device__ float1 make_float1(float x){
     float1 t; t.x = x; return t;
@@ -503,4 +486,4 @@ static __inline__ __host__ __device__ double2 make_double2(double x, double y){
 }
 
 
-#endif /* !__VECTOR_TYPES_H__ */
+#endif 

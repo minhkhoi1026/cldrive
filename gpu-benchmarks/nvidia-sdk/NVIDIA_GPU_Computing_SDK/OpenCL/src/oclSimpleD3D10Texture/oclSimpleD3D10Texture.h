@@ -1,26 +1,17 @@
-/*
- * Copyright 1993-2010 NVIDIA Corporation.  All rights reserved.
- *
- * Please refer to the NVIDIA end user license agreement (EULA) associated
- * with this source code for terms and conditions that govern your use of
- * this software. Any use, reproduction, disclosure, or distribution of
- * this software and related documentation outside the terms of the EULA
- * is strictly prohibited.
- *
- */
 
-//-----------------------------------------------------------------------------
-// Global variables
-//-----------------------------------------------------------------------------
+
+
+
+
 
 #define MAX_EPSILON 10
 #define D3D10_SHARING_EXTENSION "cl_nv_d3d10_sharing"
 
 static char *SDK_name = "simpleD3D10Texture";
 
-ID3D10Device*           g_pd3dDevice = NULL; // Our rendering device
-IDXGISwapChain*         g_pSwapChain = NULL; // The swap chain of the window
-ID3D10RenderTargetView* g_pSwapChainRTV = NULL; //The Render target view on the swap chain ( used for clear)
+ID3D10Device*           g_pd3dDevice = NULL; 
+IDXGISwapChain*         g_pSwapChain = NULL; 
+ID3D10RenderTargetView* g_pSwapChainRTV = NULL; 
 ID3D10RasterizerState*  g_pRasterState = NULL;
 
 ID3D10InputLayout*      g_pInputLayout = NULL;
@@ -92,8 +83,8 @@ static const char g_simpleEffectSrc[] =
     "}\n" \
     "\n";
 
-// testing/tracing function used pervasively in tests.  if the condition is unsatisfied
-// then spew and fail the function immediately (doing no cleanup)
+
+
 #define AssertOrQuit(x) \
     if (!(x)) \
     { \
@@ -113,11 +104,11 @@ clEnqueueReleaseD3D10ObjectsNV_fn	clEnqueueReleaseD3D10ObjectsNV = NULL;
     x = (x ## _fn)clGetExtensionFunctionAddress(#x);\
 	if(!x) { shrLog("failed getting " #x); Cleanup(EXIT_FAILURE); }
 
-// CL objects
+
 cl_context			cxGPUContext;
 cl_command_queue	cqCommandQueue;
 cl_device_id		device;
-cl_uint				uiNumDevsUsed = 1;          // Number of devices used in this sample 
+cl_uint				uiNumDevsUsed = 1;          
 cl_program			cpProgram_tex2d;
 cl_program			cpProgram_texcube;
 cl_program			cpProgram_texvolume;
@@ -129,17 +120,17 @@ size_t				szLocalWorkSize[2];
 cl_mem				cl_pbos[2] = {0,0};
 cl_int				ciErrNum;
 
-// Timer and fps vars
-int					iFrameCount   = 0;                // FPS count for averaging
-int					iFrameTrigger = 90;             // FPS trigger for sampling
-int					iFramesPerSec = 0;              // frames per second
-int					iTestSets     = 3;                  // # of loop set retriggers before auto exit when bNoPrompt = shrTrue
 
-// app configuration parms
+int					iFrameCount   = 0;                
+int					iFrameTrigger = 90;             
+int					iFramesPerSec = 0;              
+int					iTestSets     = 3;                  
+
+
 const char*           cProcessor [] = {"OpenCL GPU", "Host C++ CPU"};
-int                   iProcFlag = 0;                  // 0 = GPU, 1 = CPU
-shrBOOL               bNoPrompt = shrFALSE;		// false = normal GL loop, true = Finite period of GL loop (a few seconds)
-shrBOOL               bQATest   = shrFALSE;			// false = normal GL loop, true = run No-GL test sequence
+int                   iProcFlag = 0;                  
+shrBOOL               bNoPrompt = shrFALSE;		
+shrBOOL               bQATest   = shrFALSE;			
 int		              g_iFrameToCompare = 10;
 
 bool                  g_bDone   = false;
@@ -155,7 +146,7 @@ bool                  g_bWindowed    = true;
 const unsigned int    g_WindowWidth  = 720;
 const unsigned int    g_WindowHeight = 720;
 
-// Data structure for 2D texture shared between DX9 and CL
+
 struct
 {
     ID3D10Texture2D			*pTexture;
@@ -167,7 +158,7 @@ struct
 	unsigned int		height;	
 } g_texture_2d;
 
-// Data structure for cube texture shared between DX9 and CL
+
 struct
 {
     ID3D10Texture2D			*pTexture;
@@ -178,7 +169,7 @@ struct
 	unsigned int		size;
 } g_texture_cube;
 
-// Data structure for volume textures shared between DX9 and CL
+
 struct
 {
     ID3D10Texture3D			*pTexture;

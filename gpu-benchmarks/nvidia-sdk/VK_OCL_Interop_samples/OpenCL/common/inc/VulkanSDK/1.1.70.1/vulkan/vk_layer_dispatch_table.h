@@ -1,37 +1,18 @@
-// *** THIS FILE IS GENERATED - DO NOT EDIT ***
-// See loader_extension_generator.py for modifications
 
-/*
- * Copyright (c) 2015-2017 The Khronos Group Inc.
- * Copyright (c) 2015-2017 Valve Corporation
- * Copyright (c) 2015-2017 LunarG, Inc.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- * Author: Mark Lobodzinski <mark@lunarg.com>
- * Author: Mark Young <marky@lunarg.com>
- */
+
+
+
 
 #pragma once
 
 typedef PFN_vkVoidFunction (VKAPI_PTR *PFN_GetPhysicalDeviceProcAddr)(VkInstance instance, const char* pName);
 
-// Instance function pointer dispatch table
+
 typedef struct VkLayerInstanceDispatchTable_ {
-    // Manually add in GetPhysicalDeviceProcAddr entry
+    
     PFN_GetPhysicalDeviceProcAddr GetPhysicalDeviceProcAddr;
 
-    // ---- Core 1_0 commands
+    
     PFN_vkCreateInstance CreateInstance;
     PFN_vkDestroyInstance DestroyInstance;
     PFN_vkEnumeratePhysicalDevices EnumeratePhysicalDevices;
@@ -49,7 +30,7 @@ typedef struct VkLayerInstanceDispatchTable_ {
     PFN_vkEnumerateDeviceLayerProperties EnumerateDeviceLayerProperties;
     PFN_vkGetPhysicalDeviceSparseImageFormatProperties GetPhysicalDeviceSparseImageFormatProperties;
 
-    // ---- Core 1_1 commands
+    
     PFN_vkEnumerateInstanceVersion EnumerateInstanceVersion;
     PFN_vkEnumeratePhysicalDeviceGroups EnumeratePhysicalDeviceGroups;
     PFN_vkGetPhysicalDeviceFeatures2 GetPhysicalDeviceFeatures2;
@@ -63,17 +44,17 @@ typedef struct VkLayerInstanceDispatchTable_ {
     PFN_vkGetPhysicalDeviceExternalFenceProperties GetPhysicalDeviceExternalFenceProperties;
     PFN_vkGetPhysicalDeviceExternalSemaphoreProperties GetPhysicalDeviceExternalSemaphoreProperties;
 
-    // ---- VK_KHR_surface extension commands
+    
     PFN_vkDestroySurfaceKHR DestroySurfaceKHR;
     PFN_vkGetPhysicalDeviceSurfaceSupportKHR GetPhysicalDeviceSurfaceSupportKHR;
     PFN_vkGetPhysicalDeviceSurfaceCapabilitiesKHR GetPhysicalDeviceSurfaceCapabilitiesKHR;
     PFN_vkGetPhysicalDeviceSurfaceFormatsKHR GetPhysicalDeviceSurfaceFormatsKHR;
     PFN_vkGetPhysicalDeviceSurfacePresentModesKHR GetPhysicalDeviceSurfacePresentModesKHR;
 
-    // ---- VK_KHR_swapchain extension commands
+    
     PFN_vkGetPhysicalDevicePresentRectanglesKHR GetPhysicalDevicePresentRectanglesKHR;
 
-    // ---- VK_KHR_display extension commands
+    
     PFN_vkGetPhysicalDeviceDisplayPropertiesKHR GetPhysicalDeviceDisplayPropertiesKHR;
     PFN_vkGetPhysicalDeviceDisplayPlanePropertiesKHR GetPhysicalDeviceDisplayPlanePropertiesKHR;
     PFN_vkGetDisplayPlaneSupportedDisplaysKHR GetDisplayPlaneSupportedDisplaysKHR;
@@ -82,52 +63,52 @@ typedef struct VkLayerInstanceDispatchTable_ {
     PFN_vkGetDisplayPlaneCapabilitiesKHR GetDisplayPlaneCapabilitiesKHR;
     PFN_vkCreateDisplayPlaneSurfaceKHR CreateDisplayPlaneSurfaceKHR;
 
-    // ---- VK_KHR_xlib_surface extension commands
+    
 #ifdef VK_USE_PLATFORM_XLIB_KHR
     PFN_vkCreateXlibSurfaceKHR CreateXlibSurfaceKHR;
-#endif // VK_USE_PLATFORM_XLIB_KHR
+#endif 
 #ifdef VK_USE_PLATFORM_XLIB_KHR
     PFN_vkGetPhysicalDeviceXlibPresentationSupportKHR GetPhysicalDeviceXlibPresentationSupportKHR;
-#endif // VK_USE_PLATFORM_XLIB_KHR
+#endif 
 
-    // ---- VK_KHR_xcb_surface extension commands
+    
 #ifdef VK_USE_PLATFORM_XCB_KHR
     PFN_vkCreateXcbSurfaceKHR CreateXcbSurfaceKHR;
-#endif // VK_USE_PLATFORM_XCB_KHR
+#endif 
 #ifdef VK_USE_PLATFORM_XCB_KHR
     PFN_vkGetPhysicalDeviceXcbPresentationSupportKHR GetPhysicalDeviceXcbPresentationSupportKHR;
-#endif // VK_USE_PLATFORM_XCB_KHR
+#endif 
 
-    // ---- VK_KHR_wayland_surface extension commands
+    
 #ifdef VK_USE_PLATFORM_WAYLAND_KHR
     PFN_vkCreateWaylandSurfaceKHR CreateWaylandSurfaceKHR;
-#endif // VK_USE_PLATFORM_WAYLAND_KHR
+#endif 
 #ifdef VK_USE_PLATFORM_WAYLAND_KHR
     PFN_vkGetPhysicalDeviceWaylandPresentationSupportKHR GetPhysicalDeviceWaylandPresentationSupportKHR;
-#endif // VK_USE_PLATFORM_WAYLAND_KHR
+#endif 
 
-    // ---- VK_KHR_mir_surface extension commands
+    
 #ifdef VK_USE_PLATFORM_MIR_KHR
     PFN_vkCreateMirSurfaceKHR CreateMirSurfaceKHR;
-#endif // VK_USE_PLATFORM_MIR_KHR
+#endif 
 #ifdef VK_USE_PLATFORM_MIR_KHR
     PFN_vkGetPhysicalDeviceMirPresentationSupportKHR GetPhysicalDeviceMirPresentationSupportKHR;
-#endif // VK_USE_PLATFORM_MIR_KHR
+#endif 
 
-    // ---- VK_KHR_android_surface extension commands
+    
 #ifdef VK_USE_PLATFORM_ANDROID_KHR
     PFN_vkCreateAndroidSurfaceKHR CreateAndroidSurfaceKHR;
-#endif // VK_USE_PLATFORM_ANDROID_KHR
+#endif 
 
-    // ---- VK_KHR_win32_surface extension commands
+    
 #ifdef VK_USE_PLATFORM_WIN32_KHR
     PFN_vkCreateWin32SurfaceKHR CreateWin32SurfaceKHR;
-#endif // VK_USE_PLATFORM_WIN32_KHR
+#endif 
 #ifdef VK_USE_PLATFORM_WIN32_KHR
     PFN_vkGetPhysicalDeviceWin32PresentationSupportKHR GetPhysicalDeviceWin32PresentationSupportKHR;
-#endif // VK_USE_PLATFORM_WIN32_KHR
+#endif 
 
-    // ---- VK_KHR_get_physical_device_properties2 extension commands
+    
     PFN_vkGetPhysicalDeviceFeatures2KHR GetPhysicalDeviceFeatures2KHR;
     PFN_vkGetPhysicalDeviceProperties2KHR GetPhysicalDeviceProperties2KHR;
     PFN_vkGetPhysicalDeviceFormatProperties2KHR GetPhysicalDeviceFormatProperties2KHR;
@@ -136,75 +117,75 @@ typedef struct VkLayerInstanceDispatchTable_ {
     PFN_vkGetPhysicalDeviceMemoryProperties2KHR GetPhysicalDeviceMemoryProperties2KHR;
     PFN_vkGetPhysicalDeviceSparseImageFormatProperties2KHR GetPhysicalDeviceSparseImageFormatProperties2KHR;
 
-    // ---- VK_KHR_device_group_creation extension commands
+    
     PFN_vkEnumeratePhysicalDeviceGroupsKHR EnumeratePhysicalDeviceGroupsKHR;
 
-    // ---- VK_KHR_external_memory_capabilities extension commands
+    
     PFN_vkGetPhysicalDeviceExternalBufferPropertiesKHR GetPhysicalDeviceExternalBufferPropertiesKHR;
 
-    // ---- VK_KHR_external_semaphore_capabilities extension commands
+    
     PFN_vkGetPhysicalDeviceExternalSemaphorePropertiesKHR GetPhysicalDeviceExternalSemaphorePropertiesKHR;
 
-    // ---- VK_KHR_external_fence_capabilities extension commands
+    
     PFN_vkGetPhysicalDeviceExternalFencePropertiesKHR GetPhysicalDeviceExternalFencePropertiesKHR;
 
-    // ---- VK_KHR_get_surface_capabilities2 extension commands
+    
     PFN_vkGetPhysicalDeviceSurfaceCapabilities2KHR GetPhysicalDeviceSurfaceCapabilities2KHR;
     PFN_vkGetPhysicalDeviceSurfaceFormats2KHR GetPhysicalDeviceSurfaceFormats2KHR;
 
-    // ---- VK_EXT_debug_report extension commands
+    
     PFN_vkCreateDebugReportCallbackEXT CreateDebugReportCallbackEXT;
     PFN_vkDestroyDebugReportCallbackEXT DestroyDebugReportCallbackEXT;
     PFN_vkDebugReportMessageEXT DebugReportMessageEXT;
 
-    // ---- VK_NV_external_memory_capabilities extension commands
+    
     PFN_vkGetPhysicalDeviceExternalImageFormatPropertiesNV GetPhysicalDeviceExternalImageFormatPropertiesNV;
 
-    // ---- VK_NN_vi_surface extension commands
+    
 #ifdef VK_USE_PLATFORM_VI_NN
     PFN_vkCreateViSurfaceNN CreateViSurfaceNN;
-#endif // VK_USE_PLATFORM_VI_NN
+#endif 
 
-    // ---- VK_NVX_device_generated_commands extension commands
+    
     PFN_vkGetPhysicalDeviceGeneratedCommandsPropertiesNVX GetPhysicalDeviceGeneratedCommandsPropertiesNVX;
 
-    // ---- VK_EXT_direct_mode_display extension commands
+    
     PFN_vkReleaseDisplayEXT ReleaseDisplayEXT;
 
-    // ---- VK_EXT_acquire_xlib_display extension commands
+    
 #ifdef VK_USE_PLATFORM_XLIB_XRANDR_EXT
     PFN_vkAcquireXlibDisplayEXT AcquireXlibDisplayEXT;
-#endif // VK_USE_PLATFORM_XLIB_XRANDR_EXT
+#endif 
 #ifdef VK_USE_PLATFORM_XLIB_XRANDR_EXT
     PFN_vkGetRandROutputDisplayEXT GetRandROutputDisplayEXT;
-#endif // VK_USE_PLATFORM_XLIB_XRANDR_EXT
+#endif 
 
-    // ---- VK_EXT_display_surface_counter extension commands
+    
     PFN_vkGetPhysicalDeviceSurfaceCapabilities2EXT GetPhysicalDeviceSurfaceCapabilities2EXT;
 
-    // ---- VK_MVK_ios_surface extension commands
+    
 #ifdef VK_USE_PLATFORM_IOS_MVK
     PFN_vkCreateIOSSurfaceMVK CreateIOSSurfaceMVK;
-#endif // VK_USE_PLATFORM_IOS_MVK
+#endif 
 
-    // ---- VK_MVK_macos_surface extension commands
+    
 #ifdef VK_USE_PLATFORM_MACOS_MVK
     PFN_vkCreateMacOSSurfaceMVK CreateMacOSSurfaceMVK;
-#endif // VK_USE_PLATFORM_MACOS_MVK
+#endif 
 
-    // ---- VK_EXT_debug_utils extension commands
+    
     PFN_vkCreateDebugUtilsMessengerEXT CreateDebugUtilsMessengerEXT;
     PFN_vkDestroyDebugUtilsMessengerEXT DestroyDebugUtilsMessengerEXT;
     PFN_vkSubmitDebugUtilsMessageEXT SubmitDebugUtilsMessageEXT;
 
-    // ---- VK_EXT_sample_locations extension commands
+    
     PFN_vkGetPhysicalDeviceMultisamplePropertiesEXT GetPhysicalDeviceMultisamplePropertiesEXT;
 } VkLayerInstanceDispatchTable;
 
-// Device function pointer dispatch table
+
 typedef struct VkLayerDispatchTable_ {
 
-    // ---- Core 1_0 commands
+    
     PFN_vkGetDeviceProcAddr GetDeviceProcAddr;
     PFN_vkDestroyDevice DestroyDevice;
     PFN_vkGetDeviceQueue GetDeviceQueue;
@@ -327,7 +308,7 @@ typedef struct VkLayerDispatchTable_ {
     PFN_vkCmdEndRenderPass CmdEndRenderPass;
     PFN_vkCmdExecuteCommands CmdExecuteCommands;
 
-    // ---- Core 1_1 commands
+    
     PFN_vkBindBufferMemory2 BindBufferMemory2;
     PFN_vkBindImageMemory2 BindImageMemory2;
     PFN_vkGetDeviceGroupPeerMemoryFeatures GetDeviceGroupPeerMemoryFeatures;
@@ -345,7 +326,7 @@ typedef struct VkLayerDispatchTable_ {
     PFN_vkUpdateDescriptorSetWithTemplate UpdateDescriptorSetWithTemplate;
     PFN_vkGetDescriptorSetLayoutSupport GetDescriptorSetLayoutSupport;
 
-    // ---- VK_KHR_swapchain extension commands
+    
     PFN_vkCreateSwapchainKHR CreateSwapchainKHR;
     PFN_vkDestroySwapchainKHR DestroySwapchainKHR;
     PFN_vkGetSwapchainImagesKHR GetSwapchainImagesKHR;
@@ -355,101 +336,101 @@ typedef struct VkLayerDispatchTable_ {
     PFN_vkGetDeviceGroupSurfacePresentModesKHR GetDeviceGroupSurfacePresentModesKHR;
     PFN_vkAcquireNextImage2KHR AcquireNextImage2KHR;
 
-    // ---- VK_KHR_display_swapchain extension commands
+    
     PFN_vkCreateSharedSwapchainsKHR CreateSharedSwapchainsKHR;
 
-    // ---- VK_KHR_device_group extension commands
+    
     PFN_vkGetDeviceGroupPeerMemoryFeaturesKHR GetDeviceGroupPeerMemoryFeaturesKHR;
     PFN_vkCmdSetDeviceMaskKHR CmdSetDeviceMaskKHR;
     PFN_vkCmdDispatchBaseKHR CmdDispatchBaseKHR;
 
-    // ---- VK_KHR_maintenance1 extension commands
+    
     PFN_vkTrimCommandPoolKHR TrimCommandPoolKHR;
 
-    // ---- VK_KHR_external_memory_win32 extension commands
+    
 #ifdef VK_USE_PLATFORM_WIN32_KHR
     PFN_vkGetMemoryWin32HandleKHR GetMemoryWin32HandleKHR;
-#endif // VK_USE_PLATFORM_WIN32_KHR
+#endif 
 #ifdef VK_USE_PLATFORM_WIN32_KHR
     PFN_vkGetMemoryWin32HandlePropertiesKHR GetMemoryWin32HandlePropertiesKHR;
-#endif // VK_USE_PLATFORM_WIN32_KHR
+#endif 
 
-    // ---- VK_KHR_external_memory_fd extension commands
+    
     PFN_vkGetMemoryFdKHR GetMemoryFdKHR;
     PFN_vkGetMemoryFdPropertiesKHR GetMemoryFdPropertiesKHR;
 
-    // ---- VK_KHR_external_semaphore_win32 extension commands
+    
 #ifdef VK_USE_PLATFORM_WIN32_KHR
     PFN_vkImportSemaphoreWin32HandleKHR ImportSemaphoreWin32HandleKHR;
-#endif // VK_USE_PLATFORM_WIN32_KHR
+#endif 
 #ifdef VK_USE_PLATFORM_WIN32_KHR
     PFN_vkGetSemaphoreWin32HandleKHR GetSemaphoreWin32HandleKHR;
-#endif // VK_USE_PLATFORM_WIN32_KHR
+#endif 
 
-    // ---- VK_KHR_external_semaphore_fd extension commands
+    
     PFN_vkImportSemaphoreFdKHR ImportSemaphoreFdKHR;
     PFN_vkGetSemaphoreFdKHR GetSemaphoreFdKHR;
 
-    // ---- VK_KHR_push_descriptor extension commands
+    
     PFN_vkCmdPushDescriptorSetKHR CmdPushDescriptorSetKHR;
     PFN_vkCmdPushDescriptorSetWithTemplateKHR CmdPushDescriptorSetWithTemplateKHR;
 
-    // ---- VK_KHR_descriptor_update_template extension commands
+    
     PFN_vkCreateDescriptorUpdateTemplateKHR CreateDescriptorUpdateTemplateKHR;
     PFN_vkDestroyDescriptorUpdateTemplateKHR DestroyDescriptorUpdateTemplateKHR;
     PFN_vkUpdateDescriptorSetWithTemplateKHR UpdateDescriptorSetWithTemplateKHR;
 
-    // ---- VK_KHR_shared_presentable_image extension commands
+    
     PFN_vkGetSwapchainStatusKHR GetSwapchainStatusKHR;
 
-    // ---- VK_KHR_external_fence_win32 extension commands
+    
 #ifdef VK_USE_PLATFORM_WIN32_KHR
     PFN_vkImportFenceWin32HandleKHR ImportFenceWin32HandleKHR;
-#endif // VK_USE_PLATFORM_WIN32_KHR
+#endif 
 #ifdef VK_USE_PLATFORM_WIN32_KHR
     PFN_vkGetFenceWin32HandleKHR GetFenceWin32HandleKHR;
-#endif // VK_USE_PLATFORM_WIN32_KHR
+#endif 
 
-    // ---- VK_KHR_external_fence_fd extension commands
+    
     PFN_vkImportFenceFdKHR ImportFenceFdKHR;
     PFN_vkGetFenceFdKHR GetFenceFdKHR;
 
-    // ---- VK_KHR_get_memory_requirements2 extension commands
+    
     PFN_vkGetImageMemoryRequirements2KHR GetImageMemoryRequirements2KHR;
     PFN_vkGetBufferMemoryRequirements2KHR GetBufferMemoryRequirements2KHR;
     PFN_vkGetImageSparseMemoryRequirements2KHR GetImageSparseMemoryRequirements2KHR;
 
-    // ---- VK_KHR_sampler_ycbcr_conversion extension commands
+    
     PFN_vkCreateSamplerYcbcrConversionKHR CreateSamplerYcbcrConversionKHR;
     PFN_vkDestroySamplerYcbcrConversionKHR DestroySamplerYcbcrConversionKHR;
 
-    // ---- VK_KHR_bind_memory2 extension commands
+    
     PFN_vkBindBufferMemory2KHR BindBufferMemory2KHR;
     PFN_vkBindImageMemory2KHR BindImageMemory2KHR;
 
-    // ---- VK_KHR_maintenance3 extension commands
+    
     PFN_vkGetDescriptorSetLayoutSupportKHR GetDescriptorSetLayoutSupportKHR;
 
-    // ---- VK_EXT_debug_marker extension commands
+    
     PFN_vkDebugMarkerSetObjectTagEXT DebugMarkerSetObjectTagEXT;
     PFN_vkDebugMarkerSetObjectNameEXT DebugMarkerSetObjectNameEXT;
     PFN_vkCmdDebugMarkerBeginEXT CmdDebugMarkerBeginEXT;
     PFN_vkCmdDebugMarkerEndEXT CmdDebugMarkerEndEXT;
     PFN_vkCmdDebugMarkerInsertEXT CmdDebugMarkerInsertEXT;
 
-    // ---- VK_AMD_draw_indirect_count extension commands
+    
     PFN_vkCmdDrawIndirectCountAMD CmdDrawIndirectCountAMD;
     PFN_vkCmdDrawIndexedIndirectCountAMD CmdDrawIndexedIndirectCountAMD;
 
-    // ---- VK_AMD_shader_info extension commands
+    
     PFN_vkGetShaderInfoAMD GetShaderInfoAMD;
 
-    // ---- VK_NV_external_memory_win32 extension commands
+    
 #ifdef VK_USE_PLATFORM_WIN32_KHR
     PFN_vkGetMemoryWin32HandleNV GetMemoryWin32HandleNV;
-#endif // VK_USE_PLATFORM_WIN32_KHR
+#endif 
 
-    // ---- VK_NVX_device_generated_commands extension commands
+    
     PFN_vkCmdProcessCommandsNVX CmdProcessCommandsNVX;
     PFN_vkCmdReserveSpaceForCommandsNVX CmdReserveSpaceForCommandsNVX;
     PFN_vkCreateIndirectCommandsLayoutNVX CreateIndirectCommandsLayoutNVX;
@@ -459,26 +440,26 @@ typedef struct VkLayerDispatchTable_ {
     PFN_vkRegisterObjectsNVX RegisterObjectsNVX;
     PFN_vkUnregisterObjectsNVX UnregisterObjectsNVX;
 
-    // ---- VK_NV_clip_space_w_scaling extension commands
+    
     PFN_vkCmdSetViewportWScalingNV CmdSetViewportWScalingNV;
 
-    // ---- VK_EXT_display_control extension commands
+    
     PFN_vkDisplayPowerControlEXT DisplayPowerControlEXT;
     PFN_vkRegisterDeviceEventEXT RegisterDeviceEventEXT;
     PFN_vkRegisterDisplayEventEXT RegisterDisplayEventEXT;
     PFN_vkGetSwapchainCounterEXT GetSwapchainCounterEXT;
 
-    // ---- VK_GOOGLE_display_timing extension commands
+    
     PFN_vkGetRefreshCycleDurationGOOGLE GetRefreshCycleDurationGOOGLE;
     PFN_vkGetPastPresentationTimingGOOGLE GetPastPresentationTimingGOOGLE;
 
-    // ---- VK_EXT_discard_rectangles extension commands
+    
     PFN_vkCmdSetDiscardRectangleEXT CmdSetDiscardRectangleEXT;
 
-    // ---- VK_EXT_hdr_metadata extension commands
+    
     PFN_vkSetHdrMetadataEXT SetHdrMetadataEXT;
 
-    // ---- VK_EXT_debug_utils extension commands
+    
     PFN_vkSetDebugUtilsObjectNameEXT SetDebugUtilsObjectNameEXT;
     PFN_vkSetDebugUtilsObjectTagEXT SetDebugUtilsObjectTagEXT;
     PFN_vkQueueBeginDebugUtilsLabelEXT QueueBeginDebugUtilsLabelEXT;
@@ -488,19 +469,19 @@ typedef struct VkLayerDispatchTable_ {
     PFN_vkCmdEndDebugUtilsLabelEXT CmdEndDebugUtilsLabelEXT;
     PFN_vkCmdInsertDebugUtilsLabelEXT CmdInsertDebugUtilsLabelEXT;
 
-    // ---- VK_EXT_sample_locations extension commands
+    
     PFN_vkCmdSetSampleLocationsEXT CmdSetSampleLocationsEXT;
 
-    // ---- VK_EXT_validation_cache extension commands
+    
     PFN_vkCreateValidationCacheEXT CreateValidationCacheEXT;
     PFN_vkDestroyValidationCacheEXT DestroyValidationCacheEXT;
     PFN_vkMergeValidationCachesEXT MergeValidationCachesEXT;
     PFN_vkGetValidationCacheDataEXT GetValidationCacheDataEXT;
 
-    // ---- VK_EXT_external_memory_host extension commands
+    
     PFN_vkGetMemoryHostPointerPropertiesEXT GetMemoryHostPointerPropertiesEXT;
 
-    // ---- VK_AMD_buffer_marker extension commands
+    
     PFN_vkCmdWriteBufferMarkerAMD CmdWriteBufferMarkerAMD;
 } VkLayerDispatchTable;
 

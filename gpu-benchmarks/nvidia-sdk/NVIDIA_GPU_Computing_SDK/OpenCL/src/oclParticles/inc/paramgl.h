@@ -1,19 +1,6 @@
-/*
- * Copyright 1993-2010 NVIDIA Corporation.  All rights reserved.
- *
- * Please refer to the NVIDIA end user license agreement (EULA) associated
- * with this source code for terms and conditions that govern your use of
- * this software. Any use, reproduction, disclosure, or distribution of
- * this software and related documentation outside the terms of the EULA
- * is strictly prohibited.
- *
- */
+
  
- /*
-    ParamListGL
-    - class derived from ParamList to do simple OpenGL rendering of a parameter list
-    sgg 8/2001
-*/
+ 
 
 #ifndef PARAMGL_H
 #define PARAMGL_H
@@ -49,15 +36,15 @@ public:
 
 private:
     void *m_font;
-    int m_font_h;       // font height
+    int m_font_h;       
 
-    int m_bar_x;        // bar start x position
-    int m_bar_w;        // bar width
-    int m_bar_h;        // bar height
-    int m_text_x;       // text start x position
-    int m_separation;   // bar separation in y
-    int m_value_x;      // value text x position
-    int m_bar_offset;   // bar offset in y
+    int m_bar_x;        
+    int m_bar_w;        
+    int m_bar_h;        
+    int m_text_x;       
+    int m_separation;   
+    int m_value_x;      
+    int m_bar_offset;   
 
     int m_start_x, m_start_y;
 

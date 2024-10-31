@@ -1,22 +1,6 @@
-/*
- * Copyright 1993-2010 NVIDIA Corporation.  All rights reserved.
- *
- * Please refer to the NVIDIA end user license agreement (EULA) associated
- * with this source code for terms and conditions that govern your use of
- * this software. Any use, reproduction, disclosure, or distribution of
- * this software and related documentation outside the terms of the EULA
- * is strictly prohibited.
- *
- */
+
  
- /*
- * Copyright 1993-2010 NVIDIA Corporation.  All rights reserved.
- * 
- * Tridiagonal solvers.
- * Host code for parallel cyclic reduction (PCR).
- *
- * NVIDIA, Nikolai Sakharnykh, 2009
- */
+ 
 
 #ifndef _PCR_SMALL_SYSTEMS_
 #define _PCR_SMALL_SYSTEMS_
@@ -26,8 +10,8 @@
 const int pcrNumKernels = 2;
 
 const char *pcrKernelNames[pcrNumKernels] = { 
-	"pcr_small_systems_kernel",			// original version
-	"pcr_branch_free_kernel",			// optimized branch-free version
+	"pcr_small_systems_kernel",			
+	"pcr_branch_free_kernel",			
 };  
 
 cl_kernel pcrKernel[MAX_GPU_COUNT];
@@ -45,7 +29,7 @@ double runPcrKernels(int devCount, cl_mem *dev_a, cl_mem *dev_b, cl_mem *dev_c, 
 	{
 		int num_systems = workSize[i];
 
-		// set kernel arguments
+		
 		errcode  = clSetKernelArg(pcrKernel[i], 0, sizeof(cl_mem), (void *) &dev_a[i]);
 		errcode |= clSetKernelArg(pcrKernel[i], 1, sizeof(cl_mem), (void *) &dev_b[i]);
 		errcode |= clSetKernelArg(pcrKernel[i], 2, sizeof(cl_mem), (void *) &dev_c[i]);
@@ -57,11 +41,11 @@ double runPcrKernels(int devCount, cl_mem *dev_a, cl_mem *dev_b, cl_mem *dev_c, 
 		errcode |= clSetKernelArg(pcrKernel[i], 8, sizeof(int), &iterations);
 		oclCheckError(errcode, CL_SUCCESS);
 
-		// set execution parameters
+		
 		szLocalWorkSize[i] = system_size;
 		szGlobalWorkSize[i] = num_systems * szLocalWorkSize[i];
 	    
-		// warm up
+		
 		errcode = clEnqueueNDRangeKernel(cqCommandQue[i], pcrKernel[i], 1, NULL, &szGlobalWorkSize[i], &szLocalWorkSize[i], 0, NULL, &GPUExecution[i]);
 		clFlush(cqCommandQue[i]);
 		oclCheckError(errcode, CL_SUCCESS);
@@ -70,7 +54,7 @@ double runPcrKernels(int devCount, cl_mem *dev_a, cl_mem *dev_b, cl_mem *dev_c, 
 
 	shrLog("  looping %i times..\n", BENCH_ITERATIONS);	
 
-	// run computations on GPUs in parallel
+	
 	double sum_time = 0.0;
 	for (int iCycles = 0; iCycles < BENCH_ITERATIONS; iCycles++)
 	{
@@ -87,7 +71,7 @@ double runPcrKernels(int devCount, cl_mem *dev_a, cl_mem *dev_b, cl_mem *dev_c, 
 	double time = sum_time / BENCH_ITERATIONS;
 
 #ifdef GPU_PROFILING
-	// output detailed timing for each GPU
+	
 	for (int i = 0; i < devCount; i++)
     {
 		shrLog("  GPU %d time =  %.5f s\n", i, executionTime(GPUExecution[i]));
@@ -114,24 +98,24 @@ double pcr_small_systems(int devCount, const char** argv, float *a, float *b, fl
 	cl_mem device_d[MAX_GPU_COUNT];
 	cl_mem device_x[MAX_GPU_COUNT];
 
-	int workSize[MAX_GPU_COUNT];		// number of systems assigned to each device
-	int workOffset[MAX_GPU_COUNT];		// offset to work set for each device 
+	int workSize[MAX_GPU_COUNT];		
+	int workOffset[MAX_GPU_COUNT];		
 
 	cl_event GPUDone[MAX_GPU_COUNT];
 
-	// create host pointers (TEMPORARY here)
+	
 	cl_mem host_a = clCreateBuffer(cxGPUContext, CL_MEM_READ_ONLY | CL_MEM_USE_HOST_PTR, mem_size, a, NULL);
 	cl_mem host_b = clCreateBuffer(cxGPUContext, CL_MEM_READ_ONLY | CL_MEM_USE_HOST_PTR, mem_size, b, NULL);
 	cl_mem host_c = clCreateBuffer(cxGPUContext, CL_MEM_READ_ONLY | CL_MEM_USE_HOST_PTR, mem_size, c, NULL);
 	cl_mem host_d = clCreateBuffer(cxGPUContext, CL_MEM_READ_ONLY | CL_MEM_USE_HOST_PTR, mem_size, d, NULL);
 
-    // allocate device memory and copy host to device arrays
+    
 	workOffset[0] = 0;
 	for (int i = 0; i < devCount; i++)
 	{
-		workSize[i] = num_systems / devCount;	// sign equal work for each GPU
+		workSize[i] = num_systems / devCount;	
 		
-		// size and offset in bytes
+		
 		int workSizeB = workSize[i] * system_size * sizeof(float);
 		int workOffsetB = workOffset[i] * system_size * sizeof(float);
 
@@ -157,33 +141,33 @@ double pcr_small_systems(int devCount, const char** argv, float *a, float *b, fl
 		if (i < devCount-1) workOffset[i+1] = workOffset[i] + workSize[i];
 	}
 
-	// free host pointers
+	
 	clReleaseMemObject(host_a);
 	clReleaseMemObject(host_b);
 	clReleaseMemObject(host_c);
 	clReleaseMemObject(host_d);
 
-    // load program from file
+    
 	size_t program_length;
 	char *source = oclLoadProgSource(shrFindFilePath("pcr_kernels.cl", argv[0]), "", &program_length);
     oclCheckError(source != NULL, shrTRUE);
 
-    // create program
+    
     cl_program cpProgram = clCreateProgramWithSource(cxGPUContext, 1, (const char **)&source, &program_length, &errcode);
     oclCheckError(errcode, CL_SUCCESS);
 
-	// build program
+	
     errcode = clBuildProgram(cpProgram, 0, NULL, "-cl-fast-relaxed-math", NULL, NULL);
 	if (errcode != CL_SUCCESS)
     {
-        // write out standard error, output build log
+        
         oclLogBuildInfo(cpProgram, oclGetFirstDev(cxGPUContext));
         oclLogPtx(cpProgram, oclGetFirstDev(cxGPUContext), "pcr_kernels.ptx");
         shrLog("\nFAILED\n\n");
         oclCheckError(errcode, CL_SUCCESS);
     }
 
-	// create kernels
+	
 	for (int i = 0; i < devCount; i++)
 	{
 		pcrKernel[i] = clCreateKernel(cpProgram, pcrKernelNames[id], &errcode);
@@ -202,7 +186,7 @@ double pcr_small_systems(int devCount, const char** argv, float *a, float *b, fl
 
 	double time = runPcrKernels(devCount, device_a, device_b, device_c, device_d, device_x, system_size, workSize);
 	
-    // copy result from device to host
+    
 	for (int i = 0; i < devCount; i++) 
 	{
 		int workSizeB = workSize[i] * system_size * sizeof(float);
@@ -211,7 +195,7 @@ double pcr_small_systems(int devCount, const char** argv, float *a, float *b, fl
 	}
 	clWaitForEvents(devCount, GPUDone);
 
-    // cleanup memory
+    
 	for (int i = 0; i < devCount; i++)
 	{
 		clReleaseMemObject(device_a[i]);

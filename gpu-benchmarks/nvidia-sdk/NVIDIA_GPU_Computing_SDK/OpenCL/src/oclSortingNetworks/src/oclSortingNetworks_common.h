@@ -1,22 +1,13 @@
-/*
- * Copyright 1993-2010 NVIDIA Corporation.  All rights reserved.
- *
- * Please refer to the NVIDIA end user license agreement (EULA) associated
- * with this source code for terms and conditions that govern your use of
- * this software. Any use, reproduction, disclosure, or distribution of
- * this software and related documentation outside the terms of the EULA
- * is strictly prohibited.
- *
- */
 
-////////////////////////////////////////////////////////////////////////////////
-// Shortcut typename
-////////////////////////////////////////////////////////////////////////////////
+
+
+
+
 typedef unsigned int uint;
 
-////////////////////////////////////////////////////////////////////////////////
-// Host-side validation routines
-////////////////////////////////////////////////////////////////////////////////
+
+
+
 extern "C" int validateSortedKeys(
     uint *result,
     uint *data,
@@ -47,9 +38,9 @@ extern "C" int validateValues(
     uint N
 );
 
-////////////////////////////////////////////////////////////////////////////////
-// OpenCL bitonic sort
-////////////////////////////////////////////////////////////////////////////////
+
+
+
 extern "C" void initBitonicSort(cl_context cxGPUContext, cl_command_queue cqParamCommandQue, const char **argv);
 
 extern "C" void closeBitonicSort(void);

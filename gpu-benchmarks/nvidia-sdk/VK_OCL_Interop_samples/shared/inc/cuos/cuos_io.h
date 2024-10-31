@@ -10,7 +10,7 @@
 #undef __cdecl
 #define __cdecl
 
-#endif //!_WIN32
+#endif 
 
 #if defined(CUOS_NAMESPACE)
 namespace CUOS_NAMESPACE {
@@ -18,17 +18,7 @@ namespace CUOS_NAMESPACE {
 extern "C" {
 #endif
 
-/* other ones: currently being used in driver code:
-   fread fwrite
-   fopen fclose
-   fseek ftell
 
-   other ones: currently not being used in driver code:
-   vprintf vfprintf
-   putc putchar puts fputc fputs
-
-   when adding others, also update cuos_mods.h
-*/
 
 typedef FILE *(__cdecl *cuosGetOutputFileFn)(void);
 extern cuosGetOutputFileFn cuosGetStdout;
@@ -44,7 +34,7 @@ typedef int (__cdecl *cuosFprintfFn)(FILE *stream, const char *format, ...);
 extern cuosFprintfFn cuosFprintf;
 
 #if defined(__cplusplus)
-} // namespace or extern "C"
+} 
 #endif
 
-#endif //_CUOS_IO_H_
+#endif 

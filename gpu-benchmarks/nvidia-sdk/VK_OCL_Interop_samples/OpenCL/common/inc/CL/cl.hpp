@@ -1,146 +1,8 @@
-/*******************************************************************************
- * Copyright (c) 2008-2013 The Khronos Group Inc.
- *
- * Permission is hereby granted, free of charge, to any person obtaining a
- * copy of this software and/or associated documentation files (the
- * "Materials"), to deal in the Materials without restriction, including
- * without limitation the rights to use, copy, modify, merge, publish,
- * distribute, sublicense, and/or sell copies of the Materials, and to
- * permit persons to whom the Materials are furnished to do so, subject to
- * the following conditions:
- *
- * The above copyright notice and this permission notice shall be included
- * in all copies or substantial portions of the Materials.
- *
- * THE MATERIALS ARE PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
- * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
- * CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
- * MATERIALS OR THE USE OR OTHER DEALINGS IN THE MATERIALS.
- ******************************************************************************/
 
-/*! \file
- *
- *   \brief C++ bindings for OpenCL 1.0 (rev 48), OpenCL 1.1 (rev 33) and 
- *       OpenCL 1.2 (rev 15)    
- *   \author Benedict R. Gaster, Laurent Morichetti and Lee Howes
- *   
- *   Additions and fixes from:
- *       Brian Cole, March 3rd 2010 and April 2012 
- *       Matt Gruenke, April 2012.
- *       Bruce Merry, February 2013.
- *   
- *   \version 1.2.5
- *   \date June 2013
- *
- *   Optional extension support
- *
- *         cl
- *         cl_ext_device_fission
- *				#define USE_CL_DEVICE_FISSION
- */
 
-/*! \mainpage
- * \section intro Introduction
- * For many large applications C++ is the language of choice and so it seems
- * reasonable to define C++ bindings for OpenCL.
- *
- *
- * The interface is contained with a single C++ header file \em cl.hpp and all
- * definitions are contained within the namespace \em cl. There is no additional
- * requirement to include \em cl.h and to use either the C++ or original C
- * bindings it is enough to simply include \em cl.hpp.
- *
- * The bindings themselves are lightweight and correspond closely to the
- * underlying C API. Using the C++ bindings introduces no additional execution
- * overhead.
- *
- * For detail documentation on the bindings see:
- *
- * The OpenCL C++ Wrapper API 1.2 (revision 09)
- *  http://www.khronos.org/registry/cl/specs/opencl-cplusplus-1.2.pdf
- *
- * \section example Example
- *
- * The following example shows a general use case for the C++
- * bindings, including support for the optional exception feature and
- * also the supplied vector and string classes, see following sections for
- * decriptions of these features.
- *
- * \code
- * #define __CL_ENABLE_EXCEPTIONS
- * 
- * #if defined(__APPLE__) || defined(__MACOSX)
- * #include <OpenCL/cl.hpp>
- * #else
- * #include <CL/cl.hpp>
- * #endif
- * #include <cstdio>
- * #include <cstdlib>
- * #include <iostream>
- * 
- *  const char * helloStr  = "__kernel void "
- *                           "hello(void) "
- *                           "{ "
- *                           "  "
- *                           "} ";
- * 
- *  int
- *  main(void)
- *  {
- *     cl_int err = CL_SUCCESS;
- *     try {
- *
- *       std::vector<cl::Platform> platforms;
- *       cl::Platform::get(&platforms);
- *       if (platforms.size() == 0) {
- *           std::cout << "Platform size 0\n";
- *           return -1;
- *       }
- *
- *       cl_context_properties properties[] = 
- *          { CL_CONTEXT_PLATFORM, (cl_context_properties)(platforms[0])(), 0};
- *       cl::Context context(CL_DEVICE_TYPE_CPU, properties); 
- * 
- *       std::vector<cl::Device> devices = context.getInfo<CL_CONTEXT_DEVICES>();
- * 
- *       cl::Program::Sources source(1,
- *           std::make_pair(helloStr,strlen(helloStr)));
- *       cl::Program program_ = cl::Program(context, source);
- *       program_.build(devices);
- * 
- *       cl::Kernel kernel(program_, "hello", &err);
- * 
- *       cl::Event event;
- *       cl::CommandQueue queue(context, devices[0], 0, &err);
- *       queue.enqueueNDRangeKernel(
- *           kernel, 
- *           cl::NullRange, 
- *           cl::NDRange(4,4),
- *           cl::NullRange,
- *           NULL,
- *           &event); 
- * 
- *       event.wait();
- *     }
- *     catch (cl::Error err) {
- *        std::cerr 
- *           << "ERROR: "
- *           << err.what()
- *           << "("
- *           << err.err()
- *           << ")"
- *           << std::endl;
- *     }
- * 
- *    return EXIT_SUCCESS;
- *  }
- * 
- * \endcode
- *
- */
+
+
+
 #ifndef CL_HPP_
 #define CL_HPP_
 
@@ -153,7 +15,7 @@
 
 #if defined(__CL_ENABLE_EXCEPTIONS)
 #include <exception>
-#endif // #if defined(__CL_ENABLE_EXCEPTIONS)
+#endif 
 
 #pragma push_macro("max")
 #undef max
@@ -161,9 +23,9 @@
 #include <CL/cl_d3d10.h>
 #include <CL/cl_dx9_media_sharing.h>
 #endif
-#endif // _WIN32
+#endif 
 
-// 
+
 #if defined(USE_CL_DEVICE_FISSION)
 #include <CL/cl_ext.h>
 #endif
@@ -175,53 +37,53 @@
 #else
 #include <GL/gl.h>
 #include <CL/opencl.h>
-#endif // !__APPLE__
+#endif 
 
-// To avoid accidentally taking ownership of core OpenCL types
-// such as cl_kernel constructors are made explicit
-// under OpenCL 1.2
+
+
+
 #if defined(CL_VERSION_1_2) && !defined(CL_USE_DEPRECATED_OPENCL_1_1_APIS)
 #define __CL_EXPLICIT_CONSTRUCTORS explicit
-#else // #if defined(CL_USE_DEPRECATED_OPENCL_1_1_APIS)
+#else 
 #define __CL_EXPLICIT_CONSTRUCTORS 
-#endif // #if defined(CL_USE_DEPRECATED_OPENCL_1_1_APIS)
+#endif 
 
-// Define deprecated prefixes and suffixes to ensure compilation
-// in case they are not pre-defined
+
+
 #if !defined(CL_EXT_PREFIX__VERSION_1_1_DEPRECATED)
 #define CL_EXT_PREFIX__VERSION_1_1_DEPRECATED  
-#endif // #if !defined(CL_EXT_PREFIX__VERSION_1_1_DEPRECATED)
+#endif 
 #if !defined(CL_EXT_SUFFIX__VERSION_1_1_DEPRECATED)
 #define CL_EXT_SUFFIX__VERSION_1_1_DEPRECATED
-#endif // #if !defined(CL_EXT_PREFIX__VERSION_1_1_DEPRECATED)
+#endif 
 #if !defined(CL_EXT_PREFIX__VERSION_1_2_DEPRECATED)
 #define CL_EXT_PREFIX__VERSION_1_2_DEPRECATED  
-#endif // #if !defined(CL_EXT_PREFIX__VERSION_1_2_DEPRECATED)
+#endif 
 #if !defined(CL_EXT_SUFFIX__VERSION_1_2_DEPRECATED)
 #define CL_EXT_SUFFIX__VERSION_1_2_DEPRECATED
-#endif // #if !defined(CL_EXT_PREFIX__VERSION_1_2_DEPRECATED)
+#endif 
 #if !defined(CL_EXT_PREFIX__VERSION_2_0_DEPRECATED)
 #define CL_EXT_PREFIX__VERSION_2_0_DEPRECATED  
-#endif // #if !defined(CL_EXT_PREFIX__VERSION_2_0_DEPRECATED)
+#endif 
 #if !defined(CL_EXT_SUFFIX__VERSION_2_0_DEPRECATED)
 #define CL_EXT_SUFFIX__VERSION_2_0_DEPRECATED
-#endif // #if !defined(CL_EXT_PREFIX__VERSION_2_0_DEPRECATED)
+#endif 
 #if !defined(CL_EXT_PREFIX__VERSION_2_1_DEPRECATED)
 #define CL_EXT_PREFIX__VERSION_2_1_DEPRECATED  
-#endif // #if !defined(CL_EXT_PREFIX__VERSION_2_1_DEPRECATED)
+#endif 
 #if !defined(CL_EXT_SUFFIX__VERSION_2_1_DEPRECATED)
 #define CL_EXT_SUFFIX__VERSION_2_1_DEPRECATED
-#endif // #if !defined(CL_EXT_PREFIX__VERSION_2_1_DEPRECATED)
+#endif 
 #if !defined(CL_EXT_PREFIX__VERSION_2_2_DEPRECATED)
 #define CL_EXT_PREFIX__VERSION_2_2_DEPRECATED  
-#endif // #if !defined(CL_EXT_PREFIX__VERSION_2_2_DEPRECATED)
+#endif 
 #if !defined(CL_EXT_SUFFIX__VERSION_2_2_DEPRECATED)
 #define CL_EXT_SUFFIX__VERSION_2_2_DEPRECATED
-#endif // #if !defined(CL_EXT_PREFIX__VERSION_2_2_DEPRECATED)
+#endif 
 
 #if !defined(CL_CALLBACK)
 #define CL_CALLBACK
-#endif //CL_CALLBACK
+#endif 
 
 #include <utility>
 #include <limits>
@@ -239,23 +101,17 @@
 
 #include <emmintrin.h>
 #include <xmmintrin.h>
-#endif // linux
+#endif 
 
 #include <cstring>
 
 
-/*! \namespace cl
- *
- * \brief The OpenCL C++ bindings are defined within this namespace.
- *
- */
+
 namespace cl {
 
 class Memory;
 
-/**
- * Deprecated APIs for 1.2
- */
+
 #if defined(CL_USE_DEPRECATED_OPENCL_1_1_APIS) || (defined(CL_VERSION_1_1) && !defined(CL_VERSION_1_2)) 
 #define __INIT_CL_EXT_FCN_PTR(name) \
     if(!pfn_##name) { \
@@ -264,7 +120,7 @@ class Memory;
         if(!pfn_##name) { \
         } \
     }
-#endif // #if defined(CL_VERSION_1_1)
+#endif 
 
 #if defined(CL_VERSION_1_2)
 #define __INIT_CL_EXT_FCN_PTR_PLATFORM(platform, name) \
@@ -274,7 +130,7 @@ class Memory;
         if(!pfn_##name) { \
         } \
     }
-#endif // #if defined(CL_VERSION_1_1)
+#endif 
 
 class Program;
 class Device;
@@ -284,34 +140,20 @@ class Memory;
 class Buffer;
 
 #if defined(__CL_ENABLE_EXCEPTIONS)
-/*! \brief Exception class 
- * 
- *  This may be thrown by API functions when __CL_ENABLE_EXCEPTIONS is defined.
- */
+
 class Error : public std::exception
 {
 private:
     cl_int err_;
     const char * errStr_;
 public:
-    /*! \brief Create a new CL error exception for a given error code
-     *  and corresponding message.
-     * 
-     *  \param err error code value.
-     *
-     *  \param errStr a descriptive string that must remain in scope until
-     *                handling of the exception has concluded.  If set, it
-     *                will be returned by what().
-     */
+    
     Error(cl_int err, const char * errStr = NULL) : err_(err), errStr_(errStr)
     {}
 
     ~Error() throw() {}
 
-    /*! \brief Get error string associated with exception
-     *
-     * \return A memory pointer to the error message string.
-     */
+    
     virtual const char * what() const throw ()
     {
         if (errStr_ == NULL) {
@@ -322,17 +164,14 @@ public:
         }
     }
 
-    /*! \brief Get error code associated with exception
-     *
-     *  \return The error code.
-     */
+    
     cl_int err(void) const { return err_; }
 };
 
 #define __ERR_STR(x) #x
 #else
 #define __ERR_STR(x) NULL
-#endif // __CL_ENABLE_EXCEPTIONS
+#endif 
 
 
 namespace detail
@@ -350,15 +189,15 @@ static inline cl_int errHandler (
 #else
 static inline cl_int errHandler (cl_int err, const char * errStr = NULL)
 {
-    (void) errStr; // suppress unused variable warning
+    (void) errStr; 
     return err;
 }
-#endif // __CL_ENABLE_EXCEPTIONS
+#endif 
 }
 
 
 
-//! \cond DOXYGEN_DETAIL
+
 #if !defined(__CL_USER_OVERRIDE_ERROR_STRINGS)
 #define __GET_DEVICE_INFO_ERR               __ERR_STR(clGetDeviceInfo)
 #define __GET_PLATFORM_INFO_ERR             __ERR_STR(clGetPlatformInfo)
@@ -373,7 +212,7 @@ static inline cl_int errHandler (cl_int err, const char * errStr = NULL)
 #define __GET_KERNEL_INFO_ERR               __ERR_STR(clGetKernelInfo)
 #if defined(CL_VERSION_1_2)
 #define __GET_KERNEL_ARG_INFO_ERR               __ERR_STR(clGetKernelArgInfo)
-#endif // #if defined(CL_VERSION_1_2)
+#endif 
 #define __GET_KERNEL_WORK_GROUP_INFO_ERR    __ERR_STR(clGetKernelWorkGroupInfo)
 #define __GET_PROGRAM_INFO_ERR              __ERR_STR(clGetProgramInfo)
 #define __GET_PROGRAM_BUILD_INFO_ERR        __ERR_STR(clGetProgramBuildInfo)
@@ -393,7 +232,7 @@ static inline cl_int errHandler (cl_int err, const char * errStr = NULL)
 #define __CREATE_IMAGE_ERR                  __ERR_STR(clCreateImage)
 #define __CREATE_GL_TEXTURE_ERR             __ERR_STR(clCreateFromGLTexture)
 #define __IMAGE_DIMENSION_ERR               __ERR_STR(Incorrect image dimensions)
-#endif // #if defined(CL_VERSION_1_2)
+#endif 
 #define __CREATE_SAMPLER_PROPERTY_ERR       __ERR_STR(clCreateSamplerWithProperties)
 #define __SET_MEM_OBJECT_DESTRUCTOR_CALLBACK_ERR __ERR_STR(clSetMemObjectDestructorCallback)
 
@@ -408,12 +247,12 @@ static inline cl_int errHandler (cl_int err, const char * errStr = NULL)
 #define __CREATE_PROGRAM_WITH_BINARY_ERR    __ERR_STR(clCreateProgramWithBinary)
 #if defined(CL_VERSION_1_2)
 #define __CREATE_PROGRAM_WITH_BUILT_IN_KERNELS_ERR    __ERR_STR(clCreateProgramWithBuiltInKernels)
-#endif // #if defined(CL_VERSION_1_2)
+#endif 
 #define __BUILD_PROGRAM_ERR                 __ERR_STR(clBuildProgram)
 #if defined(CL_VERSION_1_2)
 #define __COMPILE_PROGRAM_ERR                  __ERR_STR(clCompileProgram)
 
-#endif // #if defined(CL_VERSION_1_2)
+#endif 
 #define __CREATE_KERNELS_IN_PROGRAM_ERR     __ERR_STR(clCreateKernelsInProgram)
 
 #define __CREATE_COMMAND_QUEUE_PROPERTY_ERR __ERR_STR(clCreateCommandQueueWithProperties)
@@ -438,7 +277,7 @@ static inline cl_int errHandler (cl_int err, const char * errStr = NULL)
 #define __ENQUEUE_NATIVE_KERNEL             __ERR_STR(clEnqueueNativeKernel)
 #if defined(CL_VERSION_1_2)
 #define __ENQUEUE_MIGRATE_MEM_OBJECTS_ERR   __ERR_STR(clEnqueueMigrateMemObjects)
-#endif // #if defined(CL_VERSION_1_2)
+#endif 
 
 #define __ENQUEUE_ACQUIRE_GL_ERR            __ERR_STR(clEnqueueAcquireGLObjects)
 #define __ENQUEUE_RELEASE_GL_ERR            __ERR_STR(clEnqueueReleaseGLObjects)
@@ -450,18 +289,14 @@ static inline cl_int errHandler (cl_int err, const char * errStr = NULL)
 #define __FINISH_ERR                        __ERR_STR(clFinish)
 #define __VECTOR_CAPACITY_ERR               __ERR_STR(Vector capacity error)
 
-/**
- * CL 1.2 version that uses device fission.
- */
+
 #if defined(CL_VERSION_1_2)
 #define __CREATE_SUB_DEVICES                __ERR_STR(clCreateSubDevices)
 #else
 #define __CREATE_SUB_DEVICES                __ERR_STR(clCreateSubDevicesEXT)
-#endif // #if defined(CL_VERSION_1_2)
+#endif 
 
-/**
- * Deprecated APIs for 1.2
- */
+
 #if defined(CL_USE_DEPRECATED_OPENCL_1_1_APIS) || (defined(CL_VERSION_1_1) && !defined(CL_VERSION_1_2)) 
 #define __ENQUEUE_MARKER_ERR                __ERR_STR(clEnqueueMarker)
 #define __ENQUEUE_WAIT_FOR_EVENTS_ERR       __ERR_STR(clEnqueueWaitForEvents)
@@ -471,59 +306,40 @@ static inline cl_int errHandler (cl_int err, const char * errStr = NULL)
 #define __CREATE_GL_TEXTURE_3D_ERR          __ERR_STR(clCreateFromGLTexture3D)
 #define __CREATE_IMAGE2D_ERR                __ERR_STR(clCreateImage2D)
 #define __CREATE_IMAGE3D_ERR                __ERR_STR(clCreateImage3D)
-#endif // #if defined(CL_VERSION_1_1)
+#endif 
 
 #if defined(CL_USE_DEPRECATED_OPENCL_1_2_APIS) || !defined(CL_VERSION_2_0)
 #define __CREATE_COMMAND_QUEUE_ERR          __ERR_STR(clCreateCommandQueue)
 #define __CREATE_SAMPLER_ERR                __ERR_STR(clCreateSampler)
 #define __ENQUEUE_TASK_ERR                  __ERR_STR(clEnqueueTask)
-#endif // #if defined(CL_VERSION_1_2)
+#endif 
 
-#endif // __CL_USER_OVERRIDE_ERROR_STRINGS
-//! \endcond
+#endif 
 
-/**
- * CL 1.2 marker and barrier commands
- */
+
+
 #if defined(CL_VERSION_1_2)
 #define __ENQUEUE_MARKER_WAIT_LIST_ERR                __ERR_STR(clEnqueueMarkerWithWaitList)
 #define __ENQUEUE_BARRIER_WAIT_LIST_ERR               __ERR_STR(clEnqueueBarrierWithWaitList)
-#endif // #if defined(CL_VERSION_1_2)
+#endif 
 
 #if !defined(__USE_DEV_STRING) && !defined(__NO_STD_STRING)
 typedef std::string STRING_CLASS;
 #elif !defined(__USE_DEV_STRING) 
 
-/*! \class string
- * \brief Simple string class, that provides a limited subset of std::string
- * functionality but avoids many of the issues that come with that class.
- 
- *  \note Deprecated. Please use std::string as default or
- *  re-define the string class to match the std::string
- *  interface by defining STRING_CLASS
- */
+
 class CL_EXT_PREFIX__VERSION_1_1_DEPRECATED string CL_EXT_SUFFIX__VERSION_1_1_DEPRECATED
 {
 private:
     ::size_t size_;
     char * str_;
 public:
-    //! \brief Constructs an empty string, allocating no memory.
+    
     string(void) : size_(0), str_(NULL)
     {
     }
 
-    /*! \brief Constructs a string populated from an arbitrary value of
-     *  specified size.
-     * 
-     *  An extra '\0' is added, in case none was contained in str.
-     *
-     *  \param str the initial value of the string instance.  Note that '\0'     
-     *             characters receive no special treatment.  If NULL,
-     *             the string is left empty, with a size of 0.
-     *
-     *  \param size the number of characters to copy from str.
-     */
+    
     string(const char * str, ::size_t size) :
         size_(size),
         str_(NULL)
@@ -540,11 +356,7 @@ public:
         }
     }
 
-    /*! \brief Constructs a string populated from a null-terminated value.
-     *
-     *  \param str the null-terminated initial value of the string instance.
-     *             If NULL, the string is left empty, with a size of 0.
-     */
+    
     string(const char * str) :
         size_(0),
         str_(NULL)
@@ -603,12 +415,7 @@ public:
         return str_[pos];
     }
 
-    /*! \brief Copies the value of another string to this one.
-     *
-     *  \param rhs the string to copy.
-     *
-     *  \returns a reference to the modified instance.
-     */
+    
     string& operator=(const string& rhs)
     {
         if (this == &rhs) {
@@ -640,10 +447,7 @@ public:
         return *this;
     }
 
-    /*! \brief Constructs a string by copying the value of another instance.
-     *
-     *  \param rhs the string to copy.
-     */
+    
     string(const string& rhs) :
         size_(0),
         str_(NULL)
@@ -651,26 +455,24 @@ public:
         *this = rhs;
     }
 
-    //! \brief Destructor - frees memory used to hold the current value.
+    
     ~string()
     {
         delete[] str_;
         str_ = NULL;
     }
     
-    //! \brief Queries the length of the string, excluding any added '\0's.
+    
     ::size_t size(void) const   { return size_; }
 
-    //! \brief Queries the length of the string, excluding any added '\0's.
+    
     ::size_t length(void) const { return size(); }
 
-    /*! \brief Returns a pointer to the private copy held by this instance,
-     *  or "" if empty/unset.
-     */
+    
     const char * c_str(void) const { return (str_) ? str_ : "";}
 };
 typedef cl::string STRING_CLASS;
-#endif // #elif !defined(__USE_DEV_STRING) 
+#endif 
 
 #if !defined(__USE_DEV_VECTOR) && !defined(__NO_STD_VECTOR)
 #define VECTOR_CLASS std::vector
@@ -681,28 +483,7 @@ typedef cl::string STRING_CLASS;
 #define __MAX_DEFAULT_VECTOR_SIZE 10
 #endif
 
-/*! \class vector
- * \brief Fixed sized vector implementation that mirroring 
- *
- *  \note Deprecated. Please use std::vector as default or
- *  re-define the vector class to match the std::vector
- *  interface by defining VECTOR_CLASS
 
- *  \note Not recommended for use with custom objects as
- *  current implementation will construct N elements
- *
- * std::vector functionality.
- *  \brief Fixed sized vector compatible with std::vector.
- *
- *  \note
- *  This differs from std::vector<> not just in memory allocation,
- *  but also in terms of when members are constructed, destroyed,
- *  and assigned instead of being copy constructed.
- *
- *  \param T type of element contained in the vector.
- *
- *  \param N maximum size of the vector.
- */
 template <typename T, unsigned int N = __MAX_DEFAULT_VECTOR_SIZE>
 class CL_EXT_PREFIX__VERSION_1_1_DEPRECATED vector CL_EXT_SUFFIX__VERSION_1_1_DEPRECATED
 {
@@ -711,28 +492,24 @@ private:
     unsigned int size_;
 
 public:
-    //! \brief Constructs an empty vector with no memory allocated.
+    
     vector() :  
         size_(static_cast<unsigned int>(0))
     {}
 
-    //! \brief Deallocates the vector's memory and destroys all of its elements.
+    
     ~vector() 
     {
         clear();
     }
 
-    //! \brief Returns the number of elements currently contained.
+    
     unsigned int size(void) const
     {
         return size_;
     }
     
-    /*! \brief Empties the vector of all elements.
-     *  \note
-     *  This does not deallocate memory but will invoke destructors
-     *  on contained elements.
-     */
+    
     void clear()
     {
         while(!empty()) {
@@ -740,10 +517,7 @@ public:
         }
     }
 
-    /*! \brief Appends an element after the last valid element.
-     * Calling this on a vector that has reached capacity will throw an 
-     * exception if exceptions are enabled.
-     */
+    
     void push_back (const T& x)
     { 
         if (size() < N) {    
@@ -754,10 +528,7 @@ public:
         }
     }
 
-    /*! \brief Removes the last valid element from the vector.
-     * Calling this on an empty vector will throw an exception
-     * if exceptions are enabled.
-     */
+    
     void pop_back(void)
     {
         if (size_ != 0) {
@@ -768,10 +539,7 @@ public:
         }
     }
   
-    /*! \brief Constructs with a value copied from another.
-     *
-     *  \param vec the vector to copy.
-     */
+    
     vector(const vector<T, N>& vec) : 
         size_(vec.size_)
     {
@@ -780,12 +548,7 @@ public:
         }
     } 
 
-    /*! \brief Constructs with a specified number of initial elements.
-     *
-     *  \param size number of initial elements.
-     *
-     *  \param val value of initial elements.
-     */
+    
     vector(unsigned int size, const T& val = T()) :
         size_(0)
     {
@@ -794,13 +557,7 @@ public:
         }
     }
 
-    /*! \brief Overwrites the current content with that copied from another
-     *         instance.
-     *
-     *  \param rhs vector to copy.
-     *
-     *  \returns a reference to this.
-     */
+    
     vector<T, N>& operator=(const vector<T, N>& rhs)
     {
         if (this == &rhs) {
@@ -816,10 +573,7 @@ public:
         return *this;
     }
 
-    /*! \brief Tests equality against another instance.
-     *
-     *  \param vec the vector against which to compare.
-     */
+    
     bool operator==(vector<T,N> &vec)
     {
         if (size() != vec.size()) {
@@ -834,61 +588,43 @@ public:
         return true;
     }
   
-    //! \brief Conversion operator to T*.
+    
     operator T* ()             { return data_; }
 
-    //! \brief Conversion operator to const T*.
+    
     operator const T* () const { return data_; }
    
-    //! \brief Tests whether this instance has any elements.
+    
     bool empty (void) const
     {
         return size_==0;
     }
   
-    //! \brief Returns the maximum number of elements this instance can hold.
+    
     unsigned int max_size (void) const
     {
         return N;
     }
 
-    //! \brief Returns the maximum number of elements this instance can hold.
+    
     unsigned int capacity () const
     {
         return N;
     }
 
-    /*! \brief Returns a reference to a given element.
-     *
-     *  \param index which element to access.     *
-     *  \note
-     *  The caller is responsible for ensuring index is >= 0 and < size().
-     */
+    
     T& operator[](int index)
     {
         return data_[index];
     }
   
-    /*! \brief Returns a const reference to a given element.
-     *
-     *  \param index which element to access.
-     *
-     *  \note
-     *  The caller is responsible for ensuring index is >= 0 and < size().
-     */
+    
     const T& operator[](int index) const
     {
         return data_[index];
     }
   
-    /*! \brief Assigns elements of the vector based on a source iterator range.
-     *
-     *  \param start Beginning iterator of source range
-     *  \param end Enditerator of source range
-     *
-     *  \note
-     *  Will throw an exception if exceptions are enabled and size exceeded.
-     */
+    
     template<class I>
     void assign(I start, I end)
     {
@@ -899,20 +635,14 @@ public:
         }
     }
 
-    /*! \class iterator
-     * \brief Const iterator class for vectors
-     */
+    
     class iterator
     {
     private:
         const vector<T,N> *vec_;
         int index_;
 
-        /**
-         * Internal iterator constructor to capture reference
-         * to the vector it iterates over rather than taking 
-         * the vector by copy.
-         */
+        
         iterator (const vector<T,N> &vec, int index) :
             vec_(&vec)
         {            
@@ -1035,7 +765,7 @@ public:
         return data_[size_-1];
     }
 };  
-#endif // #if !defined(__USE_DEV_VECTOR) && !defined(__NO_STD_VECTOR)
+#endif 
 
 
 
@@ -1046,9 +776,7 @@ namespace detail {
 #define __DEFAULT_BEING_INITIALIZED 2
 #define __DEFAULT_INITIALIZED 4
 
-    /*
-     * Compare and exchange primitives are needed for handling of defaults
-    */
+    
     inline int compare_exchange(volatile int * dest, int exchange, int comparand)
     {
 #ifdef _WIN32
@@ -1058,22 +786,19 @@ namespace detail {
            (long)comparand));
 #elif defined(__APPLE__) || defined(__MACOSX)
 		return OSAtomicOr32Orig((uint32_t)exchange, (volatile uint32_t*)dest);
-#else // !_WIN32 || defined(__APPLE__) || defined(__MACOSX)
+#else 
         return (__sync_val_compare_and_swap(
             dest, 
             comparand, 
             exchange));
-#endif // !_WIN32
+#endif 
     }
 
     inline void fence() { _mm_mfence(); }
-}; // namespace detail
+}; 
 
     
-/*! \brief class used to interface between C++ and
- *  OpenCL C calls that require arrays of size_t values, whose
- *  size is known statically.
- */
+
 template <int N>
 class size_t
 { 
@@ -1081,7 +806,7 @@ private:
     ::size_t data_[N];
 
 public:
-    //! \brief Initialize size_t to all 0s
+    
     size_t()
     {
         for( int i = 0; i < N; ++i ) {
@@ -1099,26 +824,26 @@ public:
         return data_[index];
     }
 
-    //! \brief Conversion operator to T*.
+    
     operator ::size_t* ()             { return data_; }
 
-    //! \brief Conversion operator to const T*.
+    
     operator const ::size_t* () const { return data_; }
 };
 
 namespace detail {
 
-// Generic getInfoHelper. The final parameter is used to guide overload
-// resolution: the actual parameter passed is an int, which makes this
-// a worse conversion sequence than a specialization that declares the
-// parameter as an int.
+
+
+
+
 template<typename Functor, typename T>
 inline cl_int getInfoHelper(Functor f, cl_uint name, T* param, long)
 {
     return f(name, sizeof(T), param, NULL);
 }
 
-// Specialized getInfoHelper for VECTOR_CLASS params
+
 template <typename Func, typename T>
 inline cl_int getInfoHelper(Func f, cl_uint name, VECTOR_CLASS<T>* param, long)
 {
@@ -1138,12 +863,7 @@ inline cl_int getInfoHelper(Func f, cl_uint name, VECTOR_CLASS<T>* param, long)
     return CL_SUCCESS;
 }
 
-/* Specialization for reference-counted types. This depends on the
- * existence of Wrapper<T>::cl_type, and none of the other types having the
- * cl_type member. Note that simplify specifying the parameter as Wrapper<T>
- * does not work, because when using a derived type (e.g. Context) the generic
- * template will provide a better match.
- */
+
 template <typename Func, typename T>
 inline cl_int getInfoHelper(Func f, cl_uint name, VECTOR_CLASS<T>* param, int, typename T::cl_type = 0)
 {
@@ -1174,7 +894,7 @@ inline cl_int getInfoHelper(Func f, cl_uint name, VECTOR_CLASS<T>* param, int, t
     return CL_SUCCESS;
 }
 
-// Specialized for getInfo<CL_PROGRAM_BINARIES>
+
 template <typename Func>
 inline cl_int getInfoHelper(Func f, cl_uint name, VECTOR_CLASS<char *>* param, int)
 {
@@ -1187,7 +907,7 @@ inline cl_int getInfoHelper(Func f, cl_uint name, VECTOR_CLASS<char *>* param, i
     return CL_SUCCESS;
 }
 
-// Specialized GetInfoHelper for STRING_CLASS params
+
 template <typename Func>
 inline cl_int getInfoHelper(Func f, cl_uint name, STRING_CLASS* param, long)
 {
@@ -1207,7 +927,7 @@ inline cl_int getInfoHelper(Func f, cl_uint name, STRING_CLASS* param, long)
     return CL_SUCCESS;
 }
 
-// Specialized GetInfoHelper for cl::size_t params
+
 template <typename Func, ::size_t N>
 inline cl_int getInfoHelper(Func f, cl_uint name, size_t<N>* param, long)
 {
@@ -1232,12 +952,7 @@ inline cl_int getInfoHelper(Func f, cl_uint name, size_t<N>* param, long)
 
 template<typename T> struct ReferenceHandler;
 
-/* Specialization for reference-counted types. This depends on the
- * existence of Wrapper<T>::cl_type, and none of the other types having the
- * cl_type member. Note that simplify specifying the parameter as Wrapper<T>
- * does not work, because when using a derived type (e.g. Context) the generic
- * template will provide a better match.
- */
+
 template<typename Func, typename T>
 inline cl_int getInfoHelper(Func f, cl_uint name, T* param, int, typename T::cl_type = 0)
 {
@@ -1401,7 +1116,7 @@ inline cl_int getInfoHelper(Func f, cl_uint name, T* param, int, typename T::cl_
     F(cl_kernel_work_group_info, CL_KERNEL_PRIVATE_MEM_SIZE, cl_ulong) \
     \
     F(cl_event_info, CL_EVENT_CONTEXT, cl::Context)
-#endif // CL_VERSION_1_1
+#endif 
 
     
 #if defined(CL_VERSION_1_2)
@@ -1427,7 +1142,7 @@ inline cl_int getInfoHelper(Func f, cl_uint name, T* param, int, typename T::cl_
     F(cl_device_info, CL_DEVICE_PREFERRED_INTEROP_USER_SYNC, ::size_t) \
     F(cl_device_info, CL_DEVICE_PARTITION_AFFINITY_DOMAIN, cl_device_affinity_domain) \
     F(cl_device_info, CL_DEVICE_BUILT_IN_KERNELS, STRING_CLASS)
-#endif // #if defined(CL_VERSION_1_2)
+#endif 
 
 #if defined(USE_CL_DEVICE_FISSION)
 #define __PARAM_NAME_DEVICE_FISSION(F) \
@@ -1436,7 +1151,7 @@ inline cl_int getInfoHelper(Func f, cl_uint name, T* param, int, typename T::cl_
     F(cl_device_info, CL_DEVICE_AFFINITY_DOMAINS_EXT, VECTOR_CLASS<cl_device_partition_property_ext>) \
     F(cl_device_info, CL_DEVICE_REFERENCE_COUNT_EXT , cl_uint) \
     F(cl_device_info, CL_DEVICE_PARTITION_STYLE_EXT, VECTOR_CLASS<cl_device_partition_property_ext>)
-#endif // USE_CL_DEVICE_FISSION
+#endif 
 
 template <typename enum_type, cl_int Name>
 struct param_traits {};
@@ -1453,14 +1168,14 @@ struct param_traits<detail:: token,param_name>       \
 __PARAM_NAME_INFO_1_0(__CL_DECLARE_PARAM_TRAITS)
 #if defined(CL_VERSION_1_1)
 __PARAM_NAME_INFO_1_1(__CL_DECLARE_PARAM_TRAITS)
-#endif // CL_VERSION_1_1
+#endif 
 #if defined(CL_VERSION_1_2)
 __PARAM_NAME_INFO_1_2(__CL_DECLARE_PARAM_TRAITS)
-#endif // CL_VERSION_1_1
+#endif 
 
 #if defined(USE_CL_DEVICE_FISSION)
 __PARAM_NAME_DEVICE_FISSION(__CL_DECLARE_PARAM_TRAITS);
-#endif // USE_CL_DEVICE_FISSION
+#endif 
 
 #ifdef CL_PLATFORM_ICD_SUFFIX_KHR
 __CL_DECLARE_PARAM_TRAITS(cl_platform_info, CL_PLATFORM_ICD_SUFFIX_KHR, STRING_CLASS)
@@ -1523,7 +1238,7 @@ __CL_DECLARE_PARAM_TRAITS(cl_device_info, CL_DEVICE_KERNEL_EXEC_TIMEOUT_NV, cl_b
 __CL_DECLARE_PARAM_TRAITS(cl_device_info, CL_DEVICE_INTEGRATED_MEMORY_NV, cl_bool)
 #endif
 
-// Convenience functions
+
 
 template <typename Func, typename T>
 inline cl_int
@@ -1571,58 +1286,38 @@ struct ReferenceHandler
 { };
 
 #if defined(CL_VERSION_1_2)
-/**
- * OpenCL 1.2 devices do have retain/release.
- */
+
 template <>
 struct ReferenceHandler<cl_device_id>
 {
-    /**
-     * Retain the device.
-     * \param device A valid device created using createSubDevices
-     * \return 
-     *   CL_SUCCESS if the function executed successfully.
-     *   CL_INVALID_DEVICE if device was not a valid subdevice
-     *   CL_OUT_OF_RESOURCES
-     *   CL_OUT_OF_HOST_MEMORY
-     */
+    
     static cl_int retain(cl_device_id device)
     { return ::clRetainDevice(device); }
-    /**
-     * Retain the device.
-     * \param device A valid device created using createSubDevices
-     * \return 
-     *   CL_SUCCESS if the function executed successfully.
-     *   CL_INVALID_DEVICE if device was not a valid subdevice
-     *   CL_OUT_OF_RESOURCES
-     *   CL_OUT_OF_HOST_MEMORY
-     */
+    
     static cl_int release(cl_device_id device)
     { return ::clReleaseDevice(device); }
 };
-#else // #if defined(CL_VERSION_1_2)
-/**
- * OpenCL 1.1 devices do not have retain/release.
- */
+#else 
+
 template <>
 struct ReferenceHandler<cl_device_id>
 {
-    // cl_device_id does not have retain().
+    
     static cl_int retain(cl_device_id)
     { return CL_SUCCESS; }
-    // cl_device_id does not have release().
+    
     static cl_int release(cl_device_id)
     { return CL_SUCCESS; }
 };
-#endif // #if defined(CL_VERSION_1_2)
+#endif 
 
 template <>
 struct ReferenceHandler<cl_platform_id>
 {
-    // cl_platform_id does not have retain().
+    
     static cl_int retain(cl_platform_id)
     { return CL_SUCCESS; }
-    // cl_platform_id does not have release().
+    
     static cl_int release(cl_platform_id)
     { return CL_SUCCESS; }
 };
@@ -1691,7 +1386,7 @@ struct ReferenceHandler<cl_event>
 };
 
 
-// Extracts version number with major in the upper 16 bits, minor in the lower 16
+
 static cl_uint getVersion(const char *versionInfo)
 {
     int highVersion = 0;
@@ -1730,8 +1425,8 @@ static cl_uint getDevicePlatformVersion(cl_device_id device)
 #if defined(CL_VERSION_1_2) && defined(CL_USE_DEPRECATED_OPENCL_1_1_APIS)
 static cl_uint getContextPlatformVersion(cl_context context)
 {
-    // The platform cannot be queried directly, so we first have to grab a
-    // device and obtain its context
+    
+    
     ::size_t size = 0;
     clGetContextInfo(context, CL_CONTEXT_DEVICES, 0, NULL, &size);
     if (size == 0)
@@ -1740,7 +1435,7 @@ static cl_uint getContextPlatformVersion(cl_context context)
     clGetContextInfo(context, CL_CONTEXT_DEVICES, size, devices, NULL);
     return getDevicePlatformVersion(devices[0]);
 }
-#endif // #if defined(CL_VERSION_1_2) && defined(CL_USE_DEPRECATED_OPENCL_1_1_APIS)
+#endif 
 
 template <typename T>
 class Wrapper
@@ -1894,27 +1589,23 @@ protected:
     }
 };
 
-} // namespace detail
-//! \endcond
+} 
 
-/*! \stuct ImageFormat
- *  \brief Adds constructors and member functions for cl_image_format.
- *
- *  \see cl_image_format
- */
+
+
 struct ImageFormat : public cl_image_format
 {
-    //! \brief Default constructor - performs no initialization.
+    
     ImageFormat(){}
 
-    //! \brief Initializing constructor.
+    
     ImageFormat(cl_channel_order order, cl_channel_type type)
     {
         image_channel_order = order;
         image_channel_data_type = type;
     }
 
-    //! \brief Assignment operator.
+    
     ImageFormat& operator = (const ImageFormat& rhs)
     {
         if (this != &rhs) {
@@ -1925,41 +1616,23 @@ struct ImageFormat : public cl_image_format
     }
 };
 
-/*! \brief Class interface for cl_device_id.
- *
- *  \note Copies of these objects are inexpensive, since they don't 'own'
- *        any underlying resources or data structures.
- *
- *  \see cl_device_id
- */
+
 class Device : public detail::Wrapper<cl_device_id>
 {
 public:
-    //! \brief Default constructor - initializes to NULL.
+    
     Device() : detail::Wrapper<cl_type>() { }
 
-    /*! \brief Copy constructor.
-     * 
-     *  This simply copies the device ID value, which is an inexpensive operation.
-     */
+    
     Device(const Device& device) : detail::Wrapper<cl_type>(device) { }
 
-    /*! \brief Constructor from cl_device_id.
-     * 
-     *  This simply copies the device ID value, which is an inexpensive operation.
-     */
+    
     Device(const cl_device_id &device) : detail::Wrapper<cl_type>(device) { }
 
-    /*! \brief Returns the first device on the default context.
-     *
-     *  \see Context::getDefault()
-     */
+    
     static Device getDefault(cl_int * err = NULL);
 
-    /*! \brief Assignment operator from Device.
-     * 
-     *  This simply copies the device ID value, which is an inexpensive operation.
-     */
+    
     Device& operator = (const Device& rhs)
     {
         if (this != &rhs) {
@@ -1968,17 +1641,14 @@ public:
         return *this;
     }
 
-    /*! \brief Assignment operator from cl_device_id.
-     * 
-     *  This simply copies the device ID value, which is an inexpensive operation.
-     */
+    
     Device& operator = (const cl_device_id& rhs)
     {
         detail::Wrapper<cl_type>::operator=(rhs);
         return *this;
     }
 
-    //! \brief Wrapper for clGetDeviceInfo().
+    
     template <typename T>
     cl_int getInfo(cl_device_info name, T* param) const
     {
@@ -1987,7 +1657,7 @@ public:
             __GET_DEVICE_INFO_ERR);
     }
 
-    //! \brief Wrapper for clGetDeviceInfo() that returns by value.
+    
     template <cl_int name> typename
     detail::param_traits<detail::cl_device_info, name>::param_type
     getInfo(cl_int* err = NULL) const
@@ -2001,11 +1671,9 @@ public:
         return param;
     }
 
-    /**
-     * CL 1.2 version
-     */
+    
 #if defined(CL_VERSION_1_2)
-    //! \brief Wrapper for clCreateSubDevicesEXT().
+    
     cl_int createSubDevices(
         const cl_device_partition_property * properties,
         VECTOR_CLASS<Device>* devices)
@@ -2025,11 +1693,9 @@ public:
         devices->assign(&ids[0], &ids[n]);
         return CL_SUCCESS;
     }
-#endif // #if defined(CL_VERSION_1_2)
+#endif 
 
-/**
- * CL 1.1 version that uses device fission.
- */
+
 #if defined(CL_VERSION_1_1)
 #if defined(USE_CL_DEVICE_FISSION)
     cl_int createSubDevices(
@@ -2038,11 +1704,11 @@ public:
     {
         typedef CL_API_ENTRY cl_int 
             ( CL_API_CALL * PFN_clCreateSubDevicesEXT)(
-                cl_device_id /*in_device*/,
-                const cl_device_partition_property_ext * /* properties */,
-                cl_uint /*num_entries*/,
-                cl_device_id * /*out_devices*/,
-                cl_uint * /*num_devices*/ ) CL_EXT_SUFFIX__VERSION_1_1;
+                cl_device_id ,
+                const cl_device_partition_property_ext * ,
+                cl_uint ,
+                cl_device_id * ,
+                cl_uint *  ) CL_EXT_SUFFIX__VERSION_1_1;
 
         static PFN_clCreateSubDevicesEXT pfn_clCreateSubDevicesEXT = NULL;
         __INIT_CL_EXT_FCN_PTR(clCreateSubDevicesEXT);
@@ -2062,39 +1728,24 @@ public:
         devices->assign(&ids[0], &ids[n]);
         return CL_SUCCESS;
     }
-#endif // #if defined(USE_CL_DEVICE_FISSION)
-#endif // #if defined(CL_VERSION_1_1)
+#endif 
+#endif 
 };
 
-/*! \brief Class interface for cl_platform_id.
- *
- *  \note Copies of these objects are inexpensive, since they don't 'own'
- *        any underlying resources or data structures.
- *
- *  \see cl_platform_id
- */
+
 class Platform : public detail::Wrapper<cl_platform_id>
 {
 public:
-    //! \brief Default constructor - initializes to NULL.
+    
     Platform() : detail::Wrapper<cl_type>()  { }
 
-    /*! \brief Copy constructor.
-     * 
-     *  This simply copies the platform ID value, which is an inexpensive operation.
-     */
+    
     Platform(const Platform& platform) : detail::Wrapper<cl_type>(platform) { }
 
-    /*! \brief Constructor from cl_platform_id.
-     * 
-     *  This simply copies the platform ID value, which is an inexpensive operation.
-     */
+    
     Platform(const cl_platform_id &platform) : detail::Wrapper<cl_type>(platform) { }
 
-    /*! \brief Assignment operator from Platform.
-     * 
-     *  This simply copies the platform ID value, which is an inexpensive operation.
-     */
+    
     Platform& operator = (const Platform& rhs)
     {
         if (this != &rhs) {
@@ -2103,17 +1754,14 @@ public:
         return *this;
     }
 
-    /*! \brief Assignment operator from cl_platform_id.
-     * 
-     *  This simply copies the platform ID value, which is an inexpensive operation.
-     */
+    
     Platform& operator = (const cl_platform_id& rhs)
     {
         detail::Wrapper<cl_type>::operator=(rhs);
         return *this;
     }
 
-    //! \brief Wrapper for clGetPlatformInfo().
+    
     cl_int getInfo(cl_platform_info name, STRING_CLASS* param) const
     {
         return detail::errHandler(
@@ -2121,7 +1769,7 @@ public:
             __GET_PLATFORM_INFO_ERR);
     }
 
-    //! \brief Wrapper for clGetPlatformInfo() that returns by value.
+    
     template <cl_int name> typename
     detail::param_traits<detail::cl_platform_info, name>::param_type
     getInfo(cl_int* err = NULL) const
@@ -2135,10 +1783,7 @@ public:
         return param;
     }
 
-    /*! \brief Gets a list of devices for this platform.
-     * 
-     *  Wraps clGetDeviceIDs().
-     */
+    
     cl_int getDevices(
         cl_device_type type,
         VECTOR_CLASS<Device>* devices) const
@@ -2163,29 +1808,7 @@ public:
     }
 
 #if defined(USE_DX_INTEROP)
-   /*! \brief Get the list of available D3D10 devices.
-     *
-     *  \param d3d_device_source.
-     *
-     *  \param d3d_object.
-     *
-     *  \param d3d_device_set.
-     *
-     *  \param devices returns a vector of OpenCL D3D10 devices found. The cl::Device
-     *  values returned in devices can be used to identify a specific OpenCL
-     *  device. If \a devices argument is NULL, this argument is ignored.
-     *
-     *  \return One of the following values:
-     *    - CL_SUCCESS if the function is executed successfully.
-     *
-     *  The application can query specific capabilities of the OpenCL device(s)
-     *  returned by cl::getDevices. This can be used by the application to
-     *  determine which device(s) to use.
-     *
-     * \note In the case that exceptions are enabled and a return value
-     * other than CL_SUCCESS is generated, then cl::Error exception is
-     * generated.
-     */
+   
     cl_int getDevices(
         cl_d3d10_device_source_khr d3d_device_source,
         void *                     d3d_object,
@@ -2239,10 +1862,7 @@ public:
     }
 #endif
 
-    /*! \brief Gets a list of available platforms.
-     * 
-     *  Wraps clGetPlatformIDs().
-     */
+    
     static cl_int get(
         VECTOR_CLASS<Platform>* platforms)
     {
@@ -2268,10 +1888,7 @@ public:
         return CL_SUCCESS;
     }
 
-    /*! \brief Gets the first available platform.
-     * 
-     *  Wraps clGetPlatformIDs(), returning the first result.
-     */
+    
     static cl_int get(
         Platform * platform)
     {
@@ -2297,10 +1914,7 @@ public:
         return CL_SUCCESS;
     }
 
-    /*! \brief Gets the first available platform, returning it by value.
-     * 
-     *  Wraps clGetPlatformIDs(), returning the first result.
-     */
+    
     static Platform get(
         cl_int * errResult = NULL)
     {
@@ -2337,23 +1951,18 @@ public:
 
     
 #if defined(CL_VERSION_1_2)
-    //! \brief Wrapper for clUnloadCompiler().
+    
     cl_int
     unloadCompiler()
     {
         return ::clUnloadPlatformCompiler(object_);
     }
-#endif // #if defined(CL_VERSION_1_2)
-}; // class Platform
+#endif 
+}; 
 
-/**
- * Deprecated APIs for 1.2
- */
+
 #if defined(CL_USE_DEPRECATED_OPENCL_1_1_APIS) || (defined(CL_VERSION_1_1) && !defined(CL_VERSION_1_2))
-/**
- * Unload the OpenCL compiler.
- * \note Deprecated for OpenCL 1.2. Use Platform::unloadCompiler instead.
- */
+
 inline CL_EXT_PREFIX__VERSION_1_1_DEPRECATED cl_int
 UnloadCompiler() CL_EXT_SUFFIX__VERSION_1_1_DEPRECATED;
 inline cl_int
@@ -2361,16 +1970,9 @@ UnloadCompiler()
 {
     return ::clUnloadCompiler();
 }
-#endif // #if defined(CL_VERSION_1_1)
+#endif 
 
-/*! \brief Class interface for cl_context.
- *
- *  \note Copies of these objects are shallow, meaning that the copy will refer
- *        to the same underlying cl_context as the original.  For details, see
- *        clRetainContext() and clReleaseContext().
- *
- *  \see cl_context
- */
+
 class Context 
     : public detail::Wrapper<cl_context>
 {
@@ -2379,16 +1981,10 @@ private:
     static Context default_;
     static volatile cl_int default_error_;
 public:
-    /*! \brief Destructor.
-     *
-     *  This calls clReleaseContext() on the value held by this instance.
-     */
+    
     ~Context() { }
 
-    /*! \brief Constructs a context including a list of specified devices.
-     *
-     *  Wraps clCreateContext().
-     */
+    
     Context(
         const VECTOR_CLASS<Device>& devices,
         cl_context_properties* properties = NULL,
@@ -2445,10 +2041,7 @@ public:
         }
     }
 
-    /*! \brief Constructs a context including all devices of a specified type.
-     *
-     *  Wraps clCreateContextFromType().
-     */
+    
     Context(
         cl_device_type type,
         cl_context_properties* properties = NULL,
@@ -2486,10 +2079,7 @@ public:
         }
     }
 
-    /*! \brief Returns a singleton context including all devices of CL_DEVICE_TYPE_DEFAULT.
-     *
-     *  \note All calls to this function return the same cl_context as the first.
-     */
+    
     static Context getDefault(cl_int * err = NULL) 
     {
         int state = detail::compare_exchange(
@@ -2504,7 +2094,7 @@ public:
         }
 
         if (state & __DEFAULT_BEING_INITIALIZED) {
-              // Assume writes will propagate eventually...
+              
               while(default_initialized_ != __DEFAULT_INITIALIZED) {
                   detail::fence();
               }
@@ -2526,7 +2116,7 @@ public:
         detail::fence();
 
         default_error_ = error;
-        // Assume writes will propagate eventually...
+        
         default_initialized_ = __DEFAULT_INITIALIZED;
 
         detail::fence();
@@ -2538,27 +2128,16 @@ public:
 
     }
 
-    //! \brief Default constructor - initializes to NULL.
+    
     Context() : detail::Wrapper<cl_type>() { }
 
-    /*! \brief Copy constructor.
-     * 
-     *  This calls clRetainContext() on the parameter's cl_context.
-     */
+    
     Context(const Context& context) : detail::Wrapper<cl_type>(context) { }
 
-    /*! \brief Constructor from cl_context - takes ownership.
-     * 
-     *  This effectively transfers ownership of a refcount on the cl_context
-     *  into the new Context object.
-     */
+    
     __CL_EXPLICIT_CONSTRUCTORS Context(const cl_context& context) : detail::Wrapper<cl_type>(context) { }
 
-    /*! \brief Assignment operator from Context.
-     * 
-     *  This calls clRetainContext() on the parameter and clReleaseContext() on
-     *  the previous value held by this instance.
-     */
+    
     Context& operator = (const Context& rhs)
     {
         if (this != &rhs) {
@@ -2567,18 +2146,14 @@ public:
         return *this;
     }
 
-    /*! \brief Assignment operator from cl_context - takes ownership.
-     * 
-     *  This effectively transfers ownership of a refcount on the rhs and calls
-     *  clReleaseContext() on the value previously held by this instance.
-     */
+    
     Context& operator = (const cl_context& rhs)
     {
         detail::Wrapper<cl_type>::operator=(rhs);
         return *this;
     }
 
-    //! \brief Wrapper for clGetContextInfo().
+    
     template <typename T>
     cl_int getInfo(cl_context_info name, T* param) const
     {
@@ -2587,7 +2162,7 @@ public:
             __GET_CONTEXT_INFO_ERR);
     }
 
-    //! \brief Wrapper for clGetContextInfo() that returns by value.
+    
     template <cl_int name> typename
     detail::param_traits<detail::cl_context_info, name>::param_type
     getInfo(cl_int* err = NULL) const
@@ -2601,10 +2176,7 @@ public:
         return param;
     }
 
-    /*! \brief Gets a list of supported image formats.
-     *  
-     *  Wraps clGetSupportedImageFormats().
-     */
+    
     cl_int getSupportedImageFormats(
         cl_mem_flags flags,
         cl_mem_object_type type,
@@ -2678,44 +2250,23 @@ __attribute__((weak)) Context Context::default_;
 __attribute__((weak)) volatile cl_int Context::default_error_ = CL_SUCCESS;
 #endif
 
-/*! \brief Class interface for cl_event.
- *
- *  \note Copies of these objects are shallow, meaning that the copy will refer
- *        to the same underlying cl_event as the original.  For details, see
- *        clRetainEvent() and clReleaseEvent().
- *
- *  \see cl_event
- */
+
 class Event : public detail::Wrapper<cl_event>
 {
 public:
-    /*! \brief Destructor.
-     *
-     *  This calls clReleaseEvent() on the value held by this instance.
-     */
+    
     ~Event() { }
  
-    //! \brief Default constructor - initializes to NULL.
+    
     Event() : detail::Wrapper<cl_type>() { }
 
-    /*! \brief Copy constructor.
-     * 
-     *  This calls clRetainEvent() on the parameter's cl_event.
-     */
+    
     Event(const Event& event) : detail::Wrapper<cl_type>(event) { }
 
-    /*! \brief Constructor from cl_event - takes ownership.
-     * 
-     *  This effectively transfers ownership of a refcount on the cl_event
-     *  into the new Event object.
-     */
+    
     Event(const cl_event& event) : detail::Wrapper<cl_type>(event) { }
 
-    /*! \brief Assignment operator from cl_event - takes ownership.
-     *
-     *  This effectively transfers ownership of a refcount on the rhs and calls
-     *  clReleaseEvent() on the value previously held by this instance.
-     */
+    
     Event& operator = (const Event& rhs)
     {
         if (this != &rhs) {
@@ -2724,18 +2275,14 @@ public:
         return *this;
     }
 
-    /*! \brief Assignment operator from cl_event.
-     * 
-     *  This calls clRetainEvent() on the parameter and clReleaseEvent() on
-     *  the previous value held by this instance.
-     */
+    
     Event& operator = (const cl_event& rhs)
     {
         detail::Wrapper<cl_type>::operator=(rhs);
         return *this;
     }
 
-    //! \brief Wrapper for clGetEventInfo().
+    
     template <typename T>
     cl_int getInfo(cl_event_info name, T* param) const
     {
@@ -2744,7 +2291,7 @@ public:
             __GET_EVENT_INFO_ERR);
     }
 
-    //! \brief Wrapper for clGetEventInfo() that returns by value.
+    
     template <cl_int name> typename
     detail::param_traits<detail::cl_event_info, name>::param_type
     getInfo(cl_int* err = NULL) const
@@ -2758,7 +2305,7 @@ public:
         return param;
     }
 
-    //! \brief Wrapper for clGetEventProfilingInfo().
+    
     template <typename T>
     cl_int getProfilingInfo(cl_profiling_info name, T* param) const
     {
@@ -2767,7 +2314,7 @@ public:
             __GET_EVENT_PROFILE_INFO_ERR);
     }
 
-    //! \brief Wrapper for clGetEventProfilingInfo() that returns by value.
+    
     template <cl_int name> typename
     detail::param_traits<detail::cl_profiling_info, name>::param_type
     getProfilingInfo(cl_int* err = NULL) const
@@ -2781,10 +2328,7 @@ public:
         return param;
     }
 
-    /*! \brief Blocks the calling thread until this event completes.
-     * 
-     *  Wraps clWaitForEvents().
-     */
+    
     cl_int wait() const
     {
         return detail::errHandler(
@@ -2793,10 +2337,7 @@ public:
     }
 
 #if defined(CL_VERSION_1_1)
-    /*! \brief Registers a user callback function for a specific command execution status.
-     *
-     *  Wraps clSetEventCallback().
-     */
+    
     cl_int setCallback(
         cl_int type,
         void (CL_CALLBACK * pfn_notify)(cl_event, cl_int, void *),		
@@ -2812,10 +2353,7 @@ public:
     }
 #endif
 
-    /*! \brief Blocks the calling thread until every event specified is complete.
-     * 
-     *  Wraps clWaitForEvents().
-     */
+    
     static cl_int
     waitForEvents(const VECTOR_CLASS<Event>& events)
     {
@@ -2827,17 +2365,11 @@ public:
 };
 
 #if defined(CL_VERSION_1_1)
-/*! \brief Class interface for user events (a subset of cl_event's).
- * 
- *  See Event for details about copy semantics, etc.
- */
+
 class UserEvent : public Event
 {
 public:
-    /*! \brief Constructs a user event on a given context.
-     *
-     *  Wraps clCreateUserEvent().
-     */
+    
     UserEvent(
         const Context& context,
         cl_int * err = NULL)
@@ -2853,13 +2385,13 @@ public:
         }
     }
 
-    //! \brief Default constructor - initializes to NULL.
+    
     UserEvent() : Event() { }
 
-    //! \brief Copy constructor - performs shallow copy.
+    
     UserEvent(const UserEvent& event) : Event(event) { }
 
-    //! \brief Assignment Operator - performs shallow copy.
+    
     UserEvent& operator = (const UserEvent& rhs)
     {
         if (this != &rhs) {
@@ -2868,10 +2400,7 @@ public:
         return *this;
     }
 
-    /*! \brief Sets the execution status of a user event object.
-     *
-     *  Wraps clSetUserEventStatus().
-     */
+    
     cl_int setStatus(cl_int status)
     {
         return detail::errHandler(
@@ -2881,10 +2410,7 @@ public:
 };
 #endif
 
-/*! \brief Blocks the calling thread until every event specified is complete.
- * 
- *  Wraps clWaitForEvents().
- */
+
 inline static cl_int
 WaitForEvents(const VECTOR_CLASS<Event>& events)
 {
@@ -2894,45 +2420,24 @@ WaitForEvents(const VECTOR_CLASS<Event>& events)
         __WAIT_FOR_EVENTS_ERR);
 }
 
-/*! \brief Class interface for cl_mem.
- *
- *  \note Copies of these objects are shallow, meaning that the copy will refer
- *        to the same underlying cl_mem as the original.  For details, see
- *        clRetainMemObject() and clReleaseMemObject().
- *
- *  \see cl_mem
- */
+
 class Memory : public detail::Wrapper<cl_mem>
 {
 public:
  
-    /*! \brief Destructor.
-     *
-     *  This calls clReleaseMemObject() on the value held by this instance.
-     */
+    
     ~Memory() {}
 
-    //! \brief Default constructor - initializes to NULL.
+    
     Memory() : detail::Wrapper<cl_type>() { }
 
-    /*! \brief Copy constructor - performs shallow copy.
-     * 
-     *  This calls clRetainMemObject() on the parameter's cl_mem.
-     */
+    
     Memory(const Memory& memory) : detail::Wrapper<cl_type>(memory) { }
 
-    /*! \brief Constructor from cl_mem - takes ownership.
-     * 
-     *  This effectively transfers ownership of a refcount on the cl_mem
-     *  into the new Memory object.
-     */
+    
     __CL_EXPLICIT_CONSTRUCTORS Memory(const cl_mem& memory) : detail::Wrapper<cl_type>(memory) { }
 
-    /*! \brief Assignment operator from Memory.
-     * 
-     *  This calls clRetainMemObject() on the parameter and clReleaseMemObject()
-     *  on the previous value held by this instance.
-     */
+    
     Memory& operator = (const Memory& rhs)
     {
         if (this != &rhs) {
@@ -2941,18 +2446,14 @@ public:
         return *this;
     }
 
-    /*! \brief Assignment operator from cl_mem - takes ownership.
-     *
-     *  This effectively transfers ownership of a refcount on the rhs and calls
-     *  clReleaseMemObject() on the value previously held by this instance.
-     */
+    
     Memory& operator = (const cl_mem& rhs)
     {
         detail::Wrapper<cl_type>::operator=(rhs);
         return *this;
     }
 
-    //! \brief Wrapper for clGetMemObjectInfo().
+    
     template <typename T>
     cl_int getInfo(cl_mem_info name, T* param) const
     {
@@ -2961,7 +2462,7 @@ public:
             __GET_MEM_OBJECT_INFO_ERR);
     }
 
-    //! \brief Wrapper for clGetMemObjectInfo() that returns by value.
+    
     template <cl_int name> typename
     detail::param_traits<detail::cl_mem_info, name>::param_type
     getInfo(cl_int* err = NULL) const
@@ -2976,19 +2477,7 @@ public:
     }
 
 #if defined(CL_VERSION_1_1)
-    /*! \brief Registers a callback function to be called when the memory object
-     *         is no longer needed.
-     *
-     *  Wraps clSetMemObjectDestructorCallback().
-     *
-     *  Repeated calls to this function, for a given cl_mem value, will append
-     *  to the list of functions called (in reverse order) when memory object's
-     *  resources are freed and the memory object is deleted.
-     *
-     *  \note
-     *  The registered callbacks are associated with the underlying cl_mem
-     *  value - not the Memory class instance.
-     */
+    
     cl_int setDestructorCallback(
         void (CL_CALLBACK * pfn_notify)(cl_mem, void *),		
         void * user_data = NULL)
@@ -3004,30 +2493,19 @@ public:
 
 };
 
-// Pre-declare copy functions
+
 class Buffer;
 template< typename IteratorType >
 cl_int copy( IteratorType startIterator, IteratorType endIterator, cl::Buffer &buffer );
 template< typename IteratorType >
 cl_int copy( const cl::Buffer &buffer, IteratorType startIterator, IteratorType endIterator );
 
-/*! \brief Class interface for Buffer Memory Objects.
- * 
- *  See Memory for details about copy semantics, etc.
- *
- *  \see Memory
- */
+
 class Buffer : public Memory
 {
 public:
 
-    /*! \brief Constructs a Buffer in a specified context.
-     *
-     *  Wraps clCreateBuffer().
-     *
-     *  \param host_ptr Storage to be used if the CL_MEM_USE_HOST_PTR flag was
-     *                  specified.  Note alignment & exclusivity requirements.
-     */
+    
     Buffer(
         const Context& context,
         cl_mem_flags flags,
@@ -3044,15 +2522,7 @@ public:
         }
     }
 
-    /*! \brief Constructs a Buffer in the default context.
-     *
-     *  Wraps clCreateBuffer().
-     *
-     *  \param host_ptr Storage to be used if the CL_MEM_USE_HOST_PTR flag was
-     *                  specified.  Note alignment & exclusivity requirements.
-     *
-     *  \see Context::getDefault()
-     */
+    
     Buffer(
          cl_mem_flags flags,
         ::size_t size,
@@ -3071,10 +2541,7 @@ public:
         }
     }
 
-    /*!
-     * \brief Construct a Buffer from a host container via iterators.
-     * If useHostPtr is specified iterators must be random access.
-     */
+    
     template< typename IteratorType >
     Buffer(
         IteratorType startIterator,
@@ -3121,25 +2588,16 @@ public:
         }
     }
 
-    //! \brief Default constructor - initializes to NULL.
+    
     Buffer() : Memory() { }
 
-    /*! \brief Copy constructor - performs shallow copy.
-     *
-     *  See Memory for further details.
-     */
+    
     Buffer(const Buffer& buffer) : Memory(buffer) { }
 
-    /*! \brief Constructor from cl_mem - takes ownership.
-     *
-     *  See Memory for further details.
-     */
+    
     __CL_EXPLICIT_CONSTRUCTORS Buffer(const cl_mem& buffer) : Memory(buffer) { }
 
-    /*! \brief Assignment from Buffer - performs shallow copy.
-     *
-     *  See Memory for further details.
-     */
+    
     Buffer& operator = (const Buffer& rhs)
     {
         if (this != &rhs) {
@@ -3148,10 +2606,7 @@ public:
         return *this;
     }
 
-    /*! \brief Assignment from cl_mem - performs shallow copy.
-     *
-     *  See Memory for further details.
-     */
+    
     Buffer& operator = (const cl_mem& rhs)
     {
         Memory::operator=(rhs);
@@ -3159,10 +2614,7 @@ public:
     }
 
 #if defined(CL_VERSION_1_1)
-    /*! \brief Creates a new buffer object from this.
-     *
-     *  Wraps clCreateSubBuffer().
-     */
+    
     Buffer createSubBuffer(
         cl_mem_flags flags,
         cl_buffer_create_type buffer_create_type,
@@ -3189,14 +2641,7 @@ public:
 };
 
 #if defined (USE_DX_INTEROP)
-/*! \brief Class interface for creating OpenCL buffers from ID3D10Buffer's.
- *
- *  This is provided to facilitate interoperability with Direct3D.
- * 
- *  See Memory for details about copy semantics, etc.
- *
- *  \see Memory
- */
+
 class BufferD3D10 : public Buffer
 {
 public:
@@ -3204,11 +2649,7 @@ public:
     cl_context context, cl_mem_flags flags, ID3D10Buffer*  buffer,
     cl_int* errcode_ret);
 
-    /*! \brief Constructs a BufferD3D10, in a specified context, from a
-     *         given ID3D10Buffer.
-     *
-     *  Wraps clCreateFromD3D10BufferKHR().
-     */
+    
     BufferD3D10(
         const Context& context,
         cl_mem_flags flags,
@@ -3244,25 +2685,16 @@ public:
         }
     }
 
-    //! \brief Default constructor - initializes to NULL.
+    
     BufferD3D10() : Buffer() { }
 
-    /*! \brief Copy constructor - performs shallow copy.
-     *
-     *  See Memory for further details.
-     */
+    
     BufferD3D10(const BufferD3D10& buffer) : Buffer(buffer) { }
 
-    /*! \brief Constructor from cl_mem - takes ownership.
-     *
-     *  See Memory for further details.
-     */
+    
     __CL_EXPLICIT_CONSTRUCTORS BufferD3D10(const cl_mem& buffer) : Buffer(buffer) { }
 
-    /*! \brief Assignment from BufferD3D10 - performs shallow copy.
-     *
-     *  See Memory for further details.
-     */
+    
     BufferD3D10& operator = (const BufferD3D10& rhs)
     {
         if (this != &rhs) {
@@ -3271,10 +2703,7 @@ public:
         return *this;
     }
 
-    /*! \brief Assignment from cl_mem - performs shallow copy.
-     *
-     *  See Memory for further details.
-     */
+    
     BufferD3D10& operator = (const cl_mem& rhs)
     {
         Buffer::operator=(rhs);
@@ -3283,22 +2712,11 @@ public:
 };
 #endif
 
-/*! \brief Class interface for GL Buffer Memory Objects.
- *
- *  This is provided to facilitate interoperability with OpenGL.
- * 
- *  See Memory for details about copy semantics, etc.
- * 
- *  \see Memory
- */
+
 class BufferGL : public Buffer
 {
 public:
-    /*! \brief Constructs a BufferGL in a specified context, from a given
-     *         GL buffer.
-     *
-     *  Wraps clCreateFromGLBuffer().
-     */
+    
     BufferGL(
         const Context& context,
         cl_mem_flags flags,
@@ -3318,25 +2736,16 @@ public:
         }
     }
 
-    //! \brief Default constructor - initializes to NULL.
+    
     BufferGL() : Buffer() { }
 
-    /*! \brief Copy constructor - performs shallow copy.
-     *
-     *  See Memory for further details.
-     */
+    
     BufferGL(const BufferGL& buffer) : Buffer(buffer) { }
 
-    /*! \brief Constructor from cl_mem - takes ownership.
-     *
-     *  See Memory for further details.
-     */
+    
     __CL_EXPLICIT_CONSTRUCTORS BufferGL(const cl_mem& buffer) : Buffer(buffer) { }
 
-    /*! \brief Assignment from BufferGL - performs shallow copy.
-     *
-     *  See Memory for further details.
-     */
+    
     BufferGL& operator = (const BufferGL& rhs)
     {
         if (this != &rhs) {
@@ -3345,17 +2754,14 @@ public:
         return *this;
     }
 
-    /*! \brief Assignment from cl_mem - performs shallow copy.
-     *
-     *  See Memory for further details.
-     */
+    
     BufferGL& operator = (const cl_mem& rhs)
     {
         Buffer::operator=(rhs);
         return *this;
     }
 
-    //! \brief Wrapper for clGetGLObjectInfo().
+    
     cl_int getObjectInfo(
         cl_gl_object_type *type,
         GLuint * gl_object_name)
@@ -3366,22 +2772,11 @@ public:
     }
 };
 
-/*! \brief Class interface for GL Render Buffer Memory Objects.
- *
- *  This is provided to facilitate interoperability with OpenGL.
- * 
- *  See Memory for details about copy semantics, etc.
- * 
- *  \see Memory
- */
+
 class BufferRenderGL : public Buffer
 {
 public:
-    /*! \brief Constructs a BufferRenderGL in a specified context, from a given
-     *         GL Renderbuffer.
-     *
-     *  Wraps clCreateFromGLRenderbuffer().
-     */
+    
     BufferRenderGL(
         const Context& context,
         cl_mem_flags flags,
@@ -3401,25 +2796,16 @@ public:
         }
     }
 
-    //! \brief Default constructor - initializes to NULL.
+    
     BufferRenderGL() : Buffer() { }
 
-    /*! \brief Copy constructor - performs shallow copy.
-     *
-     *  See Memory for further details.
-     */
+    
     BufferRenderGL(const BufferGL& buffer) : Buffer(buffer) { }
 
-    /*! \brief Constructor from cl_mem - takes ownership.
-     *
-     *  See Memory for further details.
-     */
+    
     __CL_EXPLICIT_CONSTRUCTORS BufferRenderGL(const cl_mem& buffer) : Buffer(buffer) { }
 
-    /*! \brief Assignment from BufferGL - performs shallow copy.
-     *
-     *  See Memory for further details.
-     */
+    
     BufferRenderGL& operator = (const BufferRenderGL& rhs)
     {
         if (this != &rhs) {
@@ -3428,17 +2814,14 @@ public:
         return *this;
     }
 
-    /*! \brief Assignment from cl_mem - performs shallow copy.
-     *
-     *  See Memory for further details.
-     */
+    
     BufferRenderGL& operator = (const cl_mem& rhs)
     {
         Buffer::operator=(rhs);
         return *this;
     }
 
-    //! \brief Wrapper for clGetGLObjectInfo().
+    
     cl_int getObjectInfo(
         cl_gl_object_type *type,
         GLuint * gl_object_name)
@@ -3449,34 +2832,20 @@ public:
     }
 };
 
-/*! \brief C++ base class for Image Memory objects.
- *
- *  See Memory for details about copy semantics, etc.
- * 
- *  \see Memory
- */
+
 class Image : public Memory
 {
 protected:
-    //! \brief Default constructor - initializes to NULL.
+    
     Image() : Memory() { }
 
-    /*! \brief Copy constructor - performs shallow copy.
-     *
-     *  See Memory for further details.
-     */
+    
     Image(const Image& image) : Memory(image) { }
 
-    /*! \brief Constructor from cl_mem - takes ownership.
-     *
-     *  See Memory for further details.
-     */
+    
     __CL_EXPLICIT_CONSTRUCTORS Image(const cl_mem& image) : Memory(image) { }
 
-    /*! \brief Assignment from Image - performs shallow copy.
-     *
-     *  See Memory for further details.
-     */
+    
     Image& operator = (const Image& rhs)
     {
         if (this != &rhs) {
@@ -3485,10 +2854,7 @@ protected:
         return *this;
     }
 
-    /*! \brief Assignment from cl_mem - performs shallow copy.
-     *
-     *  See Memory for further details.
-     */
+    
     Image& operator = (const cl_mem& rhs)
     {
         Memory::operator=(rhs);
@@ -3496,7 +2862,7 @@ protected:
     }
 
 public:
-    //! \brief Wrapper for clGetImageInfo().
+    
     template <typename T>
     cl_int getImageInfo(cl_image_info name, T* param) const
     {
@@ -3505,7 +2871,7 @@ public:
             __GET_IMAGE_INFO_ERR);
     }
     
-    //! \brief Wrapper for clGetImageInfo() that returns by value.
+    
     template <cl_int name> typename
     detail::param_traits<detail::cl_image_info, name>::param_type
     getImageInfo(cl_int* err = NULL) const
@@ -3521,19 +2887,11 @@ public:
 };
 
 #if defined(CL_VERSION_1_2)
-/*! \brief Class interface for 1D Image Memory objects.
- *
- *  See Memory for details about copy semantics, etc.
- * 
- *  \see Memory
- */
+
 class Image1D : public Image
 {
 public:
-    /*! \brief Constructs a 1D Image in a specified context.
-     *
-     *  Wraps clCreateImage().
-     */
+    
     Image1D(
         const Context& context,
         cl_mem_flags flags,
@@ -3564,25 +2922,16 @@ public:
         }
     }
 
-    //! \brief Default constructor - initializes to NULL.
+    
     Image1D() { }
 
-    /*! \brief Copy constructor - performs shallow copy.
-     *
-     *  See Memory for further details.
-     */
+    
     Image1D(const Image1D& image1D) : Image(image1D) { }
 
-    /*! \brief Constructor from cl_mem - takes ownership.
-     *
-     *  See Memory for further details.
-     */
+    
     __CL_EXPLICIT_CONSTRUCTORS Image1D(const cl_mem& image1D) : Image(image1D) { }
 
-    /*! \brief Assignment from Image1D - performs shallow copy.
-     *
-     *  See Memory for further details.
-     */
+    
     Image1D& operator = (const Image1D& rhs)
     {
         if (this != &rhs) {
@@ -3591,10 +2940,7 @@ public:
         return *this;
     }
 
-    /*! \brief Assignment from cl_mem - performs shallow copy.
-     *
-     *  See Memory for further details.
-     */
+    
     Image1D& operator = (const cl_mem& rhs)
     {
         Image::operator=(rhs);
@@ -3602,9 +2948,7 @@ public:
     }
 };
 
-/*! \class Image1DBuffer
- * \brief Image interface for 1D buffer images.
- */
+
 class Image1DBuffer : public Image
 {
 public:
@@ -3659,9 +3003,7 @@ public:
     }
 };
 
-/*! \class Image1DArray
- * \brief Image interface for arrays of 1D images.
- */
+
 class Image1DArray : public Image
 {
 public:
@@ -3718,22 +3060,14 @@ public:
         return *this;
     }
 };
-#endif // #if defined(CL_VERSION_1_2)
+#endif 
 
 
-/*! \brief Class interface for 2D Image Memory objects.
- *
- *  See Memory for details about copy semantics, etc.
- * 
- *  \see Memory
- */
+
 class Image2D : public Image
 {
 public:
-    /*! \brief Constructs a 1D Image in a specified context.
-     *
-     *  Wraps clCreateImage().
-     */
+    
     Image2D(
         const Context& context,
         cl_mem_flags flags,
@@ -3748,10 +3082,10 @@ public:
         bool useCreateImage;
 
 #if defined(CL_VERSION_1_2) && defined(CL_USE_DEPRECATED_OPENCL_1_1_APIS)
-        // Run-time decision based on the actual platform
+        
         {
             cl_uint version = detail::getContextPlatformVersion(context());
-            useCreateImage = (version >= 0x10002); // OpenCL 1.2 or above
+            useCreateImage = (version >= 0x10002); 
         }
 #elif defined(CL_VERSION_1_2)
         useCreateImage = true;
@@ -3783,7 +3117,7 @@ public:
                 *err = error;
             }
         }
-#endif // #if defined(CL_VERSION_1_2)
+#endif 
 #if !defined(CL_VERSION_1_2) || defined(CL_USE_DEPRECATED_OPENCL_1_1_APIS)
         if (!useCreateImage)
         {
@@ -3795,28 +3129,19 @@ public:
                 *err = error;
             }
         }
-#endif // #if !defined(CL_VERSION_1_2) || defined(CL_USE_DEPRECATED_OPENCL_1_1_APIS)
+#endif 
     }
 
-    //! \brief Default constructor - initializes to NULL.
+    
     Image2D() { }
 
-    /*! \brief Copy constructor - performs shallow copy.
-     *
-     *  See Memory for further details.
-     */
+    
     Image2D(const Image2D& image2D) : Image(image2D) { }
 
-    /*! \brief Constructor from cl_mem - takes ownership.
-     *
-     *  See Memory for further details.
-     */
+    
     __CL_EXPLICIT_CONSTRUCTORS Image2D(const cl_mem& image2D) : Image(image2D) { }
 
-    /*! \brief Assignment from Image2D - performs shallow copy.
-     *
-     *  See Memory for further details.
-     */
+    
     Image2D& operator = (const Image2D& rhs)
     {
         if (this != &rhs) {
@@ -3825,10 +3150,7 @@ public:
         return *this;
     }
 
-    /*! \brief Assignment from cl_mem - performs shallow copy.
-     *
-     *  See Memory for further details.
-     */
+    
     Image2D& operator = (const cl_mem& rhs)
     {
         Image::operator=(rhs);
@@ -3838,23 +3160,11 @@ public:
 
 
 #if !defined(CL_VERSION_1_2)
-/*! \brief Class interface for GL 2D Image Memory objects.
- *
- *  This is provided to facilitate interoperability with OpenGL.
- * 
- *  See Memory for details about copy semantics, etc.
- * 
- *  \see Memory
- *  \note Deprecated for OpenCL 1.2. Please use ImageGL instead.
- */
+
 class CL_EXT_PREFIX__VERSION_1_1_DEPRECATED Image2DGL CL_EXT_SUFFIX__VERSION_1_1_DEPRECATED : public Image2D
 {
 public:
-    /*! \brief Constructs an Image2DGL in a specified context, from a given
-     *         GL Texture.
-     *
-     *  Wraps clCreateFromGLTexture2D().
-     */
+    
     Image2DGL(
         const Context& context,
         cl_mem_flags flags,
@@ -3879,25 +3189,16 @@ public:
 
     }
     
-    //! \brief Default constructor - initializes to NULL.
+    
     Image2DGL() : Image2D() { }
 
-    /*! \brief Copy constructor - performs shallow copy.
-     *
-     *  See Memory for further details.
-     */
+    
     Image2DGL(const Image2DGL& image) : Image2D(image) { }
 
-    /*! \brief Constructor from cl_mem - takes ownership.
-     *
-     *  See Memory for further details.
-     */
+    
     __CL_EXPLICIT_CONSTRUCTORS Image2DGL(const cl_mem& image) : Image2D(image) { }
 
-    /*! \brief Assignment from Image2DGL - performs shallow copy.
-     *
-     *  See Memory for further details.
-     */
+    
     Image2DGL& operator = (const Image2DGL& rhs)
     {
         if (this != &rhs) {
@@ -3906,22 +3207,17 @@ public:
         return *this;
     }
 
-    /*! \brief Assignment from cl_mem - performs shallow copy.
-     *
-     *  See Memory for further details.
-     */
+    
     Image2DGL& operator = (const cl_mem& rhs)
     {
         Image2D::operator=(rhs);
         return *this;
     }
 };
-#endif // #if !defined(CL_VERSION_1_2)
+#endif 
 
 #if defined(CL_VERSION_1_2)
-/*! \class Image2DArray
- * \brief Image interface for arrays of 2D images.
- */
+
 class Image2DArray : public Image
 {
 public:
@@ -3982,21 +3278,13 @@ public:
         return *this;
     }
 };
-#endif // #if defined(CL_VERSION_1_2)
+#endif 
 
-/*! \brief Class interface for 3D Image Memory objects.
- *
- *  See Memory for details about copy semantics, etc.
- * 
- *  \see Memory
- */
+
 class Image3D : public Image
 {
 public:
-    /*! \brief Constructs a 3D Image in a specified context.
-     *
-     *  Wraps clCreateImage().
-     */
+    
     Image3D(
         const Context& context,
         cl_mem_flags flags,
@@ -4013,10 +3301,10 @@ public:
         bool useCreateImage;
 
 #if defined(CL_VERSION_1_2) && defined(CL_USE_DEPRECATED_OPENCL_1_1_APIS)
-        // Run-time decision based on the actual platform
+        
         {
             cl_uint version = detail::getContextPlatformVersion(context());
-            useCreateImage = (version >= 0x10002); // OpenCL 1.2 or above
+            useCreateImage = (version >= 0x10002); 
         }
 #elif defined(CL_VERSION_1_2)
         useCreateImage = true;
@@ -4050,7 +3338,7 @@ public:
                 *err = error;
             }
         }
-#endif  // #if defined(CL_VERSION_1_2)
+#endif  
 #if !defined(CL_VERSION_1_2) || defined(CL_USE_DEPRECATED_OPENCL_1_1_APIS)
         if (!useCreateImage)
         {
@@ -4063,28 +3351,19 @@ public:
                 *err = error;
             }
         }
-#endif // #if !defined(CL_VERSION_1_2) || defined(CL_USE_DEPRECATED_OPENCL_1_1_APIS)
+#endif 
     }
 
-    //! \brief Default constructor - initializes to NULL.
+    
     Image3D() { }
 
-    /*! \brief Copy constructor - performs shallow copy.
-     *
-     *  See Memory for further details.
-     */
+    
     Image3D(const Image3D& image3D) : Image(image3D) { }
 
-    /*! \brief Constructor from cl_mem - takes ownership.
-     *
-     *  See Memory for further details.
-     */
+    
     __CL_EXPLICIT_CONSTRUCTORS Image3D(const cl_mem& image3D) : Image(image3D) { }
 
-    /*! \brief Assignment from Image3D - performs shallow copy.
-     *
-     *  See Memory for further details.
-     */
+    
     Image3D& operator = (const Image3D& rhs)
     {
         if (this != &rhs) {
@@ -4093,10 +3372,7 @@ public:
         return *this;
     }
 
-    /*! \brief Assignment from cl_mem - performs shallow copy.
-     *
-     *  See Memory for further details.
-     */
+    
     Image3D& operator = (const cl_mem& rhs)
     {
         Image::operator=(rhs);
@@ -4105,22 +3381,11 @@ public:
 };
 
 #if !defined(CL_VERSION_1_2)
-/*! \brief Class interface for GL 3D Image Memory objects.
- *
- *  This is provided to facilitate interoperability with OpenGL.
- * 
- *  See Memory for details about copy semantics, etc.
- * 
- *  \see Memory
- */
+
 class Image3DGL : public Image3D
 {
 public:
-    /*! \brief Constructs an Image3DGL in a specified context, from a given
-     *         GL Texture.
-     *
-     *  Wraps clCreateFromGLTexture3D().
-     */
+    
     Image3DGL(
         const Context& context,
         cl_mem_flags flags,
@@ -4144,25 +3409,16 @@ public:
         }
     }
 
-    //! \brief Default constructor - initializes to NULL.
+    
     Image3DGL() : Image3D() { }
 
-    /*! \brief Copy constructor - performs shallow copy.
-     *
-     *  See Memory for further details.
-     */
+    
     Image3DGL(const Image3DGL& image) : Image3D(image) { }
 
-    /*! \brief Constructor from cl_mem - takes ownership.
-     *
-     *  See Memory for further details.
-     */
+    
     __CL_EXPLICIT_CONSTRUCTORS Image3DGL(const cl_mem& image) : Image3D(image) { }
 
-    /*! \brief Assignment from Image3DGL - performs shallow copy.
-     *
-     *  See Memory for further details.
-     */
+    
     Image3DGL& operator = (const Image3DGL& rhs)
     {
         if (this != &rhs) {
@@ -4171,25 +3427,17 @@ public:
         return *this;
     }
 
-    /*! \brief Assignment from cl_mem - performs shallow copy.
-     *
-     *  See Memory for further details.
-     */
+    
     Image3DGL& operator = (const cl_mem& rhs)
     {
         Image3D::operator=(rhs);
         return *this;
     }
 };
-#endif // #if !defined(CL_VERSION_1_2)
+#endif 
 
 #if defined(CL_VERSION_1_2)
-/*! \class ImageGL
- * \brief general image interface for GL interop.
- * We abstract the 2D and 3D GL images into a single instance here
- * that wraps all GL sourced images on the grounds that setup information
- * was performed by OpenCL anyway.
- */
+
 class ImageGL : public Image
 {
 public:
@@ -4236,32 +3484,19 @@ public:
         return *this;
     }
 };
-#endif // #if defined(CL_VERSION_1_2)
+#endif 
 
-/*! \brief Class interface for cl_sampler.
- *
- *  \note Copies of these objects are shallow, meaning that the copy will refer
- *        to the same underlying cl_sampler as the original.  For details, see
- *        clRetainSampler() and clReleaseSampler().
- *
- *  \see cl_sampler 
- */
+
 class Sampler : public detail::Wrapper<cl_sampler>
 {
 public:
-    /*! \brief Destructor.
-     *
-     *  This calls clReleaseSampler() on the value held by this instance.
-     */
+    
     ~Sampler() { }
 
-    //! \brief Default constructor - initializes to NULL.
+    
     Sampler() { }
 
-    /*! \brief Constructs a Sampler in a specified context.
-     *
-     *  Wraps clCreateSampler().
-     */
+    
 
     #if !defined(CL_VERSION_2_0) || defined(CL_USE_DEPRECATED_OPENCL_1_2_APIS)
     Sampler(
@@ -4303,24 +3538,13 @@ public:
     }
 #endif
 
-    /*! \brief Copy constructor - performs shallow copy.
-     * 
-     *  This calls clRetainSampler() on the parameter's cl_sampler.
-     */
+    
     Sampler(const Sampler& sampler) : detail::Wrapper<cl_type>(sampler) { }
 
-    /*! \brief Constructor from cl_sampler - takes ownership.
-     * 
-     *  This effectively transfers ownership of a refcount on the cl_sampler
-     *  into the new Sampler object.
-     */
+    
     Sampler(const cl_sampler& sampler) : detail::Wrapper<cl_type>(sampler) { }
 
-    /*! \brief Assignment operator from Sampler.
-     * 
-     *  This calls clRetainSampler() on the parameter and clReleaseSampler()
-     *  on the previous value held by this instance.
-     */
+    
     Sampler& operator = (const Sampler& rhs)
     {
         if (this != &rhs) {
@@ -4329,18 +3553,14 @@ public:
         return *this;
     }
 
-    /*! \brief Assignment operator from cl_sampler - takes ownership.
-     *
-     *  This effectively transfers ownership of a refcount on the rhs and calls
-     *  clReleaseSampler() on the value previously held by this instance.
-     */
+    
     Sampler& operator = (const cl_sampler& rhs)
     {
         detail::Wrapper<cl_type>::operator=(rhs);
         return *this;
     }
 
-    //! \brief Wrapper for clGetSamplerInfo().
+    
     template <typename T>
     cl_int getInfo(cl_sampler_info name, T* param) const
     {
@@ -4349,7 +3569,7 @@ public:
             __GET_SAMPLER_INFO_ERR);
     }
 
-    //! \brief Wrapper for clGetSamplerInfo() that returns by value.
+    
     template <cl_int name> typename
     detail::param_traits<detail::cl_sampler_info, name>::param_type
     getInfo(cl_int* err = NULL) const
@@ -4368,7 +3588,7 @@ class Program;
 class CommandQueue;
 class Kernel;
 
-//! \brief Class interface for specifying NDRange values.
+
 class NDRange
 {
 private:
@@ -4376,19 +3596,19 @@ private:
     cl_uint dimensions_;
 
 public:
-    //! \brief Default constructor - resulting range has zero dimensions.
+    
     NDRange()
         : dimensions_(0)
     { }
 
-    //! \brief Constructs one-dimensional range.
+    
     NDRange(::size_t size0)
         : dimensions_(1)
     {
         sizes_[0] = size0;
     }
 
-    //! \brief Constructs two-dimensional range.
+    
     NDRange(::size_t size0, ::size_t size1)
         : dimensions_(2)
     {
@@ -4396,7 +3616,7 @@ public:
         sizes_[1] = size1;
     }
 
-    //! \brief Constructs three-dimensional range.
+    
     NDRange(::size_t size0, ::size_t size1, ::size_t size2)
         : dimensions_(3)
     {
@@ -4405,22 +3625,19 @@ public:
         sizes_[2] = size2;
     }
 
-    /*! \brief Conversion operator to const ::size_t *.
-     *  
-     *  \returns a pointer to the size of the first dimension.
-     */
+    
     operator const ::size_t*() const { 
         return (const ::size_t*) sizes_; 
     }
 
-    //! \brief Queries the number of dimensions in the range.
+    
     ::size_t dimensions() const { return dimensions_; }
 };
 
-//! \brief A zero-dimensional range.
+
 static const NDRange NullRange;
 
-//! \brief Local address wrapper for use with Kernel::setArg
+
 struct LocalSpaceArg
 {
     ::size_t size_;
@@ -4443,12 +3660,9 @@ struct KernelArgumentHandler<LocalSpaceArg>
 };
 
 } 
-//! \endcond
 
-/*! __local
- * \brief Helper function for generating LocalSpaceArg objects.
- * Deprecated. Replaced with Local.
- */
+
+
 inline CL_EXT_PREFIX__VERSION_1_1_DEPRECATED LocalSpaceArg
 __local(::size_t size) CL_EXT_SUFFIX__VERSION_1_1_DEPRECATED;
 inline LocalSpaceArg
@@ -4458,9 +3672,7 @@ __local(::size_t size)
     return ret;
 }
 
-/*! Local
- * \brief Helper function for generating LocalSpaceArg objects.
- */
+
 inline LocalSpaceArg
 Local(::size_t size)
 {
@@ -4468,48 +3680,27 @@ Local(::size_t size)
     return ret;
 }
 
-//class KernelFunctor;
 
-/*! \brief Class interface for cl_kernel.
- *
- *  \note Copies of these objects are shallow, meaning that the copy will refer
- *        to the same underlying cl_kernel as the original.  For details, see
- *        clRetainKernel() and clReleaseKernel().
- *
- *  \see cl_kernel
- */
+
+
 class Kernel : public detail::Wrapper<cl_kernel>
 {
 public:
     inline Kernel(const Program& program, const char* name, cl_int* err = NULL);
 
-    /*! \brief Destructor.
-     *
-     *  This calls clReleaseKernel() on the value held by this instance.
-     */
+    
     ~Kernel() { }
 
-    //! \brief Default constructor - initializes to NULL.
+    
     Kernel() { }
 
-    /*! \brief Copy constructor - performs shallow copy.
-     * 
-     *  This calls clRetainKernel() on the parameter's cl_kernel.
-     */
+    
     Kernel(const Kernel& kernel) : detail::Wrapper<cl_type>(kernel) { }
 
-    /*! \brief Constructor from cl_kernel - takes ownership.
-     * 
-     *  This effectively transfers ownership of a refcount on the cl_kernel
-     *  into the new Kernel object.
-     */
+    
     __CL_EXPLICIT_CONSTRUCTORS Kernel(const cl_kernel& kernel) : detail::Wrapper<cl_type>(kernel) { }
 
-    /*! \brief Assignment operator from Kernel.
-     * 
-     *  This calls clRetainKernel() on the parameter and clReleaseKernel()
-     *  on the previous value held by this instance.
-     */
+    
     Kernel& operator = (const Kernel& rhs)
     {
         if (this != &rhs) {
@@ -4518,11 +3709,7 @@ public:
         return *this;
     }
 
-    /*! \brief Assignment operator from cl_kernel - takes ownership.
-     *
-     *  This effectively transfers ownership of a refcount on the rhs and calls
-     *  clReleaseKernel() on the value previously held by this instance.
-     */
+    
     Kernel& operator = (const cl_kernel& rhs)
     {
         detail::Wrapper<cl_type>::operator=(rhs);
@@ -4571,7 +3758,7 @@ public:
         }
         return param;
     }
-#endif // #if defined(CL_VERSION_1_2)
+#endif 
 
     template <typename T>
     cl_int getWorkGroupInfo(
@@ -4616,9 +3803,7 @@ public:
     }
 };
 
-/*! \class Program
- * \brief Program interface that implements cl_program.
- */
+
 class Program : public detail::Wrapper<cl_program>
 {
 public:
@@ -4753,25 +3938,7 @@ public:
         }
     }
 
-    /**
-     * Construct a program object from a list of devices and a per-device list of binaries.
-     * \param context A valid OpenCL context in which to construct the program.
-     * \param devices A vector of OpenCL device objects for which the program will be created.
-     * \param binaries A vector of pairs of a pointer to a binary object and its length.
-     * \param binaryStatus An optional vector that on completion will be resized to
-     *   match the size of binaries and filled with values to specify if each binary
-     *   was successfully loaded.
-     *   Set to CL_SUCCESS if the binary was successfully loaded.
-     *   Set to CL_INVALID_VALUE if the length is 0 or the binary pointer is NULL.
-     *   Set to CL_INVALID_BINARY if the binary provided is not valid for the matching device.
-     * \param err if non-NULL will be set to CL_SUCCESS on successful operation or one of the following errors:
-     *   CL_INVALID_CONTEXT if context is not a valid context.
-     *   CL_INVALID_VALUE if the length of devices is zero; or if the length of binaries does not match the length of devices; 
-     *     or if any entry in binaries is NULL or has length 0.
-     *   CL_INVALID_DEVICE if OpenCL devices listed in devices are not in the list of devices associated with context.
-     *   CL_INVALID_BINARY if an invalid program binary was encountered for any device. binaryStatus will return specific status for each device.
-     *   CL_OUT_OF_HOST_MEMORY if there is a failure to allocate resources required by the OpenCL implementation on the host.
-     */
+    
     Program(
         const Context& context,
         const VECTOR_CLASS<Device>& devices,
@@ -4783,7 +3950,7 @@ public:
         
         const ::size_t numDevices = devices.size();
         
-        // Catch size mismatch early and return
+        
         if(binaries.size() != numDevices) {
             error = CL_INVALID_VALUE;
             detail::errHandler(error, __CREATE_PROGRAM_WITH_BINARY_ERR);
@@ -4825,10 +3992,7 @@ public:
 
     
 #if defined(CL_VERSION_1_2)
-    /**
-     * Create program using builtin kernels.
-     * \param kernelNames Semi-colon separated list of builtin kernel names
-     */
+    
     Program(
         const Context& context,
         const VECTOR_CLASS<Device>& devices,
@@ -4856,7 +4020,7 @@ public:
             *err = error;
         }
     }
-#endif // #if defined(CL_VERSION_1_2)
+#endif 
 
     Program() { }
 
@@ -5107,9 +4271,7 @@ inline Kernel::Kernel(const Program& program, const char* name, cl_int* err)
 
 }
 
-/*! \class CommandQueue
- * \brief CommandQueue interface for cl_command_queue.
- */
+
 class CommandQueue : public detail::Wrapper<cl_command_queue>
 {
 private:
@@ -5223,7 +4385,7 @@ public:
         }
 
         if (state & __DEFAULT_BEING_INITIALIZED) {
-              // Assume writes will propagate eventually...
+              
               while(default_initialized_ != __DEFAULT_INITIALIZED) {
                   detail::fence();
               }
@@ -5266,7 +4428,7 @@ public:
         detail::fence();
 
         default_error_ = error;
-        // Assume writes will propagate eventually...
+        
         default_initialized_ = __DEFAULT_INITIALIZED;
 
         detail::fence();
@@ -5510,12 +4672,7 @@ public:
     }
 
 #if defined(CL_VERSION_1_2)
-    /**
-     * Enqueue a command to fill a buffer object with a pattern
-     * of a given size. The pattern is specified a as vector.
-     * \tparam PatternType The datatype of the pattern field. 
-     *     The pattern type must be an accepted OpenCL data type.
-     */
+    
     template<typename PatternType>
     cl_int enqueueFillBuffer(
         const Buffer& buffer,
@@ -5544,7 +4701,7 @@ public:
 
         return err;
     }
-#endif // #if defined(CL_VERSION_1_2)
+#endif 
 
     cl_int enqueueReadImage(
         const Image& image,
@@ -5626,13 +4783,7 @@ public:
     }
 
 #if defined(CL_VERSION_1_2)
-    /**
-     * Enqueue a command to fill an image object with a specified color.
-     * \param fillColor is the color to use to fill the image.
-     *     This is a four component RGBA floating-point color value if
-     *     the image channel data type is not an unnormalized signed or
-     *     unsigned data type.
-     */
+    
     cl_int enqueueFillImage(
         const Image& image,
         cl_float4 fillColor,
@@ -5660,13 +4811,7 @@ public:
         return err;
     }
 
-    /**
-     * Enqueue a command to fill an image object with a specified color.
-     * \param fillColor is the color to use to fill the image.
-     *     This is a four component RGBA signed integer color value if
-     *     the image channel data type is an unnormalized signed integer
-     *     type.
-     */
+    
     cl_int enqueueFillImage(
         const Image& image,
         cl_int4 fillColor,
@@ -5694,13 +4839,7 @@ public:
         return err;
     }
 
-    /**
-     * Enqueue a command to fill an image object with a specified color.
-     * \param fillColor is the color to use to fill the image.
-     *     This is a four component RGBA unsigned integer color value if
-     *     the image channel data type is an unnormalized unsigned integer
-     *     type.
-     */
+    
     cl_int enqueueFillImage(
         const Image& image,
         cl_uint4 fillColor,
@@ -5727,7 +4866,7 @@ public:
 
         return err;
     }
-#endif // #if defined(CL_VERSION_1_2)
+#endif 
 
     cl_int enqueueCopyImageToBuffer(
         const Image& src,
@@ -5855,17 +4994,7 @@ public:
     }
 
 #if defined(CL_VERSION_1_2)
-    /**
-     * Enqueues a marker command which waits for either a list of events to complete, 
-     * or all previously enqueued commands to complete.
-     *
-     * Enqueues a marker command which waits for either a list of events to complete, 
-     * or if the list is empty it waits for all commands previously enqueued in command_queue 
-     * to complete before it completes. This command returns an event which can be waited on, 
-     * i.e. this event can be waited on to insure that all events either in the event_wait_list 
-     * or all previously enqueued commands, queued before this command to command_queue, 
-     * have completed.
-     */
+    
     cl_int enqueueMarkerWithWaitList(
         const VECTOR_CLASS<Event> *events = 0,
         Event *event = 0)
@@ -5885,17 +5014,7 @@ public:
         return err;
     }
 
-    /**
-     * A synchronization point that enqueues a barrier operation.
-     *
-     * Enqueues a barrier command which waits for either a list of events to complete, 
-     * or if the list is empty it waits for all commands previously enqueued in command_queue 
-     * to complete before it completes. This command blocks command execution, that is, any 
-     * following commands enqueued after it do not execute until it completes. This command 
-     * returns an event which can be waited on, i.e. this event can be waited on to insure that 
-     * all events either in the event_wait_list or all previously enqueued commands, queued 
-     * before this command to command_queue, have completed.
-     */
+    
     cl_int enqueueBarrierWithWaitList(
         const VECTOR_CLASS<Event> *events = 0,
         Event *event = 0)
@@ -5915,10 +5034,7 @@ public:
         return err;
     }
     
-    /**
-     * Enqueues a command to indicate with which device a set of memory objects
-     * should be associated.
-     */
+    
     cl_int enqueueMigrateMemObjects(
         const VECTOR_CLASS<Memory> &memObjects,
         cl_mem_migration_flags flags,
@@ -5950,7 +5066,7 @@ public:
 
         return err;
     }
-#endif // #if defined(CL_VERSION_1_2)
+#endif 
 
     cl_int enqueueNDRangeKernel(
         const Kernel& kernel,
@@ -6036,9 +5152,7 @@ public:
         return err;
     }
 
-/**
- * Deprecated APIs for 1.2
- */
+
 #if defined(CL_USE_DEPRECATED_OPENCL_1_1_APIS) || (defined(CL_VERSION_1_1) && !defined(CL_VERSION_1_2)) 
     CL_EXT_PREFIX__VERSION_1_1_DEPRECATED 
     cl_int enqueueMarker(Event* event = NULL) const CL_EXT_SUFFIX__VERSION_1_1_DEPRECATED
@@ -6058,7 +5172,7 @@ public:
                 (const cl_event*) &events.front()),
             __ENQUEUE_WAIT_FOR_EVENTS_ERR);
     }
-#endif // #if defined(CL_VERSION_1_1)
+#endif 
 
     cl_int enqueueAcquireGLObjects(
          const VECTOR_CLASS<Memory>* mem_objects = NULL,
@@ -6158,10 +5272,10 @@ typedef CL_API_ENTRY cl_int (CL_API_CALL *PFN_clEnqueueReleaseD3D10ObjectsKHR)(
         cl::Device device(getInfo<CL_QUEUE_DEVICE>());
         cl_platform_id platform = device.getInfo<CL_DEVICE_PLATFORM>();
         __INIT_CL_EXT_FCN_PTR_PLATFORM(platform, clEnqueueReleaseD3D10ObjectsKHR);
-#endif // #if defined(CL_VERSION_1_2)
+#endif 
 #if defined(CL_VERSION_1_1)
         __INIT_CL_EXT_FCN_PTR(clEnqueueReleaseD3D10ObjectsKHR);
-#endif // #if defined(CL_VERSION_1_1)
+#endif 
 
         cl_event tmp;
         cl_int err = detail::errHandler(
@@ -6181,9 +5295,7 @@ typedef CL_API_ENTRY cl_int (CL_API_CALL *PFN_clEnqueueReleaseD3D10ObjectsKHR)(
     }
 #endif
 
-/**
- * Deprecated APIs for 1.2
- */
+
 #if defined(CL_USE_DEPRECATED_OPENCL_1_1_APIS) || (defined(CL_VERSION_1_1) && !defined(CL_VERSION_1_2)) 
     CL_EXT_PREFIX__VERSION_1_1_DEPRECATED
     cl_int enqueueBarrier() const CL_EXT_SUFFIX__VERSION_1_1_DEPRECATED
@@ -6192,7 +5304,7 @@ typedef CL_API_ENTRY cl_int (CL_API_CALL *PFN_clEnqueueReleaseD3D10ObjectsKHR)(
             ::clEnqueueBarrier(object_),
             __ENQUEUE_BARRIER_ERR);
     }
-#endif // #if defined(CL_VERSION_1_1)
+#endif 
 
     cl_int flush() const
     {
@@ -6331,9 +5443,7 @@ inline cl_int enqueueCopyBuffer(
     return queue.enqueueCopyBuffer(src, dst, src_offset, dst_offset, size, events, event);
 }
 
-/**
- * Blocking copy operation between iterators and a buffer.
- */
+
 template< typename IteratorType >
 inline cl_int copy( IteratorType startIterator, IteratorType endIterator, cl::Buffer &buffer )
 {
@@ -6345,7 +5455,7 @@ inline cl_int copy( IteratorType startIterator, IteratorType endIterator, cl::Bu
 
     DataType *pointer = 
         static_cast<DataType*>(enqueueMapBuffer(buffer, CL_TRUE, CL_MAP_WRITE, 0, byteLength, 0, 0, &error));
-    // if exceptions enabled, enqueueMapBuffer will throw
+    
     if( error != CL_SUCCESS ) {
         return error;
     }
@@ -6360,7 +5470,7 @@ inline cl_int copy( IteratorType startIterator, IteratorType endIterator, cl::Bu
 #endif
     Event endEvent;
     error = enqueueUnmapMemObject(buffer, pointer, 0, &endEvent);
-    // if exceptions enabled, enqueueUnmapMemObject will throw
+    
     if( error != CL_SUCCESS ) { 
         return error;
     }
@@ -6368,9 +5478,7 @@ inline cl_int copy( IteratorType startIterator, IteratorType endIterator, cl::Bu
     return CL_SUCCESS;
 }
 
-/**
- * Blocking copy operation between iterators and a buffer.
- */
+
 template< typename IteratorType >
 inline cl_int copy( const cl::Buffer &buffer, IteratorType startIterator, IteratorType endIterator )
 {
@@ -6382,14 +5490,14 @@ inline cl_int copy( const cl::Buffer &buffer, IteratorType startIterator, Iterat
 
     DataType *pointer = 
         static_cast<DataType*>(enqueueMapBuffer(buffer, CL_TRUE, CL_MAP_READ, 0, byteLength, 0, 0, &error));
-    // if exceptions enabled, enqueueMapBuffer will throw
+    
     if( error != CL_SUCCESS ) {
         return error;
     }
     std::copy(pointer, pointer + length, startIterator);
     Event endEvent;
     error = enqueueUnmapMemObject(buffer, pointer, 0, &endEvent);
-    // if exceptions enabled, enqueueUnmapMemObject will throw
+    
     if( error != CL_SUCCESS ) { 
         return error;
     }
@@ -6669,10 +5777,10 @@ inline cl_int finish(void)
     return queue.finish();
 }
 
-// Kernel Functor support
-// New interface as of September 2011
-// Requires the C++11 std::tr1::function (note do not support TR1)
-// Visual Studio 2010 and GCC 4.2
+
+
+
+
 
 struct EnqueueArgs
 {
@@ -6983,7 +6091,7 @@ public:
 
 };
 
-//------------------------------------------------------------------------------------------------------
+
 
 
 template<
@@ -7062,16 +6170,16 @@ struct functionImplementation_
     {
     
         #if (defined(_WIN32) && defined(_VARIADIC_MAX) && (_VARIADIC_MAX < 32))
-        // Fail variadic expansion for dev11
+        
         static_assert(0, "Visual Studio has a hard limit of argument count for a std::function expansion. Please define _VARIADIC_MAX to be 10. If you need more arguments than that VC12 and below cannot support it.");
         #endif
             
     }
 
-	//! \brief Return type of the functor
+	
 	typedef Event result_type;
 
-	//! \brief Function signature of kernel functor with no event dependency.
+	
 	typedef Event type_(
 		const EnqueueArgs&,
 		T0,
@@ -7288,16 +6396,16 @@ struct functionImplementation_
     {
     
         #if (defined(_WIN32) && defined(_VARIADIC_MAX) && (_VARIADIC_MAX < 31))
-        // Fail variadic expansion for dev11
+        
         static_assert(0, "Visual Studio has a hard limit of argument count for a std::function expansion. Please define _VARIADIC_MAX to be 10. If you need more arguments than that VC12 and below cannot support it.");
         #endif
             
     }
 
-	//! \brief Return type of the functor
+	
 	typedef Event result_type;
 
-	//! \brief Function signature of kernel functor with no event dependency.
+	
 	typedef Event type_(
 		const EnqueueArgs&,
 		T0,
@@ -7510,16 +6618,16 @@ struct functionImplementation_
     {
     
         #if (defined(_WIN32) && defined(_VARIADIC_MAX) && (_VARIADIC_MAX < 30))
-        // Fail variadic expansion for dev11
+        
         static_assert(0, "Visual Studio has a hard limit of argument count for a std::function expansion. Please define _VARIADIC_MAX to be 10. If you need more arguments than that VC12 and below cannot support it.");
         #endif
             
     }
 
-	//! \brief Return type of the functor
+	
 	typedef Event result_type;
 
-	//! \brief Function signature of kernel functor with no event dependency.
+	
 	typedef Event type_(
 		const EnqueueArgs&,
 		T0,
@@ -7728,16 +6836,16 @@ struct functionImplementation_
     {
     
         #if (defined(_WIN32) && defined(_VARIADIC_MAX) && (_VARIADIC_MAX < 29))
-        // Fail variadic expansion for dev11
+        
         static_assert(0, "Visual Studio has a hard limit of argument count for a std::function expansion. Please define _VARIADIC_MAX to be 10. If you need more arguments than that VC12 and below cannot support it.");
         #endif
             
     }
 
-	//! \brief Return type of the functor
+	
 	typedef Event result_type;
 
-	//! \brief Function signature of kernel functor with no event dependency.
+	
 	typedef Event type_(
 		const EnqueueArgs&,
 		T0,
@@ -7942,16 +7050,16 @@ struct functionImplementation_
     {
     
         #if (defined(_WIN32) && defined(_VARIADIC_MAX) && (_VARIADIC_MAX < 28))
-        // Fail variadic expansion for dev11
+        
         static_assert(0, "Visual Studio has a hard limit of argument count for a std::function expansion. Please define _VARIADIC_MAX to be 10. If you need more arguments than that VC12 and below cannot support it.");
         #endif
             
     }
 
-	//! \brief Return type of the functor
+	
 	typedef Event result_type;
 
-	//! \brief Function signature of kernel functor with no event dependency.
+	
 	typedef Event type_(
 		const EnqueueArgs&,
 		T0,
@@ -8152,16 +7260,16 @@ struct functionImplementation_
     {
     
         #if (defined(_WIN32) && defined(_VARIADIC_MAX) && (_VARIADIC_MAX < 27))
-        // Fail variadic expansion for dev11
+        
         static_assert(0, "Visual Studio has a hard limit of argument count for a std::function expansion. Please define _VARIADIC_MAX to be 10. If you need more arguments than that VC12 and below cannot support it.");
         #endif
             
     }
 
-	//! \brief Return type of the functor
+	
 	typedef Event result_type;
 
-	//! \brief Function signature of kernel functor with no event dependency.
+	
 	typedef Event type_(
 		const EnqueueArgs&,
 		T0,
@@ -8358,16 +7466,16 @@ struct functionImplementation_
     {
     
         #if (defined(_WIN32) && defined(_VARIADIC_MAX) && (_VARIADIC_MAX < 26))
-        // Fail variadic expansion for dev11
+        
         static_assert(0, "Visual Studio has a hard limit of argument count for a std::function expansion. Please define _VARIADIC_MAX to be 10. If you need more arguments than that VC12 and below cannot support it.");
         #endif
             
     }
 
-	//! \brief Return type of the functor
+	
 	typedef Event result_type;
 
-	//! \brief Function signature of kernel functor with no event dependency.
+	
 	typedef Event type_(
 		const EnqueueArgs&,
 		T0,
@@ -8560,16 +7668,16 @@ struct functionImplementation_
     {
     
         #if (defined(_WIN32) && defined(_VARIADIC_MAX) && (_VARIADIC_MAX < 25))
-        // Fail variadic expansion for dev11
+        
         static_assert(0, "Visual Studio has a hard limit of argument count for a std::function expansion. Please define _VARIADIC_MAX to be 10. If you need more arguments than that VC12 and below cannot support it.");
         #endif
             
     }
 
-	//! \brief Return type of the functor
+	
 	typedef Event result_type;
 
-	//! \brief Function signature of kernel functor with no event dependency.
+	
 	typedef Event type_(
 		const EnqueueArgs&,
 		T0,
@@ -8758,16 +7866,16 @@ struct functionImplementation_
     {
     
         #if (defined(_WIN32) && defined(_VARIADIC_MAX) && (_VARIADIC_MAX < 24))
-        // Fail variadic expansion for dev11
+        
         static_assert(0, "Visual Studio has a hard limit of argument count for a std::function expansion. Please define _VARIADIC_MAX to be 10. If you need more arguments than that VC12 and below cannot support it.");
         #endif
             
     }
 
-	//! \brief Return type of the functor
+	
 	typedef Event result_type;
 
-	//! \brief Function signature of kernel functor with no event dependency.
+	
 	typedef Event type_(
 		const EnqueueArgs&,
 		T0,
@@ -8952,16 +8060,16 @@ struct functionImplementation_
     {
     
         #if (defined(_WIN32) && defined(_VARIADIC_MAX) && (_VARIADIC_MAX < 23))
-        // Fail variadic expansion for dev11
+        
         static_assert(0, "Visual Studio has a hard limit of argument count for a std::function expansion. Please define _VARIADIC_MAX to be 10. If you need more arguments than that VC12 and below cannot support it.");
         #endif
             
     }
 
-	//! \brief Return type of the functor
+	
 	typedef Event result_type;
 
-	//! \brief Function signature of kernel functor with no event dependency.
+	
 	typedef Event type_(
 		const EnqueueArgs&,
 		T0,
@@ -9142,16 +8250,16 @@ struct functionImplementation_
     {
     
         #if (defined(_WIN32) && defined(_VARIADIC_MAX) && (_VARIADIC_MAX < 22))
-        // Fail variadic expansion for dev11
+        
         static_assert(0, "Visual Studio has a hard limit of argument count for a std::function expansion. Please define _VARIADIC_MAX to be 10. If you need more arguments than that VC12 and below cannot support it.");
         #endif
             
     }
 
-	//! \brief Return type of the functor
+	
 	typedef Event result_type;
 
-	//! \brief Function signature of kernel functor with no event dependency.
+	
 	typedef Event type_(
 		const EnqueueArgs&,
 		T0,
@@ -9328,16 +8436,16 @@ struct functionImplementation_
     {
     
         #if (defined(_WIN32) && defined(_VARIADIC_MAX) && (_VARIADIC_MAX < 21))
-        // Fail variadic expansion for dev11
+        
         static_assert(0, "Visual Studio has a hard limit of argument count for a std::function expansion. Please define _VARIADIC_MAX to be 10. If you need more arguments than that VC12 and below cannot support it.");
         #endif
             
     }
 
-	//! \brief Return type of the functor
+	
 	typedef Event result_type;
 
-	//! \brief Function signature of kernel functor with no event dependency.
+	
 	typedef Event type_(
 		const EnqueueArgs&,
 		T0,
@@ -9510,16 +8618,16 @@ struct functionImplementation_
     {
     
         #if (defined(_WIN32) && defined(_VARIADIC_MAX) && (_VARIADIC_MAX < 20))
-        // Fail variadic expansion for dev11
+        
         static_assert(0, "Visual Studio has a hard limit of argument count for a std::function expansion. Please define _VARIADIC_MAX to be 10. If you need more arguments than that VC12 and below cannot support it.");
         #endif
             
     }
 
-	//! \brief Return type of the functor
+	
 	typedef Event result_type;
 
-	//! \brief Function signature of kernel functor with no event dependency.
+	
 	typedef Event type_(
 		const EnqueueArgs&,
 		T0,
@@ -9688,16 +8796,16 @@ struct functionImplementation_
     {
     
         #if (defined(_WIN32) && defined(_VARIADIC_MAX) && (_VARIADIC_MAX < 19))
-        // Fail variadic expansion for dev11
+        
         static_assert(0, "Visual Studio has a hard limit of argument count for a std::function expansion. Please define _VARIADIC_MAX to be 10. If you need more arguments than that VC12 and below cannot support it.");
         #endif
             
     }
 
-	//! \brief Return type of the functor
+	
 	typedef Event result_type;
 
-	//! \brief Function signature of kernel functor with no event dependency.
+	
 	typedef Event type_(
 		const EnqueueArgs&,
 		T0,
@@ -9862,16 +8970,16 @@ struct functionImplementation_
     {
     
         #if (defined(_WIN32) && defined(_VARIADIC_MAX) && (_VARIADIC_MAX < 18))
-        // Fail variadic expansion for dev11
+        
         static_assert(0, "Visual Studio has a hard limit of argument count for a std::function expansion. Please define _VARIADIC_MAX to be 10. If you need more arguments than that VC12 and below cannot support it.");
         #endif
             
     }
 
-	//! \brief Return type of the functor
+	
 	typedef Event result_type;
 
-	//! \brief Function signature of kernel functor with no event dependency.
+	
 	typedef Event type_(
 		const EnqueueArgs&,
 		T0,
@@ -10032,16 +9140,16 @@ struct functionImplementation_
     {
     
         #if (defined(_WIN32) && defined(_VARIADIC_MAX) && (_VARIADIC_MAX < 17))
-        // Fail variadic expansion for dev11
+        
         static_assert(0, "Visual Studio has a hard limit of argument count for a std::function expansion. Please define _VARIADIC_MAX to be 10. If you need more arguments than that VC12 and below cannot support it.");
         #endif
             
     }
 
-	//! \brief Return type of the functor
+	
 	typedef Event result_type;
 
-	//! \brief Function signature of kernel functor with no event dependency.
+	
 	typedef Event type_(
 		const EnqueueArgs&,
 		T0,
@@ -10198,16 +9306,16 @@ struct functionImplementation_
     {
     
         #if (defined(_WIN32) && defined(_VARIADIC_MAX) && (_VARIADIC_MAX < 16))
-        // Fail variadic expansion for dev11
+        
         static_assert(0, "Visual Studio has a hard limit of argument count for a std::function expansion. Please define _VARIADIC_MAX to be 10. If you need more arguments than that VC12 and below cannot support it.");
         #endif
             
     }
 
-	//! \brief Return type of the functor
+	
 	typedef Event result_type;
 
-	//! \brief Function signature of kernel functor with no event dependency.
+	
 	typedef Event type_(
 		const EnqueueArgs&,
 		T0,
@@ -10360,16 +9468,16 @@ struct functionImplementation_
     {
     
         #if (defined(_WIN32) && defined(_VARIADIC_MAX) && (_VARIADIC_MAX < 15))
-        // Fail variadic expansion for dev11
+        
         static_assert(0, "Visual Studio has a hard limit of argument count for a std::function expansion. Please define _VARIADIC_MAX to be 10. If you need more arguments than that VC12 and below cannot support it.");
         #endif
             
     }
 
-	//! \brief Return type of the functor
+	
 	typedef Event result_type;
 
-	//! \brief Function signature of kernel functor with no event dependency.
+	
 	typedef Event type_(
 		const EnqueueArgs&,
 		T0,
@@ -10518,16 +9626,16 @@ struct functionImplementation_
     {
     
         #if (defined(_WIN32) && defined(_VARIADIC_MAX) && (_VARIADIC_MAX < 14))
-        // Fail variadic expansion for dev11
+        
         static_assert(0, "Visual Studio has a hard limit of argument count for a std::function expansion. Please define _VARIADIC_MAX to be 10. If you need more arguments than that VC12 and below cannot support it.");
         #endif
             
     }
 
-	//! \brief Return type of the functor
+	
 	typedef Event result_type;
 
-	//! \brief Function signature of kernel functor with no event dependency.
+	
 	typedef Event type_(
 		const EnqueueArgs&,
 		T0,
@@ -10672,16 +9780,16 @@ struct functionImplementation_
     {
     
         #if (defined(_WIN32) && defined(_VARIADIC_MAX) && (_VARIADIC_MAX < 13))
-        // Fail variadic expansion for dev11
+        
         static_assert(0, "Visual Studio has a hard limit of argument count for a std::function expansion. Please define _VARIADIC_MAX to be 10. If you need more arguments than that VC12 and below cannot support it.");
         #endif
             
     }
 
-	//! \brief Return type of the functor
+	
 	typedef Event result_type;
 
-	//! \brief Function signature of kernel functor with no event dependency.
+	
 	typedef Event type_(
 		const EnqueueArgs&,
 		T0,
@@ -10822,16 +9930,16 @@ struct functionImplementation_
     {
     
         #if (defined(_WIN32) && defined(_VARIADIC_MAX) && (_VARIADIC_MAX < 12))
-        // Fail variadic expansion for dev11
+        
         static_assert(0, "Visual Studio has a hard limit of argument count for a std::function expansion. Please define _VARIADIC_MAX to be 10. If you need more arguments than that VC12 and below cannot support it.");
         #endif
             
     }
 
-	//! \brief Return type of the functor
+	
 	typedef Event result_type;
 
-	//! \brief Function signature of kernel functor with no event dependency.
+	
 	typedef Event type_(
 		const EnqueueArgs&,
 		T0,
@@ -10968,16 +10076,16 @@ struct functionImplementation_
     {
     
         #if (defined(_WIN32) && defined(_VARIADIC_MAX) && (_VARIADIC_MAX < 11))
-        // Fail variadic expansion for dev11
+        
         static_assert(0, "Visual Studio has a hard limit of argument count for a std::function expansion. Please define _VARIADIC_MAX to be 10. If you need more arguments than that VC12 and below cannot support it.");
         #endif
             
     }
 
-	//! \brief Return type of the functor
+	
 	typedef Event result_type;
 
-	//! \brief Function signature of kernel functor with no event dependency.
+	
 	typedef Event type_(
 		const EnqueueArgs&,
 		T0,
@@ -11110,16 +10218,16 @@ struct functionImplementation_
     {
     
         #if (defined(_WIN32) && defined(_VARIADIC_MAX) && (_VARIADIC_MAX < 10))
-        // Fail variadic expansion for dev11
+        
         static_assert(0, "Visual Studio has a hard limit of argument count for a std::function expansion. Please define _VARIADIC_MAX to be 10. If you need more arguments than that VC12 and below cannot support it.");
         #endif
             
     }
 
-	//! \brief Return type of the functor
+	
 	typedef Event result_type;
 
-	//! \brief Function signature of kernel functor with no event dependency.
+	
 	typedef Event type_(
 		const EnqueueArgs&,
 		T0,
@@ -11248,16 +10356,16 @@ struct functionImplementation_
     {
     
         #if (defined(_WIN32) && defined(_VARIADIC_MAX) && (_VARIADIC_MAX < 9))
-        // Fail variadic expansion for dev11
+        
         static_assert(0, "Visual Studio has a hard limit of argument count for a std::function expansion. Please define _VARIADIC_MAX to be 10. If you need more arguments than that VC12 and below cannot support it.");
         #endif
             
     }
 
-	//! \brief Return type of the functor
+	
 	typedef Event result_type;
 
-	//! \brief Function signature of kernel functor with no event dependency.
+	
 	typedef Event type_(
 		const EnqueueArgs&,
 		T0,
@@ -11382,16 +10490,16 @@ struct functionImplementation_
     {
     
         #if (defined(_WIN32) && defined(_VARIADIC_MAX) && (_VARIADIC_MAX < 8))
-        // Fail variadic expansion for dev11
+        
         static_assert(0, "Visual Studio has a hard limit of argument count for a std::function expansion. Please define _VARIADIC_MAX to be 10. If you need more arguments than that VC12 and below cannot support it.");
         #endif
             
     }
 
-	//! \brief Return type of the functor
+	
 	typedef Event result_type;
 
-	//! \brief Function signature of kernel functor with no event dependency.
+	
 	typedef Event type_(
 		const EnqueueArgs&,
 		T0,
@@ -11512,16 +10620,16 @@ struct functionImplementation_
     {
     
         #if (defined(_WIN32) && defined(_VARIADIC_MAX) && (_VARIADIC_MAX < 7))
-        // Fail variadic expansion for dev11
+        
         static_assert(0, "Visual Studio has a hard limit of argument count for a std::function expansion. Please define _VARIADIC_MAX to be 10. If you need more arguments than that VC12 and below cannot support it.");
         #endif
             
     }
 
-	//! \brief Return type of the functor
+	
 	typedef Event result_type;
 
-	//! \brief Function signature of kernel functor with no event dependency.
+	
 	typedef Event type_(
 		const EnqueueArgs&,
 		T0,
@@ -11638,16 +10746,16 @@ struct functionImplementation_
     {
     
         #if (defined(_WIN32) && defined(_VARIADIC_MAX) && (_VARIADIC_MAX < 6))
-        // Fail variadic expansion for dev11
+        
         static_assert(0, "Visual Studio has a hard limit of argument count for a std::function expansion. Please define _VARIADIC_MAX to be 10. If you need more arguments than that VC12 and below cannot support it.");
         #endif
             
     }
 
-	//! \brief Return type of the functor
+	
 	typedef Event result_type;
 
-	//! \brief Function signature of kernel functor with no event dependency.
+	
 	typedef Event type_(
 		const EnqueueArgs&,
 		T0,
@@ -11760,16 +10868,16 @@ struct functionImplementation_
     {
     
         #if (defined(_WIN32) && defined(_VARIADIC_MAX) && (_VARIADIC_MAX < 5))
-        // Fail variadic expansion for dev11
+        
         static_assert(0, "Visual Studio has a hard limit of argument count for a std::function expansion. Please define _VARIADIC_MAX to be 10. If you need more arguments than that VC12 and below cannot support it.");
         #endif
             
     }
 
-	//! \brief Return type of the functor
+	
 	typedef Event result_type;
 
-	//! \brief Function signature of kernel functor with no event dependency.
+	
 	typedef Event type_(
 		const EnqueueArgs&,
 		T0,
@@ -11878,16 +10986,16 @@ struct functionImplementation_
     {
     
         #if (defined(_WIN32) && defined(_VARIADIC_MAX) && (_VARIADIC_MAX < 4))
-        // Fail variadic expansion for dev11
+        
         static_assert(0, "Visual Studio has a hard limit of argument count for a std::function expansion. Please define _VARIADIC_MAX to be 10. If you need more arguments than that VC12 and below cannot support it.");
         #endif
             
     }
 
-	//! \brief Return type of the functor
+	
 	typedef Event result_type;
 
-	//! \brief Function signature of kernel functor with no event dependency.
+	
 	typedef Event type_(
 		const EnqueueArgs&,
 		T0,
@@ -11992,16 +11100,16 @@ struct functionImplementation_
     {
     
         #if (defined(_WIN32) && defined(_VARIADIC_MAX) && (_VARIADIC_MAX < 3))
-        // Fail variadic expansion for dev11
+        
         static_assert(0, "Visual Studio has a hard limit of argument count for a std::function expansion. Please define _VARIADIC_MAX to be 10. If you need more arguments than that VC12 and below cannot support it.");
         #endif
             
     }
 
-	//! \brief Return type of the functor
+	
 	typedef Event result_type;
 
-	//! \brief Function signature of kernel functor with no event dependency.
+	
 	typedef Event type_(
 		const EnqueueArgs&,
 		T0,
@@ -12102,16 +11210,16 @@ struct functionImplementation_
     {
     
         #if (defined(_WIN32) && defined(_VARIADIC_MAX) && (_VARIADIC_MAX < 2))
-        // Fail variadic expansion for dev11
+        
         static_assert(0, "Visual Studio has a hard limit of argument count for a std::function expansion. Please define _VARIADIC_MAX to be 10. If you need more arguments than that VC12 and below cannot support it.");
         #endif
             
     }
 
-	//! \brief Return type of the functor
+	
 	typedef Event result_type;
 
-	//! \brief Function signature of kernel functor with no event dependency.
+	
 	typedef Event type_(
 		const EnqueueArgs&,
 		T0,
@@ -12208,16 +11316,16 @@ struct functionImplementation_
     {
     
         #if (defined(_WIN32) && defined(_VARIADIC_MAX) && (_VARIADIC_MAX < 1))
-        // Fail variadic expansion for dev11
+        
         static_assert(0, "Visual Studio has a hard limit of argument count for a std::function expansion. Please define _VARIADIC_MAX to be 10. If you need more arguments than that VC12 and below cannot support it.");
         #endif
             
     }
 
-	//! \brief Return type of the functor
+	
 	typedef Event result_type;
 
-	//! \brief Function signature of kernel functor with no event dependency.
+	
 	typedef Event type_(
 		const EnqueueArgs&,
 		T0);
@@ -12238,9 +11346,9 @@ struct functionImplementation_
 
 
 
-} // namespace detail
+} 
 
-//----------------------------------------------------------------------------------------------
+
 
 template <
    typename T0,   typename T1 = detail::NullType,   typename T2 = detail::NullType,
@@ -12318,7 +11426,7 @@ public:
 };
 
 
-//----------------------------------------------------------------------------------------------------------------------
+
 
 #undef __ERR_STR
 #if !defined(__CL_USER_OVERRIDE_ERROR_STRINGS)
@@ -12389,31 +11497,29 @@ public:
 #undef __CL_EXPLICIT_CONSTRUCTORS
 
 #undef __UNLOAD_COMPILER_ERR
-#endif //__CL_USER_OVERRIDE_ERROR_STRINGS
+#endif 
 
 #undef __CL_FUNCTION_TYPE
 
-// Extensions
-/**
- * Deprecated APIs for 1.2
- */
+
+
 #if defined(CL_VERSION_1_1)
 #undef __INIT_CL_EXT_FCN_PTR
-#endif // #if defined(CL_VERSION_1_1)
+#endif 
 #undef __CREATE_SUB_DEVICES
 
 #if defined(USE_CL_DEVICE_FISSION)
 #undef __PARAM_NAME_DEVICE_FISSION
-#endif // USE_CL_DEVICE_FISSION
+#endif 
 
 #undef __DEFAULT_NOT_INITIALIZED 
 #undef __DEFAULT_BEING_INITIALIZED 
 #undef __DEFAULT_INITIALIZED
 
-} // namespace cl
+} 
 
 #ifdef _WIN32
 #pragma pop_macro("max")
-#endif // _WIN32
+#endif 
 
-#endif // CL_HPP_
+#endif 

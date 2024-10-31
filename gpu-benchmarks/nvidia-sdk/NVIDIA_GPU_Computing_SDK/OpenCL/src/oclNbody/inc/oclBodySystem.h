@@ -1,13 +1,4 @@
-/*
- * Copyright 1993-2010 NVIDIA Corporation.  All rights reserved.
- *
- * Please refer to the NVIDIA end user license agreement (EULA) associated
- * with this source code for terms and conditions that govern your use of
- * this software. Any use, reproduction, disclosure, or distribution of
- * this software and related documentation outside the terms of the EULA
- * is strictly prohibited.
- *
- */
+
 
 #ifndef __CLH_BODYSYSTEM_H__
     #define __CLH_BODYSYSTEM_H__
@@ -22,14 +13,14 @@
         NBODY_NUM_CONFIGS
     };
 
-    // utility function
+    
     void randomizeBodies(NBodyConfig config, float* pos, float* vel, float* color, float clusterScale, 
 		         float velocityScale, int numBodies);
 
-    // BodySystem abstract base class
+    
     class BodySystem
     {
-    public: // methods
+    public: 
         BodySystem(int numBodies) : m_numBodies(numBodies), m_bInitialized(false) {}
         virtual ~BodySystem() {}
 
@@ -53,15 +44,15 @@
 
         virtual void   synchronizeThreads() const {};
 
-    protected: // methods
-        BodySystem() {} // default constructor
+    protected: 
+        BodySystem() {} 
 
         virtual void _initialize(int numBodies) = 0;
         virtual void _finalize() = 0;
 
-    protected: // data
+    protected: 
         int m_numBodies;
         bool m_bInitialized;
     };
 
-#endif // __CLH_BODYSYSTEM_H__
+#endif 

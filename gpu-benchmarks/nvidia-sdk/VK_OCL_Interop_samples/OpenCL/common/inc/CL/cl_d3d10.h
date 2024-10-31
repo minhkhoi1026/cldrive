@@ -1,18 +1,4 @@
-/*******************************************************************************
- * Copyright (c) 2008-2020 The Khronos Group Inc.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- ******************************************************************************/
+
 
 #ifndef __OPENCL_CL_D3D10_H
 #define __OPENCL_CL_D3D10_H
@@ -37,44 +23,43 @@
 extern "C" {
 #endif
 
-/******************************************************************************
- * cl_khr_d3d10_sharing                                                       */
+
 #define cl_khr_d3d10_sharing 1
 
 typedef cl_uint cl_d3d10_device_source_khr;
 typedef cl_uint cl_d3d10_device_set_khr;
 
-/******************************************************************************/
 
-/* Error Codes */
+
+
 #define CL_INVALID_D3D10_DEVICE_KHR                  -1002
 #define CL_INVALID_D3D10_RESOURCE_KHR                -1003
 #define CL_D3D10_RESOURCE_ALREADY_ACQUIRED_KHR       -1004
 #define CL_D3D10_RESOURCE_NOT_ACQUIRED_KHR           -1005
 
-/* cl_d3d10_device_source_nv */
+
 #define CL_D3D10_DEVICE_KHR                          0x4010
 #define CL_D3D10_DXGI_ADAPTER_KHR                    0x4011
 
-/* cl_d3d10_device_set_nv */
+
 #define CL_PREFERRED_DEVICES_FOR_D3D10_KHR           0x4012
 #define CL_ALL_DEVICES_FOR_D3D10_KHR                 0x4013
 
-/* cl_context_info */
+
 #define CL_CONTEXT_D3D10_DEVICE_KHR                  0x4014
 #define CL_CONTEXT_D3D10_PREFER_SHARED_RESOURCES_KHR 0x402C
 
-/* cl_mem_info */
+
 #define CL_MEM_D3D10_RESOURCE_KHR                    0x4015
 
-/* cl_image_info */
+
 #define CL_IMAGE_D3D10_SUBRESOURCE_KHR               0x4016
 
-/* cl_command_type */
+
 #define CL_COMMAND_ACQUIRE_D3D10_OBJECTS_KHR         0x4017
 #define CL_COMMAND_RELEASE_D3D10_OBJECTS_KHR         0x4018
 
-/******************************************************************************/
+
 
 typedef CL_API_ENTRY cl_int (CL_API_CALL *clGetDeviceIDsFromD3D10KHR_fn)(
     cl_platform_id             platform,
@@ -125,5 +110,5 @@ typedef CL_API_ENTRY cl_int (CL_API_CALL *clEnqueueReleaseD3D10ObjectsKHR_fn)(
 }
 #endif
 
-#endif  /* __OPENCL_CL_D3D10_H */
+#endif  
 

@@ -1,18 +1,6 @@
-/*
- * Copyright 1993-2010 NVIDIA Corporation.  All rights reserved.
- *
- * Please refer to the NVIDIA end user license agreement (EULA) associated
- * with this source code for terms and conditions that govern your use of
- * this software. Any use, reproduction, disclosure, or distribution of
- * this software and related documentation outside the terms of the EULA
- * is strictly prohibited.
- *
- */
+
  
- /*
-  Simple parameter system
-  sgreen@nvidia.com 4/2001
-*/
+ 
 
 #ifndef PARAM_H
 #define PARAM_H
@@ -24,7 +12,7 @@
 #include <sstream>
 #include <iomanip>
 
-// base class for named parameter
+
 class ParamBase {
 public:
     ParamBase(const char *name) : m_name(name) { }
@@ -52,7 +40,7 @@ protected:
     std::string m_name;
 };
 
-// derived class for single-valued parameter
+
 template<class T> class Param : public ParamBase {
 public:
     Param(const char *name, T value = 0, T min = 0, T max = 10000, T step = 1, T* ptr = 0) :
@@ -121,15 +109,15 @@ public:
 
 private:
     T m_value;
-    T *m_ptr;         // pointer to value declared elsewhere
+    T *m_ptr;         
     T m_default, m_min, m_max, m_step;
-    int m_precision;  // number of digits after decimal point in string output
+    int m_precision;  
 };
 
 
 extern const Param<int> dummy;
 
-// list of parameters
+
 class ParamList : public ParamBase {
 public:
     ParamList(const char *name = "") :
@@ -149,7 +137,7 @@ public:
         m_current = m_params.begin();
     }
 
-    // look-up parameter based on name
+    
     ParamBase *GetParam(char *name)
     {
         ParamBase *p = m_map[name];
@@ -177,7 +165,7 @@ public:
         return m_name;
     }
 
-    // functions to traverse list
+    
     void Reset()
     {
         m_current = m_params.begin();
@@ -200,7 +188,7 @@ public:
     }
 
     float GetPercentage() { return 0.0f; }
-    void SetPercentage(float /*p*/) {}
+    void SetPercentage(float ) {}
 
     void Write(std::ostream &stream)
     { 

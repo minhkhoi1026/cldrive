@@ -1,24 +1,7 @@
-//
-// File: vk_icd.h
-//
-/*
- * Copyright (c) 2015-2016 The Khronos Group Inc.
- * Copyright (c) 2015-2016 Valve Corporation
- * Copyright (c) 2015-2016 LunarG, Inc.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+
+
+
+
 
 #ifndef VKICD_H
 #define VKICD_H
@@ -26,37 +9,33 @@
 #include "vulkan.h"
 #include <stdbool.h>
 
-// Loader-ICD version negotiation API.  Versions add the following features:
-//   Version 0 - Initial.  Doesn't support vk_icdGetInstanceProcAddr
-//               or vk_icdNegotiateLoaderICDInterfaceVersion.
-//   Version 1 - Add support for vk_icdGetInstanceProcAddr.
-//   Version 2 - Add Loader/ICD Interface version negotiation
-//               via vk_icdNegotiateLoaderICDInterfaceVersion.
-//   Version 3 - Add ICD creation/destruction of KHR_surface objects.
-//   Version 4 - Add unknown physical device extension qyering via
-//               vk_icdGetPhysicalDeviceProcAddr.
-//   Version 5 - Tells ICDs that the loader is now paying attention to the
-//               application version of Vulkan passed into the ApplicationInfo
-//               structure during vkCreateInstance.  This will tell the ICD
-//               that if the loader is older, it should automatically fail a
-//               call for any API version > 1.0.  Otherwise, the loader will
-//               manually determine if it can support the expected version.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 #define CURRENT_LOADER_ICD_INTERFACE_VERSION 5
 #define MIN_SUPPORTED_LOADER_ICD_INTERFACE_VERSION 0
 #define MIN_PHYS_DEV_EXTENSION_ICD_INTERFACE_VERSION 4
 typedef VkResult (VKAPI_PTR *PFN_vkNegotiateLoaderICDInterfaceVersion)(uint32_t *pVersion);
 
-// This is defined in vk_layer.h which will be found by the loader, but if an ICD is building against this
-// file directly, it won't be found.
+
+
 #ifndef PFN_GetPhysicalDeviceProcAddr
 typedef PFN_vkVoidFunction (VKAPI_PTR *PFN_GetPhysicalDeviceProcAddr)(VkInstance instance, const char* pName);
 #endif
 
-/*
- * The ICD must reserve space for a pointer for the loader's dispatch
- * table, at the start of <each object>.
- * The ICD must initialize this variable using the SET_LOADER_MAGIC_VALUE macro.
- */
+
 
 #define ICD_LOADER_MAGIC 0x01CDC0DE
 
@@ -75,10 +54,7 @@ static inline bool valid_loader_magic_value(void *pNewObject) {
     return (loader_info->loaderMagic & 0xffffffff) == ICD_LOADER_MAGIC;
 }
 
-/*
- * Windows and Linux ICDs will treat VkSurfaceKHR as a pointer to a struct that
- * contains the platform-specific connection and surface information.
- */
+
 typedef enum {
     VK_ICD_WSI_PLATFORM_MIR,
     VK_ICD_WSI_PLATFORM_WAYLAND,
@@ -98,7 +74,7 @@ typedef struct {
     MirConnection *connection;
     MirSurface *mirSurface;
 } VkIcdSurfaceMir;
-#endif // VK_USE_PLATFORM_MIR_KHR
+#endif 
 
 #ifdef VK_USE_PLATFORM_WAYLAND_KHR
 typedef struct {
@@ -106,7 +82,7 @@ typedef struct {
     struct wl_display *display;
     struct wl_surface *surface;
 } VkIcdSurfaceWayland;
-#endif // VK_USE_PLATFORM_WAYLAND_KHR
+#endif 
 
 #ifdef VK_USE_PLATFORM_WIN32_KHR
 typedef struct {
@@ -114,7 +90,7 @@ typedef struct {
     HINSTANCE hinstance;
     HWND hwnd;
 } VkIcdSurfaceWin32;
-#endif // VK_USE_PLATFORM_WIN32_KHR
+#endif 
 
 #ifdef VK_USE_PLATFORM_XCB_KHR
 typedef struct {
@@ -122,7 +98,7 @@ typedef struct {
     xcb_connection_t *connection;
     xcb_window_t window;
 } VkIcdSurfaceXcb;
-#endif // VK_USE_PLATFORM_XCB_KHR
+#endif 
 
 #ifdef VK_USE_PLATFORM_XLIB_KHR
 typedef struct {
@@ -130,13 +106,13 @@ typedef struct {
     Display *dpy;
     Window window;
 } VkIcdSurfaceXlib;
-#endif // VK_USE_PLATFORM_XLIB_KHR
+#endif 
 
 #ifdef VK_USE_PLATFORM_ANDROID_KHR
 typedef struct {
     ANativeWindow* window;
 } VkIcdSurfaceAndroid;
-#endif //VK_USE_PLATFORM_ANDROID_KHR
+#endif 
 
 typedef struct {
     VkIcdSurfaceBase base;
@@ -149,4 +125,4 @@ typedef struct {
     VkExtent2D imageExtent;
 } VkIcdSurfaceDisplay;
 
-#endif // VKICD_H
+#endif 

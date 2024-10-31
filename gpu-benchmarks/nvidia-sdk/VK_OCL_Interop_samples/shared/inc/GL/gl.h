@@ -5,31 +5,7 @@
 extern "C" {
 #endif
 
-/*
-** Copyright 1998-2002, NVIDIA Corporation.
-** All Rights Reserved.
-** 
-** THE INFORMATION CONTAINED HEREIN IS PROPRIETARY AND CONFIDENTIAL TO
-** NVIDIA, CORPORATION.  USE, REPRODUCTION OR DISCLOSURE TO ANY THIRD PARTY
-** IS SUBJECT TO WRITTEN PRE-APPROVAL BY NVIDIA, CORPORATION.
-** 
-** 
-** Copyright 1992-1999, Silicon Graphics, Inc.
-** All Rights Reserved.
-** 
-** Portions of this file are UNPUBLISHED PROPRIETARY SOURCE CODE of Silicon
-** Graphics, Inc.; the contents of this file may not be disclosed to third
-** parties, copied or duplicated in any form, in whole or in part, without
-** the prior written permission of Silicon Graphics, Inc.
-** 
-** RESTRICTED RIGHTS LEGEND:
-** Use, duplication or disclosure by the Government is subject to
-** restrictions as set forth in subdivision (c)(1)(ii) of the Rights in
-** Technical Data and Computer Software clause at DFARS 252.227-7013,
-** and/or in similar or successor clauses in the FAR, DOD or NASA FAR
-** Supplement.  Unpublished - rights reserved under the Copyright Laws of
-** the United States.
-*/
+
 
 #ifndef APIENTRY
 #define APIENTRY
@@ -48,7 +24,7 @@ extern "C" {
 # define __DEFINED_GLAPI
 #endif
 
-/*************************************************************/
+
 
 typedef unsigned int GLenum;
 typedef unsigned char GLboolean;
@@ -67,12 +43,12 @@ typedef double GLclampd;
 typedef void GLvoid;
 
 
-/*************************************************************/
 
-/* Version */
+
+
 #define GL_VERSION_1_1                    1
 
-/* AttribMask */
+
 #define GL_CURRENT_BIT                    0x00000001
 #define GL_POINT_BIT                      0x00000002
 #define GL_LINE_BIT                       0x00000004
@@ -95,22 +71,22 @@ typedef void GLvoid;
 #define GL_SCISSOR_BIT                    0x00080000
 #define GL_ALL_ATTRIB_BITS                0xFFFFFFFF
 
-/* ClearBufferMask */
-/*      GL_COLOR_BUFFER_BIT */
-/*      GL_ACCUM_BUFFER_BIT */
-/*      GL_STENCIL_BUFFER_BIT */
-/*      GL_DEPTH_BUFFER_BIT */
 
-/* ClientAttribMask */
+
+
+
+
+
+
 #define GL_CLIENT_PIXEL_STORE_BIT         0x00000001
 #define GL_CLIENT_VERTEX_ARRAY_BIT        0x00000002
 #define GL_CLIENT_ALL_ATTRIB_BITS         0xFFFFFFFF
 
-/* Boolean */
+
 #define GL_FALSE                          0
 #define GL_TRUE                           1
 
-/* BeginMode */
+
 #define GL_POINTS                         0x0000
 #define GL_LINES                          0x0001
 #define GL_LINE_LOOP                      0x0002
@@ -122,14 +98,14 @@ typedef void GLvoid;
 #define GL_QUAD_STRIP                     0x0008
 #define GL_POLYGON                        0x0009
 
-/* AccumOp */
+
 #define GL_ACCUM                          0x0100
 #define GL_LOAD                           0x0101
 #define GL_RETURN                         0x0102
 #define GL_MULT                           0x0103
 #define GL_ADD                            0x0104
 
-/* AlphaFunction */
+
 #define GL_NEVER                          0x0200
 #define GL_LESS                           0x0201
 #define GL_EQUAL                          0x0202
@@ -139,7 +115,7 @@ typedef void GLvoid;
 #define GL_GEQUAL                         0x0206
 #define GL_ALWAYS                         0x0207
 
-/* BlendingFactorDest */
+
 #define GL_ZERO                           0
 #define GL_ONE                            1
 #define GL_SRC_COLOR                      0x0300
@@ -149,55 +125,55 @@ typedef void GLvoid;
 #define GL_DST_ALPHA                      0x0304
 #define GL_ONE_MINUS_DST_ALPHA            0x0305
 
-/* BlendingFactorSrc */
-/*      GL_ZERO */
-/*      GL_ONE */
+
+
+
 #define GL_DST_COLOR                      0x0306
 #define GL_ONE_MINUS_DST_COLOR            0x0307
 #define GL_SRC_ALPHA_SATURATE             0x0308
-/*      GL_SRC_ALPHA */
-/*      GL_ONE_MINUS_SRC_ALPHA */
-/*      GL_DST_ALPHA */
-/*      GL_ONE_MINUS_DST_ALPHA */
 
-/* ColorMaterialFace */
-/*      GL_FRONT */
-/*      GL_BACK */
-/*      GL_FRONT_AND_BACK */
 
-/* ColorMaterialParameter */
-/*      GL_AMBIENT */
-/*      GL_DIFFUSE */
-/*      GL_SPECULAR */
-/*      GL_EMISSION */
-/*      GL_AMBIENT_AND_DIFFUSE */
 
-/* ColorPointerType */
-/*      GL_BYTE */
-/*      GL_UNSIGNED_BYTE */
-/*      GL_SHORT */
-/*      GL_UNSIGNED_SHORT */
-/*      GL_INT */
-/*      GL_UNSIGNED_INT */
-/*      GL_FLOAT */
-/*      GL_DOUBLE */
 
-/* CullFaceMode */
-/*      GL_FRONT */
-/*      GL_BACK */
-/*      GL_FRONT_AND_BACK */
 
-/* DepthFunction */
-/*      GL_NEVER */
-/*      GL_LESS */
-/*      GL_EQUAL */
-/*      GL_LEQUAL */
-/*      GL_GREATER */
-/*      GL_NOTEQUAL */
-/*      GL_GEQUAL */
-/*      GL_ALWAYS */
 
-/* DrawBufferMode */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 #define GL_NONE                           0
 #define GL_FRONT_LEFT                     0x0400
 #define GL_FRONT_RIGHT                    0x0401
@@ -213,75 +189,75 @@ typedef void GLvoid;
 #define GL_AUX2                           0x040B
 #define GL_AUX3                           0x040C
 
-/* EnableCap */
-/*      GL_FOG */
-/*      GL_LIGHTING */
-/*      GL_TEXTURE_1D */
-/*      GL_TEXTURE_2D */
-/*      GL_LINE_STIPPLE */
-/*      GL_POLYGON_STIPPLE */
-/*      GL_CULL_FACE */
-/*      GL_ALPHA_TEST */
-/*      GL_BLEND */
-/*      GL_INDEX_LOGIC_OP */
-/*      GL_COLOR_LOGIC_OP */
-/*      GL_DITHER */
-/*      GL_STENCIL_TEST */
-/*      GL_DEPTH_TEST */
-/*      GL_CLIP_PLANE0 */
-/*      GL_CLIP_PLANE1 */
-/*      GL_CLIP_PLANE2 */
-/*      GL_CLIP_PLANE3 */
-/*      GL_CLIP_PLANE4 */
-/*      GL_CLIP_PLANE5 */
-/*      GL_LIGHT0 */
-/*      GL_LIGHT1 */
-/*      GL_LIGHT2 */
-/*      GL_LIGHT3 */
-/*      GL_LIGHT4 */
-/*      GL_LIGHT5 */
-/*      GL_LIGHT6 */
-/*      GL_LIGHT7 */
-/*      GL_TEXTURE_GEN_S */
-/*      GL_TEXTURE_GEN_T */
-/*      GL_TEXTURE_GEN_R */
-/*      GL_TEXTURE_GEN_Q */
-/*      GL_MAP1_VERTEX_3 */
-/*      GL_MAP1_VERTEX_4 */
-/*      GL_MAP1_COLOR_4 */
-/*      GL_MAP1_INDEX */
-/*      GL_MAP1_NORMAL */
-/*      GL_MAP1_TEXTURE_COORD_1 */
-/*      GL_MAP1_TEXTURE_COORD_2 */
-/*      GL_MAP1_TEXTURE_COORD_3 */
-/*      GL_MAP1_TEXTURE_COORD_4 */
-/*      GL_MAP2_VERTEX_3 */
-/*      GL_MAP2_VERTEX_4 */
-/*      GL_MAP2_COLOR_4 */
-/*      GL_MAP2_INDEX */
-/*      GL_MAP2_NORMAL */
-/*      GL_MAP2_TEXTURE_COORD_1 */
-/*      GL_MAP2_TEXTURE_COORD_2 */
-/*      GL_MAP2_TEXTURE_COORD_3 */
-/*      GL_MAP2_TEXTURE_COORD_4 */
-/*      GL_POINT_SMOOTH */
-/*      GL_LINE_SMOOTH */
-/*      GL_POLYGON_SMOOTH */
-/*      GL_SCISSOR_TEST */
-/*      GL_COLOR_MATERIAL */
-/*      GL_NORMALIZE */
-/*      GL_AUTO_NORMAL */
-/*      GL_POLYGON_OFFSET_POINT */
-/*      GL_POLYGON_OFFSET_LINE */
-/*      GL_POLYGON_OFFSET_FILL */
-/*      GL_VERTEX_ARRAY */
-/*      GL_NORMAL_ARRAY */
-/*      GL_COLOR_ARRAY */
-/*      GL_INDEX_ARRAY */
-/*      GL_TEXTURE_COORD_ARRAY */
-/*      GL_EDGE_FLAG_ARRAY */
 
-/* ErrorCode */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 #define GL_NO_ERROR                       0
 #define GL_INVALID_ENUM                   0x0500
 #define GL_INVALID_VALUE                  0x0501
@@ -291,14 +267,14 @@ typedef void GLvoid;
 #define GL_OUT_OF_MEMORY                  0x0505
 #define GL_TABLE_TOO_LARGE                0x8031
 
-/* FeedbackType */
+
 #define GL_2D                             0x0600
 #define GL_3D                             0x0601
 #define GL_3D_COLOR                       0x0602
 #define GL_3D_COLOR_TEXTURE               0x0603
 #define GL_4D_COLOR_TEXTURE               0x0604
 
-/* FeedBackToken */
+
 #define GL_PASS_THROUGH_TOKEN             0x0700
 #define GL_POINT_TOKEN                    0x0701
 #define GL_LINE_TOKEN                     0x0702
@@ -308,29 +284,29 @@ typedef void GLvoid;
 #define GL_COPY_PIXEL_TOKEN               0x0706
 #define GL_LINE_RESET_TOKEN               0x0707
 
-/* FogMode */
-/*      GL_LINEAR */
+
+
 #define GL_EXP                            0x0800
 #define GL_EXP2                           0x0801
 
-/* FogParameter */
-/*      GL_FOG_COLOR */
-/*      GL_FOG_DENSITY */
-/*      GL_FOG_END */
-/*      GL_FOG_INDEX */
-/*      GL_FOG_MODE */
-/*      GL_FOG_START */
 
-/* FrontFaceDirection */
+
+
+
+
+
+
+
+
 #define GL_CW                             0x0900
 #define GL_CCW                            0x0901
 
-/* GetMapQuery */
+
 #define GL_COEFF                          0x0A00
 #define GL_ORDER                          0x0A01
 #define GL_DOMAIN                         0x0A02
 
-/* GetPixelMap */
+
 #define GL_PIXEL_MAP_I_TO_I               0x0C70
 #define GL_PIXEL_MAP_S_TO_S               0x0C71
 #define GL_PIXEL_MAP_I_TO_R               0x0C72
@@ -342,7 +318,7 @@ typedef void GLvoid;
 #define GL_PIXEL_MAP_B_TO_B               0x0C78
 #define GL_PIXEL_MAP_A_TO_A               0x0C79
 
-/* GetPointervPName */
+
 #define GL_VERTEX_ARRAY_POINTER           0x808E
 #define GL_NORMAL_ARRAY_POINTER           0x808F
 #define GL_COLOR_ARRAY_POINTER            0x8090
@@ -350,7 +326,7 @@ typedef void GLvoid;
 #define GL_TEXTURE_COORD_ARRAY_POINTER    0x8092
 #define GL_EDGE_FLAG_ARRAY_POINTER        0x8093
 
-/* GetPName */
+
 #define GL_CURRENT_COLOR                  0x0B00
 #define GL_CURRENT_INDEX                  0x0B01
 #define GL_CURRENT_NORMAL                 0x0B02
@@ -583,18 +559,18 @@ typedef void GLvoid;
 #define GL_TEXTURE_COORD_ARRAY_TYPE       0x8089
 #define GL_TEXTURE_COORD_ARRAY_STRIDE     0x808A
 #define GL_EDGE_FLAG_ARRAY_STRIDE         0x808C
-/*      GL_VERTEX_ARRAY_COUNT_EXT */
-/*      GL_NORMAL_ARRAY_COUNT_EXT */
-/*      GL_COLOR_ARRAY_COUNT_EXT */
-/*      GL_INDEX_ARRAY_COUNT_EXT */
-/*      GL_TEXTURE_COORD_ARRAY_COUNT_EXT */
-/*      GL_EDGE_FLAG_ARRAY_COUNT_EXT */
 
-/* GetTextureParameter */
-/*      GL_TEXTURE_MAG_FILTER */
-/*      GL_TEXTURE_MIN_FILTER */
-/*      GL_TEXTURE_WRAP_S */
-/*      GL_TEXTURE_WRAP_T */
+
+
+
+
+
+
+
+
+
+
+
 #define GL_TEXTURE_WIDTH                  0x1000
 #define GL_TEXTURE_HEIGHT                 0x1001
 #define GL_TEXTURE_INTERNAL_FORMAT        0x1003
@@ -610,43 +586,43 @@ typedef void GLvoid;
 #define GL_TEXTURE_PRIORITY               0x8066
 #define GL_TEXTURE_RESIDENT               0x8067
 
-/* HintMode */
+
 #define GL_DONT_CARE                      0x1100
 #define GL_FASTEST                        0x1101
 #define GL_NICEST                         0x1102
 
-/* HintTarget */
-/*      GL_PERSPECTIVE_CORRECTION_HINT */
-/*      GL_POINT_SMOOTH_HINT */
-/*      GL_LINE_SMOOTH_HINT */
-/*      GL_POLYGON_SMOOTH_HINT */
-/*      GL_FOG_HINT */
 
-/* IndexMaterialParameterSGI */
-/*      GL_INDEX_OFFSET */
 
-/* IndexPointerType */
-/*      GL_SHORT */
-/*      GL_INT */
-/*      GL_FLOAT */
-/*      GL_DOUBLE */
 
-/* IndexFunctionSGI */
-/*      GL_NEVER */
-/*      GL_LESS */
-/*      GL_EQUAL */
-/*      GL_LEQUAL */
-/*      GL_GREATER */
-/*      GL_NOTEQUAL */
-/*      GL_GEQUAL */
-/*      GL_ALWAYS */
 
-/* LightModelParameter */
-/*      GL_LIGHT_MODEL_AMBIENT */
-/*      GL_LIGHT_MODEL_LOCAL_VIEWER */
-/*      GL_LIGHT_MODEL_TWO_SIDE */
 
-/* LightParameter */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 #define GL_AMBIENT                        0x1200
 #define GL_DIFFUSE                        0x1201
 #define GL_SPECULAR                       0x1202
@@ -658,11 +634,11 @@ typedef void GLvoid;
 #define GL_LINEAR_ATTENUATION             0x1208
 #define GL_QUADRATIC_ATTENUATION          0x1209
 
-/* ListMode */
+
 #define GL_COMPILE                        0x1300
 #define GL_COMPILE_AND_EXECUTE            0x1301
 
-/* DataType */
+
 #define GL_BYTE                           0x1400
 #define GL_UNSIGNED_BYTE                  0x1401
 #define GL_SHORT                          0x1402
@@ -676,19 +652,19 @@ typedef void GLvoid;
 #define GL_DOUBLE                         0x140A
 #define GL_DOUBLE_EXT                     0x140A
 
-/* ListNameType */
-/*      GL_BYTE */
-/*      GL_UNSIGNED_BYTE */
-/*      GL_SHORT */
-/*      GL_UNSIGNED_SHORT */
-/*      GL_INT */
-/*      GL_UNSIGNED_INT */
-/*      GL_FLOAT */
-/*      GL_2_BYTES */
-/*      GL_3_BYTES */
-/*      GL_4_BYTES */
 
-/* LogicOp */
+
+
+
+
+
+
+
+
+
+
+
+
 #define GL_CLEAR                          0x1500
 #define GL_AND                            0x1501
 #define GL_AND_REVERSE                    0x1502
@@ -706,67 +682,67 @@ typedef void GLvoid;
 #define GL_NAND                           0x150E
 #define GL_SET                            0x150F
 
-/* MapTarget */
-/*      GL_MAP1_COLOR_4 */
-/*      GL_MAP1_INDEX */
-/*      GL_MAP1_NORMAL */
-/*      GL_MAP1_TEXTURE_COORD_1 */
-/*      GL_MAP1_TEXTURE_COORD_2 */
-/*      GL_MAP1_TEXTURE_COORD_3 */
-/*      GL_MAP1_TEXTURE_COORD_4 */
-/*      GL_MAP1_VERTEX_3 */
-/*      GL_MAP1_VERTEX_4 */
-/*      GL_MAP2_COLOR_4 */
-/*      GL_MAP2_INDEX */
-/*      GL_MAP2_NORMAL */
-/*      GL_MAP2_TEXTURE_COORD_1 */
-/*      GL_MAP2_TEXTURE_COORD_2 */
-/*      GL_MAP2_TEXTURE_COORD_3 */
-/*      GL_MAP2_TEXTURE_COORD_4 */
-/*      GL_MAP2_VERTEX_3 */
-/*      GL_MAP2_VERTEX_4 */
 
-/* MaterialFace */
-/*      GL_FRONT */
-/*      GL_BACK */
-/*      GL_FRONT_AND_BACK */
 
-/* MaterialParameter */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 #define GL_EMISSION                       0x1600
 #define GL_SHININESS                      0x1601
 #define GL_AMBIENT_AND_DIFFUSE            0x1602
 #define GL_COLOR_INDEXES                  0x1603
-/*      GL_AMBIENT */
-/*      GL_DIFFUSE */
-/*      GL_SPECULAR */
 
-/* MatrixMode */
+
+
+
+
 #define GL_MODELVIEW                      0x1700
 #define GL_PROJECTION                     0x1701
 #define GL_TEXTURE                        0x1702
 
-/* MeshMode1 */
-/*      GL_POINT */
-/*      GL_LINE */
 
-/* MeshMode2 */
-/*      GL_POINT */
-/*      GL_LINE */
-/*      GL_FILL */
 
-/* NormalPointerType */
-/*      GL_BYTE */
-/*      GL_SHORT */
-/*      GL_INT */
-/*      GL_FLOAT */
-/*      GL_DOUBLE */
 
-/* PixelCopyType */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 #define GL_COLOR                          0x1800
 #define GL_DEPTH                          0x1801
 #define GL_STENCIL                        0x1802
 
-/* PixelFormat */
+
 #define GL_COLOR_INDEX                    0x1900
 #define GL_STENCIL_INDEX                  0x1901
 #define GL_DEPTH_COMPONENT                0x1902
@@ -778,184 +754,184 @@ typedef void GLvoid;
 #define GL_RGBA                           0x1908
 #define GL_LUMINANCE                      0x1909
 #define GL_LUMINANCE_ALPHA                0x190A
-/*      GL_ABGR_EXT */
 
-/* PixelMap */
-/*      GL_PIXEL_MAP_I_TO_I */
-/*      GL_PIXEL_MAP_S_TO_S */
-/*      GL_PIXEL_MAP_I_TO_R */
-/*      GL_PIXEL_MAP_I_TO_G */
-/*      GL_PIXEL_MAP_I_TO_B */
-/*      GL_PIXEL_MAP_I_TO_A */
-/*      GL_PIXEL_MAP_R_TO_R */
-/*      GL_PIXEL_MAP_G_TO_G */
-/*      GL_PIXEL_MAP_B_TO_B */
-/*      GL_PIXEL_MAP_A_TO_A */
 
-/* PixelStoreParameter */
-/*      GL_UNPACK_SWAP_BYTES */
-/*      GL_UNPACK_LSB_FIRST */
-/*      GL_UNPACK_ROW_LENGTH */
-/*      GL_UNPACK_SKIP_ROWS */
-/*      GL_UNPACK_SKIP_PIXELS */
-/*      GL_UNPACK_ALIGNMENT */
-/*      GL_PACK_SWAP_BYTES */
-/*      GL_PACK_LSB_FIRST */
-/*      GL_PACK_ROW_LENGTH */
-/*      GL_PACK_SKIP_ROWS */
-/*      GL_PACK_SKIP_PIXELS */
-/*      GL_PACK_ALIGNMENT */
 
-/* PixelTransferParameter */
-/*      GL_MAP_COLOR */
-/*      GL_MAP_STENCIL */
-/*      GL_INDEX_SHIFT */
-/*      GL_INDEX_OFFSET */
-/*      GL_RED_SCALE */
-/*      GL_RED_BIAS */
-/*      GL_GREEN_SCALE */
-/*      GL_GREEN_BIAS */
-/*      GL_BLUE_SCALE */
-/*      GL_BLUE_BIAS */
-/*      GL_ALPHA_SCALE */
-/*      GL_ALPHA_BIAS */
-/*      GL_DEPTH_SCALE */
-/*      GL_DEPTH_BIAS */
 
-/* PixelType */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 #define GL_BITMAP                         0x1A00
-/*      GL_BYTE */
-/*      GL_UNSIGNED_BYTE */
-/*      GL_SHORT */
-/*      GL_UNSIGNED_SHORT */
-/*      GL_INT */
-/*      GL_UNSIGNED_INT */
-/*      GL_FLOAT */
-/*      GL_UNSIGNED_BYTE_3_3_2_EXT */
-/*      GL_UNSIGNED_SHORT_4_4_4_4_EXT */
-/*      GL_UNSIGNED_SHORT_5_5_5_1_EXT */
-/*      GL_UNSIGNED_INT_8_8_8_8_EXT */
-/*      GL_UNSIGNED_INT_10_10_10_2_EXT */
 
-/* PolygonMode */
+
+
+
+
+
+
+
+
+
+
+
+
+
 #define GL_POINT                          0x1B00
 #define GL_LINE                           0x1B01
 #define GL_FILL                           0x1B02
 
-/* ReadBufferMode */
-/*      GL_FRONT_LEFT */
-/*      GL_FRONT_RIGHT */
-/*      GL_BACK_LEFT */
-/*      GL_BACK_RIGHT */
-/*      GL_FRONT */
-/*      GL_BACK */
-/*      GL_LEFT */
-/*      GL_RIGHT */
-/*      GL_AUX0 */
-/*      GL_AUX1 */
-/*      GL_AUX2 */
-/*      GL_AUX3 */
 
-/* RenderingMode */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 #define GL_RENDER                         0x1C00
 #define GL_FEEDBACK                       0x1C01
 #define GL_SELECT                         0x1C02
 
-/* ShadingModel */
+
 #define GL_FLAT                           0x1D00
 #define GL_SMOOTH                         0x1D01
 
-/* StencilFunction */
-/*      GL_NEVER */
-/*      GL_LESS */
-/*      GL_EQUAL */
-/*      GL_LEQUAL */
-/*      GL_GREATER */
-/*      GL_NOTEQUAL */
-/*      GL_GEQUAL */
-/*      GL_ALWAYS */
 
-/* StencilOp */
-/*      GL_ZERO */
+
+
+
+
+
+
+
+
+
+
+
 #define GL_KEEP                           0x1E00
 #define GL_REPLACE                        0x1E01
 #define GL_INCR                           0x1E02
 #define GL_DECR                           0x1E03
-/*      GL_INVERT */
 
-/* StringName */
+
+
 #define GL_VENDOR                         0x1F00
 #define GL_RENDERER                       0x1F01
 #define GL_VERSION                        0x1F02
 #define GL_EXTENSIONS                     0x1F03
 
-/* TexCoordPointerType */
-/*      GL_SHORT */
-/*      GL_INT */
-/*      GL_FLOAT */
-/*      GL_DOUBLE */
 
-/* TextureCoordName */
+
+
+
+
+
+
 #define GL_S                              0x2000
 #define GL_T                              0x2001
 #define GL_R                              0x2002
 #define GL_Q                              0x2003
 
-/* TextureEnvMode */
+
 #define GL_MODULATE                       0x2100
 #define GL_DECAL                          0x2101
-/*      GL_BLEND */
-/*      GL_REPLACE */
-/*      GL_ADD */
 
-/* TextureEnvParameter */
+
+
+
+
 #define GL_TEXTURE_ENV_MODE               0x2200
 #define GL_TEXTURE_ENV_COLOR              0x2201
 
-/* TextureEnvTarget */
+
 #define GL_TEXTURE_ENV                    0x2300
 
-/* TextureGenMode */
+
 #define GL_EYE_LINEAR                     0x2400
 #define GL_OBJECT_LINEAR                  0x2401
 #define GL_SPHERE_MAP                     0x2402
 
-/* TextureGenParameter */
+
 #define GL_TEXTURE_GEN_MODE               0x2500
 #define GL_OBJECT_PLANE                   0x2501
 #define GL_EYE_PLANE                      0x2502
 
-/* TextureMagFilter */
+
 #define GL_NEAREST                        0x2600
 #define GL_LINEAR                         0x2601
 
-/* TextureMinFilter */
-/*      GL_NEAREST */
-/*      GL_LINEAR */
+
+
+
 #define GL_NEAREST_MIPMAP_NEAREST         0x2700
 #define GL_LINEAR_MIPMAP_NEAREST          0x2701
 #define GL_NEAREST_MIPMAP_LINEAR          0x2702
 #define GL_LINEAR_MIPMAP_LINEAR           0x2703
 
-/* TextureParameterName */
+
 #define GL_TEXTURE_MAG_FILTER             0x2800
 #define GL_TEXTURE_MIN_FILTER             0x2801
 #define GL_TEXTURE_WRAP_S                 0x2802
 #define GL_TEXTURE_WRAP_T                 0x2803
-/*      GL_TEXTURE_BORDER_COLOR */
-/*      GL_TEXTURE_PRIORITY */
 
-/* TextureTarget */
-/*      GL_TEXTURE_1D */
-/*      GL_TEXTURE_2D */
+
+
+
+
+
 #define GL_PROXY_TEXTURE_1D               0x8063
 #define GL_PROXY_TEXTURE_2D               0x8064
 
-/* TextureWrapMode */
+
 #define GL_CLAMP                          0x2900
 #define GL_REPEAT                         0x2901
 
-/* PixelInternalFormat */
+
 #define GL_R3_G3_B2                       0x2A10
 #define GL_ALPHA4                         0x803B
 #define GL_ALPHA8                         0x803C
@@ -990,7 +966,7 @@ typedef void GLvoid;
 #define GL_RGBA12                         0x805A
 #define GL_RGBA16                         0x805B
 
-/* InterleavedArrayFormat */
+
 #define GL_V2F                            0x2A20
 #define GL_V3F                            0x2A21
 #define GL_C4UB_V2F                       0x2A22
@@ -1006,13 +982,13 @@ typedef void GLvoid;
 #define GL_T2F_C4F_N3F_V3F                0x2A2C
 #define GL_T4F_C4F_N3F_V4F                0x2A2D
 
-/* VertexPointerType */
-/*      GL_SHORT */
-/*      GL_INT */
-/*      GL_FLOAT */
-/*      GL_DOUBLE */
 
-/* ClipPlaneName */
+
+
+
+
+
+
 #define GL_CLIP_PLANE0                    0x3000
 #define GL_CLIP_PLANE1                    0x3001
 #define GL_CLIP_PLANE2                    0x3002
@@ -1020,7 +996,7 @@ typedef void GLvoid;
 #define GL_CLIP_PLANE4                    0x3004
 #define GL_CLIP_PLANE5                    0x3005
 
-/* LightName */
+
 #define GL_LIGHT0                         0x4000
 #define GL_LIGHT1                         0x4001
 #define GL_LIGHT2                         0x4002
@@ -1030,21 +1006,21 @@ typedef void GLvoid;
 #define GL_LIGHT6                         0x4006
 #define GL_LIGHT7                         0x4007
 
-/* EXT_abgr */
+
 #define GL_ABGR_EXT                       0x8000
 
-/* EXT_blend_subtract */
+
 #define GL_FUNC_SUBTRACT_EXT              0x800A
 #define GL_FUNC_REVERSE_SUBTRACT_EXT      0x800B
 
-/* EXT_packed_pixels */
+
 #define GL_UNSIGNED_BYTE_3_3_2_EXT        0x8032
 #define GL_UNSIGNED_SHORT_4_4_4_4_EXT     0x8033
 #define GL_UNSIGNED_SHORT_5_5_5_1_EXT     0x8034
 #define GL_UNSIGNED_INT_8_8_8_8_EXT       0x8035
 #define GL_UNSIGNED_INT_10_10_10_2_EXT    0x8036
 
-/* OpenGL12 */
+
 #define GL_PACK_SKIP_IMAGES               0x806B
 #define GL_PACK_IMAGE_HEIGHT              0x806C
 #define GL_UNPACK_SKIP_IMAGES             0x806D
@@ -1082,7 +1058,7 @@ typedef void GLvoid;
 #define GL_ALIASED_POINT_SIZE_RANGE       0x846D
 #define GL_ALIASED_LINE_WIDTH_RANGE       0x846E
 
-/* OpenGL13 */
+
 #define GL_ACTIVE_TEXTURE                 0x84E0
 #define GL_CLIENT_ACTIVE_TEXTURE          0x84E1
 #define GL_MAX_TEXTURE_UNITS              0x84E2
@@ -1180,7 +1156,7 @@ typedef void GLvoid;
 #define GL_SAMPLE_COVERAGE_INVERT         0x80AB
 #define GL_MULTISAMPLE_BIT                0x20000000
 
-/* EXT_vertex_array */
+
 #define GL_VERTEX_ARRAY_EXT               0x8074
 #define GL_NORMAL_ARRAY_EXT               0x8075
 #define GL_COLOR_ARRAY_EXT                0x8076
@@ -1214,34 +1190,34 @@ typedef void GLvoid;
 #define GL_TEXTURE_COORD_ARRAY_POINTER_EXT 0x8092
 #define GL_EDGE_FLAG_ARRAY_POINTER_EXT    0x8093
 
-/* SGIS_texture_lod */
+
 #define GL_TEXTURE_MIN_LOD_SGIS           0x813A
 #define GL_TEXTURE_MAX_LOD_SGIS           0x813B
 #define GL_TEXTURE_BASE_LEVEL_SGIS        0x813C
 #define GL_TEXTURE_MAX_LEVEL_SGIS         0x813D
 
-/* EXT_shared_texture_palette */
+
 #define GL_SHARED_TEXTURE_PALETTE_EXT     0x81FB
 
-/* EXT_rescale_normal */
+
 #define GL_RESCALE_NORMAL_EXT             0x803A
 
-/* SGIX_shadow */
+
 #define GL_TEXTURE_COMPARE_SGIX           0x819A
 #define GL_TEXTURE_COMPARE_OPERATOR_SGIX  0x819B
 #define GL_TEXTURE_LEQUAL_R_SGIX          0x819C
 #define GL_TEXTURE_GEQUAL_R_SGIX          0x819D
 
-/* SGIX_depth_texture */
+
 #define GL_DEPTH_COMPONENT16_SGIX         0x81A5
 #define GL_DEPTH_COMPONENT24_SGIX         0x81A6
 #define GL_DEPTH_COMPONENT32_SGIX         0x81A7
 
-/* SGIS_generate_mipmap */
+
 #define GL_GENERATE_MIPMAP_SGIS           0x8191
 #define GL_GENERATE_MIPMAP_HINT_SGIS      0x8192
 
-/* OpenGL14 */
+
 #define GL_POINT_SIZE_MIN                 0x8126
 #define GL_POINT_SIZE_MAX                 0x8127
 #define GL_POINT_FADE_THRESHOLD_SIZE      0x8128
@@ -1282,7 +1258,7 @@ typedef void GLvoid;
 #define GL_TEXTURE_COMPARE_FUNC           0x884D
 #define GL_COMPARE_R_TO_TEXTURE           0x884E
 
-/*************************************************************/
+
 
 WINGDIAPI void APIENTRY glAccum (GLenum op, GLfloat value);
 WINGDIAPI void APIENTRY glAlphaFunc (GLenum func, GLclampf ref);
@@ -1634,4 +1610,4 @@ WINGDIAPI void APIENTRY glViewport (GLint x, GLint y, GLsizei width, GLsizei hei
 }
 #endif
 
-#endif /* __gl_h_ */
+#endif 

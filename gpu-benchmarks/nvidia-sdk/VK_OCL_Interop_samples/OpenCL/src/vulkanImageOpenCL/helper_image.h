@@ -1,31 +1,6 @@
-/* Copyright (c) 2019, NVIDIA CORPORATION. All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- *  * Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- *  * Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- *  * Neither the name of NVIDIA CORPORATION nor the names of its
- *    contributors may be used to endorse or promote products derived
- *    from this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS ``AS IS'' AND ANY
- * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
- * PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR
- * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
- * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
- * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
- * PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
- * OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
 
-// These are helper functions for the SDK samples (image,bitmap)
+
+
 #ifndef COMMON_HELPER_IMAGE_H_
 #define COMMON_HELPER_IMAGE_H_
 
@@ -53,63 +28,63 @@
 
 #include "helper_string.h"
 
-// namespace unnamed (internal)
+
 namespace helper_image_internal {
-//! size of PGM file header
+
 const unsigned int PGMHeaderSize = 0x40;
 
-// types
 
-//! Data converter from unsigned char / unsigned byte to type T
+
+
 template <class T>
 struct ConverterFromUByte;
 
-//! Data converter from unsigned char / unsigned byte
+
 template <>
 struct ConverterFromUByte<unsigned char> {
-  //! Conversion operator
-  //! @return converted value
-  //! @param  val  value to convert
+  
+  
+  
   float operator()(const unsigned char &val) {
     return static_cast<unsigned char>(val);
   }
 };
 
-//! Data converter from unsigned char / unsigned byte to float
+
 template <>
 struct ConverterFromUByte<float> {
-  //! Conversion operator
-  //! @return converted value
-  //! @param  val  value to convert
+  
+  
+  
   float operator()(const unsigned char &val) {
     return static_cast<float>(val) / 255.0f;
   }
 };
 
-//! Data converter from unsigned char / unsigned byte to type T
+
 template <class T>
 struct ConverterToUByte;
 
-//! Data converter from unsigned char / unsigned byte to unsigned int
+
 template <>
 struct ConverterToUByte<unsigned char> {
-  //! Conversion operator (essentially a passthru
-  //! @return converted value
-  //! @param  val  value to convert
+  
+  
+  
   unsigned char operator()(const unsigned char &val) { return val; }
 };
 
-//! Data converter from unsigned char / unsigned byte to unsigned int
+
 template <>
 struct ConverterToUByte<float> {
-  //! Conversion operator
-  //! @return converted value
-  //! @param  val  value to convert
+  
+  
+  
   unsigned char operator()(const float &val) {
     return static_cast<unsigned char>(val * 255.0f);
   }
 };
-}  // namespace helper_image_internal
+}  
 
 #if defined(WIN32) || defined(_WIN32) || defined(WIN64) || defined(_WIN64)
 #ifndef FOPEN
@@ -142,7 +117,7 @@ inline bool __loadPPM(const char *file, unsigned char **data, unsigned int *w,
     return false;
   }
 
-  // check header
+  
   char header[helper_image_internal::PGMHeaderSize];
 
   if (fgets(header, helper_image_internal::PGMHeaderSize, fp) == NULL) {
@@ -160,7 +135,7 @@ inline bool __loadPPM(const char *file, unsigned char **data, unsigned int *w,
     return false;
   }
 
-  // parse header, read maxval, width and height
+  
   unsigned int width = 0;
   unsigned int height = 0;
   unsigned int maxval = 0;
@@ -186,7 +161,7 @@ inline bool __loadPPM(const char *file, unsigned char **data, unsigned int *w,
     }
   }
 
-  // check if given handle for the data is initialized
+  
   if (NULL != *data) {
     if (*w != width || *h != height) {
       std::cerr << "__LoadPPM() : Invalid image dimensions." << std::endl;
@@ -198,7 +173,7 @@ inline bool __loadPPM(const char *file, unsigned char **data, unsigned int *w,
     *h = height;
   }
 
-  // read and close file
+  
   if (fread(*data, sizeof(unsigned char), width * height * *channels, fp) ==
       0) {
     std::cerr << "__LoadPPM() read data returned error." << std::endl;
@@ -221,13 +196,13 @@ inline bool sdkLoadPGM(const char *file, T **data, unsigned int *w,
 
   unsigned int size = *w * *h * channels;
 
-  // initialize mem if necessary
-  // the correct size is checked / set in loadPGMc()
+  
+  
   if (NULL == *data) {
     *data = reinterpret_cast<T *>(malloc(sizeof(T) * size));
   }
 
-  // copy and cast data
+  
   std::transform(idata, idata + size, *data,
                  helper_image_internal::ConverterFromUByte<T>());
 
@@ -243,9 +218,9 @@ inline bool sdkLoadPPM4(const char *file, T **data, unsigned int *w,
   unsigned int channels;
 
   if (__loadPPM(file, &idata, w, h, &channels)) {
-    // pad 4th component
+    
     int size = *w * *h;
-    // keep the original pointer
+    
     unsigned char *idata_orig = idata;
     *data = reinterpret_cast<T *>(malloc(sizeof(T) * size * 4));
     unsigned char *ptr = *data;
@@ -314,10 +289,10 @@ inline bool sdkSavePGM(const char *file, T *data, unsigned int w,
   std::transform(data, data + size, idata,
                  helper_image_internal::ConverterToUByte<T>());
 
-  // write file
+  
   bool result = __savePPM(file, idata, w, h, 1);
 
-  // cleanup
+  
   free(idata);
 
   return result;
@@ -325,7 +300,7 @@ inline bool sdkSavePGM(const char *file, T *data, unsigned int w,
 
 inline bool sdkSavePPM4ub(const char *file, unsigned char *data, unsigned int w,
                           unsigned int h) {
-  // strip 4th component
+  
   int size = w * h;
   unsigned char *ndata =
       (unsigned char *)malloc(sizeof(unsigned char) * size * 3);
@@ -343,34 +318,34 @@ inline bool sdkSavePPM4ub(const char *file, unsigned char *data, unsigned int w,
   return result;
 }
 
-//////////////////////////////////////////////////////////////////////////////
-//! Read file \filename and return the data
-//! @return bool if reading the file succeeded, otherwise false
-//! @param filename name of the source file
-//! @param data  uninitialized pointer, returned initialized and pointing to
-//!        the data read
-//! @param len  number of data elements in data, -1 on error
-//////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+
+
 template <class T>
 inline bool sdkReadFile(const char *filename, T **data, unsigned int *len,
                         bool verbose) {
-  // check input arguments
+  
   assert(NULL != filename);
   assert(NULL != len);
 
-  // intermediate storage for the data read
+  
   std::vector<T> data_read;
 
-  // open file for reading
+  
   FILE *fh = NULL;
 
-  // check if filestream is valid
+  
   if (FOPEN_FAIL(FOPEN(fh, filename, "r"))) {
     printf("Unable to open input file: %s\n", filename);
     return false;
   }
 
-  // read all data elements
+  
   T token;
 
   while (!feof(fh)) {
@@ -378,11 +353,11 @@ inline bool sdkReadFile(const char *filename, T **data, unsigned int *len,
     data_read.push_back(token);
   }
 
-  // the last element is read twice
+  
   data_read.pop_back();
   fclose(fh);
 
-  // check if the given handle is already initialized
+  
   if (NULL != *data) {
     if (*len != data_read.size()) {
       std::cerr << "sdkReadFile() : Initialized memory given but "
@@ -393,35 +368,35 @@ inline bool sdkReadFile(const char *filename, T **data, unsigned int *len,
       return false;
     }
   } else {
-    // allocate storage for the data read
+    
     *data = reinterpret_cast<T *>(malloc(sizeof(T) * data_read.size()));
-    // store signal size
+    
     *len = static_cast<unsigned int>(data_read.size());
   }
 
-  // copy data
+  
   memcpy(*data, &data_read.front(), sizeof(T) * data_read.size());
 
   return true;
 }
 
-//////////////////////////////////////////////////////////////////////////////
-//! Read file \filename and return the data
-//! @return bool if reading the file succeeded, otherwise false
-//! @param filename name of the source file
-//! @param data  uninitialized pointer, returned initialized and pointing to
-//!        the data read
-//! @param len  number of data elements in data, -1 on error
-//////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+
+
 template <class T>
 inline bool sdkReadFileBlocks(const char *filename, T **data, unsigned int *len,
                               unsigned int block_num, unsigned int block_size,
                               bool verbose) {
-  // check input arguments
+  
   assert(NULL != filename);
   assert(NULL != len);
 
-  // open file for reading
+  
   FILE *fh = fopen(filename, "rb");
 
   if (fh == NULL && verbose) {
@@ -429,11 +404,11 @@ inline bool sdkReadFileBlocks(const char *filename, T **data, unsigned int *len,
     return false;
   }
 
-  // check if the given handle is already initialized
-  // allocate storage for the data read
+  
+  
   data[block_num] = reinterpret_cast<T *>(malloc(block_size));
 
-  // read all data elements
+  
   fseek(fh, block_num * block_size, SEEK_SET);
   *len = fread(data[block_num], sizeof(T), block_size / sizeof(T), fh);
 
@@ -442,22 +417,22 @@ inline bool sdkReadFileBlocks(const char *filename, T **data, unsigned int *len,
   return true;
 }
 
-//////////////////////////////////////////////////////////////////////////////
-//! Write a data file \filename
-//! @return true if writing the file succeeded, otherwise false
-//! @param filename name of the source file
-//! @param data  data to write
-//! @param len  number of data elements in data, -1 on error
-//! @param epsilon  epsilon for comparison
-//////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+
+
 template <class T, class S>
 inline bool sdkWriteFile(const char *filename, const T *data, unsigned int len,
                          const S epsilon, bool verbose, bool append = false) {
   assert(NULL != filename);
   assert(NULL != data);
 
-  // open file for writing
-  //    if (append) {
+  
+  
   std::fstream fh(filename, std::fstream::out | std::fstream::ate);
 
   if (verbose) {
@@ -465,16 +440,9 @@ inline bool sdkWriteFile(const char *filename, const T *data, unsigned int len,
               << " for write/append." << std::endl;
   }
 
-  /*    } else {
-          std::fstream fh(filename, std::fstream::out);
-          if (verbose) {
-              std::cerr << "sdkWriteFile() : Open file " << filename << " for
-     write." << std::endl;
-          }
-      }
-  */
+  
 
-  // check if filestream is valid
+  
   if (!fh.good()) {
     if (verbose) {
       std::cerr << "sdkWriteFile() : Opening file failed." << std::endl;
@@ -483,15 +451,15 @@ inline bool sdkWriteFile(const char *filename, const T *data, unsigned int len,
     return false;
   }
 
-  // first write epsilon
+  
   fh << "# " << epsilon << "\n";
 
-  // write data
+  
   for (unsigned int i = 0; (i < len) && (fh.good()); ++i) {
     fh << data[i] << ' ';
   }
 
-  // Check if writing succeeded
+  
   if (!fh.good()) {
     if (verbose) {
       std::cerr << "sdkWriteFile() : Writing file failed." << std::endl;
@@ -500,20 +468,20 @@ inline bool sdkWriteFile(const char *filename, const T *data, unsigned int len,
     return false;
   }
 
-  // file ends with nl
+  
   fh << std::endl;
 
   return true;
 }
 
-//////////////////////////////////////////////////////////////////////////////
-//! Compare two arrays of arbitrary type
-//! @return  true if \a reference and \a data are identical, otherwise false
-//! @param reference  timer_interface to the reference data / gold image
-//! @param data       handle to the computed data
-//! @param len        number of elements in reference and data
-//! @param epsilon    epsilon to use for the comparison
-//////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+
+
 template <class T, class S>
 inline bool compareData(const T *reference, const T *data,
                         const unsigned int len, const S epsilon,
@@ -559,22 +527,22 @@ inline bool compareData(const T *reference, const T *data,
 #define __MIN_EPSILON_ERROR 1e-3f
 #endif
 
-//////////////////////////////////////////////////////////////////////////////
-//! Compare two arrays of arbitrary type
-//! @return  true if \a reference and \a data are identical, otherwise false
-//! @param reference  handle to the reference data / gold image
-//! @param data       handle to the computed data
-//! @param len        number of elements in reference and data
-//! @param epsilon    epsilon to use for the comparison
-//! @param epsilon    threshold % of (# of bytes) for pass/fail
-//////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+
+
+
 template <class T, class S>
 inline bool compareDataAsFloatThreshold(const T *reference, const T *data,
                                         const unsigned int len, const S epsilon,
                                         const float threshold) {
   assert(epsilon >= 0);
 
-  // If we set epsilon to be 0, let's set a minimum threshold
+  
   float max_error = MAX((float)epsilon, __MIN_EPSILON_ERROR);
   int error_count = 0;
   bool result = true;
@@ -636,7 +604,7 @@ inline bool sdkCompareBin2BinUint(const char *src_file, const char *ref_file,
   if (ref_file_path == NULL) {
     printf("compareBin2Bin <unsigned int>  unable to find <%s> in <%s>\n",
            ref_file, exec_path);
-    printf(">>> Check info.xml and [project//data] folder <%s> <<<\n",
+    printf(">>> Check info.xml and [project
            ref_file);
     printf("Aborting comparison!\n");
     printf("  FAILED\n");
@@ -701,7 +669,7 @@ inline bool sdkCompareBin2BinUint(const char *src_file, const char *ref_file,
     printf("  FAILURE: %d errors...\n", (unsigned int)error_count);
   }
 
-  return (error_count == 0);  // returns true if all pixels pass
+  return (error_count == 0);  
 }
 
 inline bool sdkCompareBin2BinFloat(const char *src_file, const char *ref_file,
@@ -723,7 +691,7 @@ inline bool sdkCompareBin2BinFloat(const char *src_file, const char *ref_file,
   if (ref_file_path == NULL) {
     printf("compareBin2Bin <float> unable to find <%s> in <%s>\n", ref_file,
            exec_path);
-    printf(">>> Check info.xml and [project//data] folder <%s> <<<\n",
+    printf(">>> Check info.xml and [project
            exec_path);
     printf("Aborting comparison!\n");
     printf("  FAILED\n");
@@ -785,7 +753,7 @@ inline bool sdkCompareBin2BinFloat(const char *src_file, const char *ref_file,
     printf("  FAILURE: %d errors...\n", (unsigned int)error_count);
   }
 
-  return (error_count == 0);  // returns true if all pixels pass
+  return (error_count == 0);  
 }
 
 inline bool sdkCompareL2fe(const float *reference, const float *data,
@@ -837,9 +805,9 @@ inline bool sdkLoadPPM4ub(const char *file, unsigned char **data,
   unsigned int channels;
 
   if (__loadPPM(file, &idata, w, h, &channels)) {
-    // pad 4th component
+    
     int size = *w * *h;
-    // keep the original pointer
+    
     unsigned char *idata_orig = idata;
     *data = (unsigned char *)malloc(sizeof(unsigned char) * size * 4);
     unsigned char *ptr = *data;
@@ -925,7 +893,7 @@ inline bool sdkComparePPM(const char *src_file, const char *ref_file,
     }
   }
 
-  // returns true if all pixels pass
+  
   return (error_count == 0) ? true : false;
 }
 
@@ -994,8 +962,8 @@ inline bool sdkComparePGM(const char *src_file, const char *ref_file,
     }
   }
 
-  // returns true if all pixels pass
+  
   return (error_count == 0) ? true : false;
 }
 
-#endif  // COMMON_HELPER_IMAGE_H_
+#endif  

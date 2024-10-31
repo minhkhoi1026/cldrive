@@ -1,13 +1,4 @@
-/*
- * Copyright 1993-2010 NVIDIA Corporation.  All rights reserved.
- *
- * Please refer to the NVIDIA end user license agreement (EULA) associated
- * with this source code for terms and conditions that govern your use of
- * this software. Any use, reproduction, disclosure, or distribution of
- * this software and related documentation outside the terms of the EULA
- * is strictly prohibited.
- *
- */
+
 
 #define LOCAL_SIZE_LIMIT 512U
 
@@ -39,9 +30,9 @@ inline void ComparatorLocal(
     }
 }
 
-////////////////////////////////////////////////////////////////////////////////
-// Monolithic bitonic sort kernel for short arrays fitting into local memory
-////////////////////////////////////////////////////////////////////////////////
+
+
+
 __kernel void bitonicSortLocal(
     __global uint *d_DstKey,
     __global uint *d_DstVal,
@@ -53,7 +44,7 @@ __kernel void bitonicSortLocal(
     __local  uint l_key[LOCAL_SIZE_LIMIT];
     __local  uint l_val[LOCAL_SIZE_LIMIT];
 
-    //Offset to the beginning of subbatch and load data
+    
     d_SrcKey += get_group_id(0) * LOCAL_SIZE_LIMIT + get_local_id(0);
     d_SrcVal += get_group_id(0) * LOCAL_SIZE_LIMIT + get_local_id(0);
     d_DstKey += get_group_id(0) * LOCAL_SIZE_LIMIT + get_local_id(0);
@@ -64,7 +55,7 @@ __kernel void bitonicSortLocal(
     l_val[get_local_id(0) + (LOCAL_SIZE_LIMIT / 2)] = d_SrcVal[(LOCAL_SIZE_LIMIT / 2)];
 
     for(uint size = 2; size < arrayLength; size <<= 1){
-        //Bitonic merge
+        
         uint ddd = dir ^ ( (get_local_id(0) & (size / 2)) != 0 );
         for(uint stride = size / 2; stride > 0; stride >>= 1){
             barrier(CLK_LOCAL_MEM_FENCE);
@@ -77,7 +68,7 @@ __kernel void bitonicSortLocal(
         }
     }
 
-    //ddd == dir for the last bitonic merge step
+    
     {
         for(uint stride = arrayLength / 2; stride > 0; stride >>= 1){
             barrier(CLK_LOCAL_MEM_FENCE);
@@ -97,13 +88,13 @@ __kernel void bitonicSortLocal(
     d_DstVal[(LOCAL_SIZE_LIMIT / 2)] = l_val[get_local_id(0) + (LOCAL_SIZE_LIMIT / 2)];
 }
 
-////////////////////////////////////////////////////////////////////////////////
-// Bitonic sort kernel for large arrays (not fitting into local memory)
-////////////////////////////////////////////////////////////////////////////////
-//Bottom-level bitonic sort
-//Almost the same as bitonicSortLocal with the only exception
-//of even / odd subarrays (of LOCAL_SIZE_LIMIT points) being
-//sorted in opposite directions
+
+
+
+
+
+
+
 __kernel void bitonicSortLocal1(
     __global uint *d_DstKey,
     __global uint *d_DstVal,
@@ -113,7 +104,7 @@ __kernel void bitonicSortLocal1(
     __local uint l_key[LOCAL_SIZE_LIMIT];
     __local uint l_val[LOCAL_SIZE_LIMIT];
 
-    //Offset to the beginning of subarray and load data
+    
     d_SrcKey += get_group_id(0) * LOCAL_SIZE_LIMIT + get_local_id(0);
     d_SrcVal += get_group_id(0) * LOCAL_SIZE_LIMIT + get_local_id(0);
     d_DstKey += get_group_id(0) * LOCAL_SIZE_LIMIT + get_local_id(0);
@@ -126,7 +117,7 @@ __kernel void bitonicSortLocal1(
     uint comparatorI = get_global_id(0) & ((LOCAL_SIZE_LIMIT / 2) - 1);
 
     for(uint size = 2; size < LOCAL_SIZE_LIMIT; size <<= 1){
-        //Bitonic merge
+        
         uint ddd = (comparatorI & (size / 2)) != 0;
         for(uint stride = size / 2; stride > 0; stride >>= 1){
             barrier(CLK_LOCAL_MEM_FENCE);
@@ -139,8 +130,8 @@ __kernel void bitonicSortLocal1(
         }
     }
 
-    //Odd / even arrays of LOCAL_SIZE_LIMIT elements
-    //sorted in opposite directions
+    
+    
     {
         uint ddd = (get_group_id(0) & 1);
         for(uint stride = LOCAL_SIZE_LIMIT / 2; stride > 0; stride >>= 1){
@@ -161,7 +152,7 @@ __kernel void bitonicSortLocal1(
     d_DstVal[(LOCAL_SIZE_LIMIT / 2)] = l_val[get_local_id(0) + (LOCAL_SIZE_LIMIT / 2)];
 }
 
-//Bitonic merge iteration for 'stride' >= LOCAL_SIZE_LIMIT
+
 __kernel void bitonicMergeGlobal(
     __global uint *d_DstKey,
     __global uint *d_DstVal,
@@ -175,7 +166,7 @@ __kernel void bitonicMergeGlobal(
     uint global_comparatorI = get_global_id(0);
     uint        comparatorI = global_comparatorI & (arrayLength / 2 - 1);
 
-    //Bitonic merge
+    
     uint ddd = dir ^ ( (comparatorI & (size / 2)) != 0 );
     uint pos = 2 * global_comparatorI - (global_comparatorI & (stride - 1));
 
@@ -196,8 +187,8 @@ __kernel void bitonicMergeGlobal(
     d_DstVal[pos + stride] = valB;
 }
 
-//Combined bitonic merge steps for
-//'size' > LOCAL_SIZE_LIMIT and 'stride' = [1 .. LOCAL_SIZE_LIMIT / 2]
+
+
 __kernel void bitonicMergeLocal(
     __global uint *d_DstKey,
     __global uint *d_DstVal,
@@ -220,7 +211,7 @@ __kernel void bitonicMergeLocal(
     l_key[get_local_id(0) + (LOCAL_SIZE_LIMIT / 2)] = d_SrcKey[(LOCAL_SIZE_LIMIT / 2)];
     l_val[get_local_id(0) + (LOCAL_SIZE_LIMIT / 2)] = d_SrcVal[(LOCAL_SIZE_LIMIT / 2)];
 
-    //Bitonic merge
+    
     uint comparatorI = get_global_id(0) & ((arrayLength / 2) - 1);
     uint         ddd = dir ^ ( (comparatorI & (size / 2)) != 0 );
     for(; stride > 0; stride >>= 1){

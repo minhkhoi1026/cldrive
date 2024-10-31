@@ -1,13 +1,4 @@
-/*
- * Copyright 1993-2010 NVIDIA Corporation.  All rights reserved.
- *
- * Please refer to the NVIDIA end user license agreement (EULA) associated
- * with this source code for terms and conditions that govern your use of
- * this software. Any use, reproduction, disclosure, or distribution of
- * this software and related documentation outside the terms of the EULA
- * is strictly prohibited.
- *
- */
+
 
 #ifndef __CL_BODYSYSTEMOPENCL_H__
 #define __CL_BODYSYSTEMOPENCL_H__
@@ -19,7 +10,7 @@
 #endif 
 #include "oclBodySystem.h"
 
-// OpenCL BodySystem: runs on the GPU
+
 class BodySystemOpenCL : public BodySystem
 {
     public:
@@ -48,13 +39,13 @@ class BodySystemOpenCL : public BodySystem
 
         virtual void synchronizeThreads() const;
 
-    protected: // methods
+    protected: 
         BodySystemOpenCL() {}
 
         virtual void _initialize(int numBodies);
         virtual void _finalize();
         
-    protected: // data
+    protected: 
         cl_device_id device;
         cl_context cxContext;
         cl_command_queue cqCommandQueue;
@@ -62,11 +53,11 @@ class BodySystemOpenCL : public BodySystem
         cl_kernel MT_kernel;
         cl_kernel noMT_kernel;
 
-        // CPU data
+        
         float* m_hPos;
         float* m_hVel;
 
-        // GPU data
+        
         cl_mem m_dPos[2];
         cl_mem m_dVel[2];
 
@@ -83,8 +74,8 @@ class BodySystemOpenCL : public BodySystem
         unsigned int m_p;
         unsigned int m_q;
 
-		//for double precision
+		
 		bool m_bDouble;
 };
 
-#endif // __CLH_BODYSYSTEMOPENCL_H__
+#endif 

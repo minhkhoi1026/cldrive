@@ -5,6 +5,7 @@ import shutil
 import json
 import random
 import Levenshtein
+import argparse
 from torch import unique
 from tqdm import tqdm
 """ Modify from utils.py as a preprocessing steps """
@@ -68,7 +69,7 @@ def remove_multi_dimension_kernels(kernels):
     return unique_kernels
 
 def remove_comments_from_file(folder_path):
-    # Get a list of  .cl, .h, and .hpp files in the folder and subdirectories
+    # list of all  .cl, .h, and .hpp files in the folder and subdirectories
     files_to_process = []
     for root, _, files in os.walk(folder_path):
         for file in files:
@@ -116,60 +117,25 @@ def gen_kernels(src_folder):
     # print(f'Removed kernels that hook function does not work \n. Number of kernels: {len(selected_kernels)}')
     return selected_kernels
 
-def copy_kernels_to_new_folder(selected_kernels, dest_folder):
-    os.makedirs(dest_folder, exist_ok=True)
-    
-    for kernel_path in tqdm(selected_kernels.keys(), desc="Copying selected kernels"):
-        kernel_name = os.path.basename(kernel_path)
-        new_kernel_path = os.path.join(dest_folder, kernel_name)
-        
-        shutil.copy2(kernel_path, new_kernel_path)
-        print(f"Copied {kernel_path} to {new_kernel_path}")
+def create_csv(selected_kernels, kernel_path_csv):
+    with open(kernel_path_csv, 'w') as f:
+        f.write("kernel_path\n")
+        for kernel_path,kernel_code in selected_kernels.items():
+            f.write(f"{kernel_path}\n")
+    print(f"Saved kernel paths to {kernel_path_csv}")
 
 if __name__ == "__main__":
-    base_folder = 'gpu-benmarks/shoc'
-    src_folder = 'gpu-benmarks/shoc/cl_dataset'  
+    # Argument parser for dataset and src_folder
+    parser = argparse.ArgumentParser(description="Process kernel files and generate CSV.")
+    parser.add_argument('--dataset', type=str, default="", help="Name of the dataset.")
+    parser.add_argument('--src_folder', type=str, default="", help="Path to the source folder containing kernel files.")
+    args = parser.parse_args()
+    
+    os.makedirs("kernel_path_folder", exist_ok=True)
+    dataset = args.dataset
+    src_folder = args.src_folder 
+
     remove_comments_from_file(src_folder)
     selected_kernels = gen_kernels(src_folder) # filter 2,3D and duplicated kernels
-    dest_folder = os.path.join(base_folder, "1D_cl_dataset")  
-    copy_kernels_to_new_folder(selected_kernels, dest_folder)
-
-    # kernel_folder = "amd_kernel_execution_results"
-    # # Set to store unique kernel names (ignoring the timestamp)
-    # unique_kernels = set()
-
-    # # Iterate through each file in the folder
-    # for filename in os.listdir(kernel_folder):
-    #     if filename.endswith(".json"):  
-    #         # Extract the kernel_file_name part by splitting on the last underscore
-    #         kernel_name = "_".join(filename.split('_')[:-1])  # Remove the timestamp
-    #         unique_kernels.add(kernel_name)
-    # # Print the count of distinct kernels
-    # print(f"Number of distinct kernels: {len(unique_kernels)}")
-
-    # ====================== merge json =====================
-    # json_folder = "amd_kernel_execution_results"
-    # merged_data = []
-
-    # # Read each JSON file in the folder and append its content to merged_data
-    # count = 0
-    # file_count = 0  # 
-    # for json_filename in os.listdir(json_folder):
-    #     if json_filename.endswith(".json"):
-    #         json_filepath = os.path.join(json_folder, json_filename)
-            
-    #         try:
-    #             with open(json_filepath, 'r') as f:
-    #                 data = json.load(f)
-    #                 merged_data.append(data)
-    #             file_count += 1
-    #         except json.JSONDecodeError:
-    #             count += 1
-    #             print(f"Error parsing JSON file: {json_filepath}")
-
-    # # Save the merged data to a new JSON file
-    # with open('amd_merged_kernel_results.json', 'w') as f:
-    #     json.dump(merged_data, f, indent=4)
-
-    # print(f"Merged data {file_count} kernels saved to merged_kernel_results.json with {count} kernels found no runtime")
-    
+    kernel_path_csv = os.path.join("kernel_path_folder",f"{dataset}_1D_kernels.csv" )
+    create_csv(selected_kernels, kernel_path_csv)

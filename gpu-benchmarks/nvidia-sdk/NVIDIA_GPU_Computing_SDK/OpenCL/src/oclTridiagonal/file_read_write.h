@@ -1,22 +1,6 @@
-/*
- * Copyright 1993-2010 NVIDIA Corporation.  All rights reserved.
- *
- * Please refer to the NVIDIA end user license agreement (EULA) associated
- * with this source code for terms and conditions that govern your use of
- * this software. Any use, reproduction, disclosure, or distribution of
- * this software and related documentation outside the terms of the EULA
- * is strictly prohibited.
- *
- */
+
  
- /*
- * Copyright 1993-2010 NVIDIA Corporation.  All rights reserved.
- * 
- * Tridiagonal solvers.
- * Test-rig code by UC Davis, Yao Zhang, 2009.
- *
- * NVIDIA, Nikolai Sakharnykh, 2009.
- */
+ 
 
 #ifndef _FILE_READ_WRITE_
 #define _FILE_READ_WRITE_

@@ -1,13 +1,4 @@
-/*
- * Copyright 1993-2010 NVIDIA Corporation.  All rights reserved.
- *
- * Please refer to the NVIDIA end user license agreement (EULA) associated
- * with this source code for terms and conditions that govern your use of
- * this software. Any use, reproduction, disclosure, or distribution of
- * this software and related documentation outside the terms of the EULA
- * is strictly prohibited.
- *
- */
+
 
 #ifndef PARTICLESYSTEM_H
 #define PARTICLESYSTEM_H
@@ -19,7 +10,7 @@
 #include "particleSystem_common.h"
 #include "particleSystem_engine.h"
 
-// Particle system class
+
 class ParticleSystem
 {
 public:
@@ -71,7 +62,7 @@ public:
 
     void addSphere(int index, float *pos, float *vel, int r, float spacing);
 
-protected: // methods
+protected: 
     ParticleSystem() {}
     uint createVBO(uint size);
 
@@ -80,12 +71,12 @@ protected: // methods
 
     void initGrid(uint *size, float spacing, float jitter, uint numParticles);
 
-protected: // data
+protected: 
     bool m_bInitialized;
     uint m_numParticles;
     shrBOOL m_bQATest;
 
-    // CPU data
+    
     float *m_hPos;
     float *m_hVel;
     float *m_hReorderedPos;
@@ -95,7 +86,7 @@ protected: // data
     uint *m_hHash;
     uint *m_hIndex;
 
-    // GPU data
+    
     memHandle_t          m_dPos;
     memHandle_t          m_dVel;
     memHandle_t m_dReorderedPos;
@@ -109,11 +100,11 @@ protected: // data
     uint       m_posVbo;
     uint     m_colorVBO;
 
-    // params
+    
     simParams_t m_params;
     uint3 m_gridSize;
     uint m_numGridCells;
     uint m_solverIterations;
 };
 
-#endif // __PARTICLESYSTEM_H__
+#endif 

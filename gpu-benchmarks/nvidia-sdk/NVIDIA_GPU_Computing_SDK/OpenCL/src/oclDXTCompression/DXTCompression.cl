@@ -1,27 +1,18 @@
-/*
- * Copyright 1993-2010 NVIDIA Corporation.  All rights reserved.
- *
- * Please refer to the NVIDIA end user license agreement (EULA) associated
- * with this source code for terms and conditions that govern your use of
- * this software. Any use, reproduction, disclosure, or distribution of
- * this software and related documentation outside the terms of the EULA
- * is strictly prohibited.
- *
- */
+
  
 #pragma OPENCL EXTENSION cl_khr_byte_addressable_store : enable
 
-#define NUM_THREADS   64      // Number of threads per work group.
+#define NUM_THREADS   64      
 
 
-//MATH functions
 
-// Use power method to find the first eigenvector.
-// http://www.miislita.com/information-retrieval-tutorial/matrix-tutorial-3-eigenvalues-eig// envectors.html
+
+
+
 
 float4 firstEigenVector( __local float* matrix )
 {
-    // 8 iterations seems to be more than enough.
+    
 
     float4 v = (float4)(1.0f, 1.0f, 1.0f, 0.0f);
     #pragma unroll
@@ -53,12 +44,12 @@ void colorSums(__local const float4 * colors, __local float4 * sums)
 
 float4 bestFitLine(__local const float4 * colors, float4 color_sum, __local float* covariance)
 {
-    // Compute covariance matrix of the given colors.
+    
     const int idx = get_local_id(0);
 
-    float4 diff = colors[idx] - color_sum * 0.0625f; // * 1.0f / 16.0f
+    float4 diff = colors[idx] - color_sum * 0.0625f; 
 
-    covariance[6 * idx + 0] = diff.x * diff.x;    // 0, 6, 12, 2, 8, 14, 4, 10, 0
+    covariance[6 * idx + 0] = diff.x * diff.x;    
     covariance[6 * idx + 1] = diff.x * diff.y;
     covariance[6 * idx + 2] = diff.x * diff.z;
     covariance[6 * idx + 3] = diff.y * diff.y;
@@ -79,13 +70,13 @@ float4 bestFitLine(__local const float4 * colors, float4 color_sum, __local floa
         }
     }
 
-    // Compute first eigen vector.
+    
     return firstEigenVector(covariance);
 }
 
-// ////////////////////////////////////////////////////////////////////////////////
-// // Sort colors
-// ////////////////////////////////////////////////////////////////////////////////
+
+
+
 void sortColors(__local const float * values, __local int * ranks)
 {
     const int tid = get_local_id(0);
@@ -100,7 +91,7 @@ void sortColors(__local const float * values, __local int * ranks)
     
     ranks[tid] = rank;
 
-    // Resolve elements with the same index.
+    
     #pragma unroll
     for (int i = 0; i < 15; i++)
     {
@@ -108,9 +99,9 @@ void sortColors(__local const float * values, __local int * ranks)
     }
 }
 
-////////////////////////////////////////////////////////////////////////////////
-// Load color block to shared mem
-////////////////////////////////////////////////////////////////////////////////
+
+
+
 void loadColorBlock(__global const uint * image, __local float4 * colors, __local float4 * sums, __local int * xrefs, __local float* temp, int groupOffset)
 {
     const int bid = get_group_id(0) + groupOffset;
@@ -120,16 +111,16 @@ void loadColorBlock(__global const uint * image, __local float4 * colors, __loca
 
     if (idx < 16)
     {
-        // Read color and copy to shared mem.
+        
         uint c = image[(bid) * 16 + idx];
     
-        colors[idx].x = ((c >> 0) & 0xFF) * 0.003921568627f;    // * (1.0f / 255.0f);
-        colors[idx].y = ((c >> 8) & 0xFF) * 0.003921568627f;    // * (1.0f / 255.0f);
-        colors[idx].z = ((c >> 16) & 0xFF) * 0.003921568627f;   //* (1.0f / 255.0f);
+        colors[idx].x = ((c >> 0) & 0xFF) * 0.003921568627f;    
+        colors[idx].y = ((c >> 8) & 0xFF) * 0.003921568627f;    
+        colors[idx].z = ((c >> 16) & 0xFF) * 0.003921568627f;   
 
-        // No need to synchronize, 16 < warp size.	
+        
 
-        // Sort colors along the best fit line.
+        
 	    colorSums(colors, sums);
 	    float4 axis = bestFitLine(colors, sums[idx], temp);
             
@@ -143,9 +134,9 @@ void loadColorBlock(__global const uint * image, __local float4 * colors, __loca
     }
 }
 
-// ////////////////////////////////////////////////////////////////////////////////
-// // Round color to RGB565 and expand
-// ////////////////////////////////////////////////////////////////////////////////
+
+
+
 float4 roundAndExpand(float4 v, ushort * w)
 {
     ushort x = rint(clamp(v.x, 0.0f, 1.0f) * 31.0f);
@@ -153,22 +144,22 @@ float4 roundAndExpand(float4 v, ushort * w)
     ushort z = rint(clamp(v.z, 0.0f, 1.0f) * 31.0f);
 
     *w = ((x << 11) | (y << 5) | z);
-    v.x = x * 0.03227752766457f; // approximate integer bit expansion.
+    v.x = x * 0.03227752766457f; 
     v.y = y * 0.01583151765563f;
     v.z = z * 0.03227752766457f;
     return v;
 }
 
-////////////////////////////////////////////////////////////////////////////////
-// Evaluate permutations
-////////////////////////////////////////////////////////////////////////////////
+
+
+
 float evalPermutation(__local const float4* colors, uint permutation, ushort* start, ushort* end, float4 color_sum,
                        __constant float* alphaTable4, __constant int* prods4, float weight)
 {
     float4 alphax_sum = (float4)(0.0f, 0.0f, 0.0f,0.0f);
     int akku = 0;
 
-    // Compute alpha & beta for this permutation.
+    
     #pragma unroll
     for (int i = 0; i < 16; i++)
     {
@@ -183,19 +174,19 @@ float evalPermutation(__local const float4* colors, uint permutation, ushort* st
     float alphabeta_sum = ((akku >> 0) & 0xff);
     float4 betax_sum = weight * color_sum - alphax_sum;
 
-    //// Compute endpoints using least squares.
+    
  
-    // alpha2, beta2, alphabeta and factor could be precomputed for each permutation, but it's faster to recompute them.
+    
     const float factor = 1.0f / (alpha2_sum * beta2_sum - alphabeta_sum * alphabeta_sum);
 
     float4 a = (alphax_sum * beta2_sum - betax_sum * alphabeta_sum) * factor;
     float4 b = (betax_sum * alpha2_sum - alphax_sum * alphabeta_sum) * factor;
     
-    // Round a, b to the closest 5-6-5 color and expand...
+    
     a = roundAndExpand(a, start);
     b = roundAndExpand(b, end);
 
-    // compute the error
+    
     float4 e = a * a * alpha2_sum + b * b * beta2_sum + 2.0f * (a * b * alphabeta_sum - a * alphax_sum - b * betax_sum);
 
     return (1.0f/weight) * (e.x + e.y + e.z);
@@ -207,7 +198,7 @@ float evalPermutation3(__local const float4 * colors, uint permutation, ushort *
     float4 alphax_sum = (float4)(0.0f, 0.0f, 0.0f, 0.0f);
     int akku = 0;
 
-    // Compute alpha & beta for this permutation.
+    
     #pragma unroll
     for (int i = 0; i < 16; i++)
     {
@@ -227,11 +218,11 @@ float evalPermutation3(__local const float4 * colors, uint permutation, ushort *
     float4 a = (alphax_sum * beta2_sum - betax_sum * alphabeta_sum) * factor;
     float4 b = (betax_sum * alpha2_sum - alphax_sum * alphabeta_sum) * factor;
     
-    // Round a, b to the closest 5-6-5 color and expand...
+    
     a = roundAndExpand(a, start);
     b = roundAndExpand(b, end);
 
-    // compute the error
+    
     float4 e = a * a * alpha2_sum + b * b * beta2_sum + 2.0f * (a * b * alphabeta_sum - a * alphax_sum - b * betax_sum);
 
     return (0.25f) * (e.x + e.y + e.z);
@@ -278,7 +269,7 @@ uint4 evalAllPermutations(__local const float4 * colors, __global const unsigned
         bestEnd = bestStart;
         bestStart = temp;
         
-        bestPermutation ^= 0x55555555;    // Flip indices.
+        bestPermutation ^= 0x55555555;    
     }
 
     #pragma unroll
@@ -303,7 +294,7 @@ uint4 evalAllPermutations(__local const float4 * colors, __global const unsigned
                 bestEnd = bestStart;
                 bestStart = temp;
 
-                bestPermutation ^= (~bestPermutation >> 1) & 0x55555555;    // Flip indices.
+                bestPermutation ^= (~bestPermutation >> 1) & 0x55555555;    
             }
         }
     }
@@ -314,9 +305,9 @@ uint4 evalAllPermutations(__local const float4 * colors, __global const unsigned
     return result;
 }
 
-////////////////////////////////////////////////////////////////////////////////
-// Find index with minimum error
-////////////////////////////////////////////////////////////////////////////////
+
+
+
 int findMinError(__local float * errors, __local int * indices)
 {
     const int idx = get_local_id(0);
@@ -342,7 +333,7 @@ int findMinError(__local float * errors, __local int * indices)
 
     barrier(CLK_LOCAL_MEM_FENCE);
 
-    // unroll last 6 iterations
+    
     if (idx < 32)
     {
         if (errors[idx + 32] < errors[idx]) {
@@ -377,7 +368,7 @@ int findMinError(__local float * errors, __local int * indices)
 }
 
 
-//Save DXT block
+
 void saveBlockDXT1(uint start, uint end, uint permutation, __local int* xrefs, __global uint2 * result, int groupOffset)
 {
     const int bid = get_group_id(0) + groupOffset;
@@ -387,7 +378,7 @@ void saveBlockDXT1(uint start, uint end, uint permutation, __local int* xrefs, _
         permutation = 0;
     }
     
-    // Reorder permutation.
+    
     uint indices = 0;
     #pragma unroll
     for(int i = 0; i < 16; i++)
@@ -396,16 +387,16 @@ void saveBlockDXT1(uint start, uint end, uint permutation, __local int* xrefs, _
         indices |= ((permutation >> (2 * ref)) & 3) << (2 * i);
     }
     
-    // Write endpoints.
+    
     result[bid].x = (end << 16) | start;
     
-    // Write palette indices.
+    
     result[bid].y = indices;
 }
 
-////////////////////////////////////////////////////////////////////////////////
-// Compress color block
-////////////////////////////////////////////////////////////////////////////////
+
+
+
 __kernel void compress(__global const uint * permutations, __global const uint * image, 
 		       __global uint2 * result, 
                __constant float* alphaTable4, __constant int* prods4,
@@ -427,12 +418,12 @@ __kernel void compress(__global const uint * permutations, __global const uint *
     
     uint4 best = evalAllPermutations(colors, permutations,s_float, sums[0], s_permutations, alphaTable4, prods4, alphaTable3, prods3);
 
-    // Use a parallel reduction to find minimum error.
+    
     const int minIdx = findMinError(s_float, s_int);    
 
     barrier(CLK_LOCAL_MEM_FENCE);
     
-    // Only write the result of the winner thread.
+    
     if (idx == minIdx)
     {
         saveBlockDXT1(best.x, best.y, best.z, xrefs, result, groupOffset);

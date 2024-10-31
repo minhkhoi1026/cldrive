@@ -1,21 +1,8 @@
-/*
- * Copyright 1993-2010 NVIDIA Corporation.  All rights reserved.
- *
- * Please refer to the NVIDIA end user license agreement (EULA) associated
- * with this source code for terms and conditions that govern your use of
- * this software. Any use, reproduction, disclosure, or distribution of
- * this software and related documentation outside the terms of the EULA
- * is strictly prohibited.
- *
- */
+
 
 #define PI 3.1415926536f
 
-/* 
- * Paint a 2D surface with a moving bulls-eye pattern.  The "face" parameter selects
- * between 6 different colors to use.  We will use a different color on each face of a
- * cube map.
- */
+
 __kernel void cl_kernel_texture_cube(
 #ifdef USE_STAGING_BUFFER
 				__global uint *bufOut, 
@@ -27,19 +14,19 @@ __kernel void cl_kernel_texture_cube(
 				int face, 
 				float t)
 {
-    const int tx = get_local_id(0);		// Cuda equivalent : threadIdx.x
-    const int ty = get_local_id(1);		// Cuda equivalent : threadIdx.y
-    const int bw = get_local_size(0);	// Cuda equivalent : blockDim.x
-    const int bh = get_local_size(1);	// Cuda equivalent : blockDim.y
-    const int x = get_global_id(0);		// Cuda equivalent : blockIdx.x*bw + tx
-    const int y = get_global_id(1);		// Cuda equivalent : blockIdx.y*bh + ty
+    const int tx = get_local_id(0);		
+    const int ty = get_local_id(1);		
+    const int bw = get_local_size(0);	
+    const int bh = get_local_size(1);	
+    const int x = get_global_id(0);		
+    const int y = get_global_id(1);		
 
-    // in the case where, due to quantization into grids, we have
-    // more threads than pixels, skip the threads which don't 
-    // correspond to valid pixels	
+    
+    
+    
 	if (x >= size || y >= size) return;
 	
-	// populate it
+	
 	float theta_x = (2.0f*(float)x)/(float)size  - 1.0f;
 	float theta_y = (2.0f*(float)y)/(float)size - 1.0f;
 	float theta = 2.0f*PI*sqrt(theta_x*theta_x + theta_y*theta_y);

@@ -1,24 +1,6 @@
-/*
- * Copyright 1993-2010 NVIDIA Corporation.  All rights reserved.
- *
- * Please refer to the NVIDIA end user license agreement (EULA) associated
- * with this source code for terms and conditions that govern your use of
- * this software. Any use, reproduction, disclosure, or distribution of
- * this software and related documentation outside the terms of the EULA
- * is strictly prohibited.
- *
- */
+
  
- /*
- * Copyright 1993-2010 NVIDIA Corporation.  All rights reserved.
- * 
- * Tridiagonal solvers.
- * Device code for cyclic reduction (CR).
- *
- * Original CUDA kernel: UC Davis, Yao Zhang & John Owens, 2009
- * 
- * NVIDIA, Nikolai Sakharnykh, 2009
- */
+ 
 
 #define NATIVE_DIVIDE
 
@@ -52,7 +34,7 @@ __kernel void cyclic_small_systems_kernel(__global float *a_d, __global float *b
 	
 	barrier(CLK_LOCAL_MEM_FENCE);
 
-	// forward elimination
+	
 	for (int j = 0; j < iterations; j++)
 	{
 		barrier(CLK_LOCAL_MEM_FENCE);
@@ -107,7 +89,7 @@ __kernel void cyclic_small_systems_kernel(__global float *a_d, __global float *b
 #endif
     }
 
-    // backward substitution
+    
     thid_num = 2;
     for (int j = 0; j < iterations; j++)
 	{
@@ -168,7 +150,7 @@ __kernel void cyclic_branch_free_kernel(__global float *a_d, __global float *b_d
 	
 	barrier(CLK_LOCAL_MEM_FENCE);
 
-	// forward elimination
+	
 	for (int j = 0; j < iterations; j++)
 	{
 		barrier(CLK_LOCAL_MEM_FENCE);
@@ -210,7 +192,7 @@ __kernel void cyclic_branch_free_kernel(__global float *a_d, __global float *b_d
 #endif
     }
 
-    // backward substitution
+    
     thid_num = 2;
     for (int j = 0; j < iterations; j++)
 	{

@@ -1,13 +1,4 @@
-/*
-* Copyright 1993-2010 NVIDIA Corporation.  All rights reserved.
-*
-* Please refer to the NVIDIA end user license agreement (EULA) associated
-* with this source code for terms and conditions that govern your use of
-* this software. Any use, reproduction, disclosure, or distribution of
-* this software and related documentation outside the terms of the EULA
-* is strictly prohibited.
-*
-*/
+
 #ifndef _SCAN_H_
 #define _SCAN_H_
 
@@ -39,10 +30,10 @@ public:
 						unsigned int arrayLength);
 
 private:
-	cl_context cxGPUContext;             // OpenCL context
-    cl_command_queue cqCommandQueue;     // OpenCL command que   
-    cl_program cpProgram;                // OpenCL program
-	cl_mem d_Buffer;                     // Memory objects for original keys and work space
+	cl_context cxGPUContext;             
+    cl_command_queue cqCommandQueue;     
+    cl_program cpProgram;                
+	cl_mem d_Buffer;                     
 	cl_kernel ckScanExclusiveLocal1, ckScanExclusiveLocal2, ckUniformUpdate;
 
 	static const int WORKGROUP_SIZE = 256;
@@ -52,9 +43,9 @@ private:
 	static const unsigned int MIN_LARGE_ARRAY_SIZE = 8 * WORKGROUP_SIZE;
 	static const unsigned int MAX_LARGE_ARRAY_SIZE = 4 * WORKGROUP_SIZE * WORKGROUP_SIZE;
 
-	unsigned int  mNumElements;     // Number of elements of temp storage allocated
+	unsigned int  mNumElements;     
 
-	// kernel wrappers
+	
 
 	void scanExclusiveLocal1(
 			cl_mem d_Dst,

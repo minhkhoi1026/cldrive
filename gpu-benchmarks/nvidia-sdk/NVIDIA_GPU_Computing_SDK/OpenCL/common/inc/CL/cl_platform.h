@@ -1,33 +1,12 @@
-/**********************************************************************************
- * Copyright (c) 2008-2009 The Khronos Group Inc.
- *
- * Permission is hereby granted, free of charge, to any person obtaining a
- * copy of this software and/or associated documentation files (the
- * "Materials"), to deal in the Materials without restriction, including
- * without limitation the rights to use, copy, modify, merge, publish,
- * distribute, sublicense, and/or sell copies of the Materials, and to
- * permit persons to whom the Materials are furnished to do so, subject to
- * the following conditions:
- *
- * The above copyright notice and this permission notice shall be included
- * in all copies or substantial portions of the Materials.
- *
- * THE MATERIALS ARE PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
- * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
- * CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
- * MATERIALS OR THE USE OR OTHER DEALINGS IN THE MATERIALS.
- **********************************************************************************/
 
-/* $Revision: 11344 $ on $Date: 2010-05-12 01:42:10 +0530 (Wed, 12 May 2010) $ */
+
+
 
 #ifndef __CL_PLATFORM_H
 #define __CL_PLATFORM_H
 
 #ifdef __APPLE__
-    /* Contains #defines for AVAILABLE_MAC_OS_X_VERSION_10_6_AND_LATER below */
+    
     #include <AvailabilityMacros.h>
 #endif
 
@@ -63,7 +42,7 @@ extern "C" {
 
 #if (defined (_WIN32) && defined(_MSC_VER))
 
-/* scalar types  */
+
 typedef signed   __int8         cl_char;
 typedef unsigned __int8         cl_uchar;
 typedef signed   __int16        cl_short;
@@ -77,7 +56,7 @@ typedef unsigned __int16        cl_half;
 typedef float                   cl_float;
 typedef double                  cl_double;
 
-/* Macro names and corresponding values defined by OpenCL */
+
 #define CL_CHAR_BIT         8
 #define CL_SCHAR_MAX        127
 #define CL_SCHAR_MIN        (-127-1)
@@ -155,7 +134,7 @@ typedef double                  cl_double;
 
 #include <stdint.h>
 
-/* scalar types  */
+
 typedef int8_t          cl_char;
 typedef uint8_t         cl_uchar;
 typedef int16_t         cl_short    __attribute__((aligned(2)));
@@ -169,7 +148,7 @@ typedef uint16_t        cl_half     __attribute__((aligned(2)));
 typedef float           cl_float    __attribute__((aligned(4)));
 typedef double          cl_double   __attribute__((aligned(8)));
 
-/* Macro names and corresponding values defined by OpenCL */
+
 #define CL_CHAR_BIT         8
 #define CL_SCHAR_MAX        127
 #define CL_SCHAR_MIN        (-127-1)
@@ -253,30 +232,16 @@ typedef double          cl_double   __attribute__((aligned(8)));
 
 #include <stddef.h>
 
-/* Mirror types to GL types. Mirror types allow us to avoid deciding which headers to load based on whether we are using GL or GLES here. */
+
 typedef unsigned int cl_GLuint;
 typedef int          cl_GLint;
 typedef unsigned int cl_GLenum;
 
-/*
- * Vector types 
- *
- *  Note:   OpenCL requires that all types be naturally aligned. 
- *          This means that vector types must be naturally aligned.
- *          For example, a vector of four floats must be aligned to
- *          a 16 byte boundary (calculated as 4 * the natural 4-byte 
- *          alignment of the float).  The alignment qualifiers here
- *          will only function properly if your compiler supports them
- *          and if you don't actively work to defeat them.  For example,
- *          in order for a cl_float4 to be 16 byte aligned in a struct,
- *          the start of the struct must itself be 16-byte aligned. 
- *
- *          Maintaining proper alignment is the user's responsibility.
- */
 
-/* Define basic vector types */
+
+
 #if defined( __VEC__ )
-   #include <altivec.h>   /* may be omitted depending on compiler. AltiVec spec provides no way to detect whether the header is required. */
+   #include <altivec.h>   
    typedef vector unsigned char     __cl_uchar16;
    typedef vector signed char       __cl_char16;
    typedef vector unsigned short    __cl_ushort8;
@@ -396,31 +361,31 @@ typedef unsigned int cl_GLenum;
     #define __CL_DOUBLE4__  1
 #endif
 
-/* Define alignment keys */
+
 #if defined( __GNUC__ )
     #define CL_ALIGNED(_x)          __attribute__ ((aligned(_x)))
 #elif defined( _WIN32) && (_MSC_VER)
-    /* Alignment keys neutered on windows because MSVC can't swallow function arguments with alignment requirements     */
-    /* http://msdn.microsoft.com/en-us/library/373ak2y1%28VS.71%29.aspx                                                 */
-    /* #include <crtdefs.h>                                                                                             */
-    /* #define CL_ALIGNED(_x)          _CRT_ALIGN(_x)                                                                   */
+    
+    
+    
+    
     #define CL_ALIGNED(_x)
 #else
    #warning  Need to implement some method to align data here
    #define  CL_ALIGNED(_x)
 #endif
 
-/* Indicate whether .xyzw, .s0123 and .hi.lo are supported */
+
 #if defined( __GNUC__) && ! defined( __STRICT_ANSI__ )
-    /* .xyzw and .s0123...{f|F} are supported */
+    
     #define CL_HAS_NAMED_VECTOR_FIELDS 1
-    /* .hi and .lo are supported */
+    
     #define CL_HAS_HI_LO_VECTOR_FIELDS 1
 #endif
 
-/* Define cl_vector types */
 
-/* ---- cl_charn ---- */
+
+
 typedef union
 {
     cl_char  CL_ALIGNED(2) s[2];
@@ -450,7 +415,7 @@ typedef union
 #endif
 }cl_char4;
 
-/* cl_char3 is identical in size, alignment and behavior to cl_char4. See section 6.1.5. */
+
 typedef  cl_char4  cl_char3;
 
 typedef union
@@ -495,7 +460,7 @@ typedef union
 }cl_char16;
 
 
-/* ---- cl_ucharn ---- */
+
 typedef union
 {
     cl_uchar  CL_ALIGNED(2) s[2];
@@ -525,7 +490,7 @@ typedef union
 #endif
 }cl_uchar4;
 
-/* cl_uchar3 is identical in size, alignment and behavior to cl_uchar4. See section 6.1.5. */
+
 typedef  cl_uchar4  cl_uchar3;
 
 typedef union
@@ -570,7 +535,7 @@ typedef union
 }cl_uchar16;
 
 
-/* ---- cl_shortn ---- */
+
 typedef union
 {
     cl_short  CL_ALIGNED(4) s[2];
@@ -600,7 +565,7 @@ typedef union
 #endif
 }cl_short4;
 
-/* cl_short3 is identical in size, alignment and behavior to cl_short4. See section 6.1.5. */
+
 typedef  cl_short4  cl_short3;
 
 typedef union
@@ -645,7 +610,7 @@ typedef union
 }cl_short16;
 
 
-/* ---- cl_ushortn ---- */
+
 typedef union
 {
     cl_ushort  CL_ALIGNED(4) s[2];
@@ -675,7 +640,7 @@ typedef union
 #endif
 }cl_ushort4;
 
-/* cl_ushort3 is identical in size, alignment and behavior to cl_ushort4. See section 6.1.5. */
+
 typedef  cl_ushort4  cl_ushort3;
 
 typedef union
@@ -719,7 +684,7 @@ typedef union
 #endif
 }cl_ushort16;
 
-/* ---- cl_intn ---- */
+
 typedef union
 {
     cl_int  CL_ALIGNED(8) s[2];
@@ -749,7 +714,7 @@ typedef union
 #endif
 }cl_int4;
 
-/* cl_int3 is identical in size, alignment and behavior to cl_int4. See section 6.1.5. */
+
 typedef  cl_int4  cl_int3;
 
 typedef union
@@ -794,7 +759,7 @@ typedef union
 }cl_int16;
 
 
-/* ---- cl_uintn ---- */
+
 typedef union
 {
     cl_uint  CL_ALIGNED(8) s[2];
@@ -824,7 +789,7 @@ typedef union
 #endif
 }cl_uint4;
 
-/* cl_uint3 is identical in size, alignment and behavior to cl_uint4. See section 6.1.5. */
+
 typedef  cl_uint4  cl_uint3;
 
 typedef union
@@ -868,7 +833,7 @@ typedef union
 #endif
 }cl_uint16;
 
-/* ---- cl_longn ---- */
+
 typedef union
 {
     cl_long  CL_ALIGNED(16) s[2];
@@ -898,7 +863,7 @@ typedef union
 #endif
 }cl_long4;
 
-/* cl_long3 is identical in size, alignment and behavior to cl_long4. See section 6.1.5. */
+
 typedef  cl_long4  cl_long3;
 
 typedef union
@@ -943,7 +908,7 @@ typedef union
 }cl_long16;
 
 
-/* ---- cl_ulongn ---- */
+
 typedef union
 {
     cl_ulong  CL_ALIGNED(16) s[2];
@@ -973,7 +938,7 @@ typedef union
 #endif
 }cl_ulong4;
 
-/* cl_ulong3 is identical in size, alignment and behavior to cl_ulong4. See section 6.1.5. */
+
 typedef  cl_ulong4  cl_ulong3;
 
 typedef union
@@ -1018,7 +983,7 @@ typedef union
 }cl_ulong16;
 
 
-/* --- cl_floatn ---- */
+
 
 typedef union
 {
@@ -1049,7 +1014,7 @@ typedef union
 #endif
 }cl_float4;
 
-/* cl_float3 is identical in size, alignment and behavior to cl_float4. See section 6.1.5. */
+
 typedef  cl_float4  cl_float3;
 
 typedef union
@@ -1093,7 +1058,7 @@ typedef union
 #endif
 }cl_float16;
 
-/* --- cl_doublen ---- */
+
 
 typedef union
 {
@@ -1124,7 +1089,7 @@ typedef union
 #endif
 }cl_double4;
 
-/* cl_double3 is identical in size, alignment and behavior to cl_double4. See section 6.1.5. */
+
 typedef  cl_double4  cl_double3;
 
 typedef union
@@ -1173,4 +1138,4 @@ typedef union
 }
 #endif
 
-#endif  /* __CL_PLATFORM_H  */
+#endif  

@@ -1,33 +1,24 @@
-/*
-* Copyright 1993-2010 NVIDIA Corporation.  All rights reserved.
-*
-* Please refer to the NVIDIA end user license agreement (EULA) associated
-* with this source code for terms and conditions that govern your use of
-* this software. Any use, reproduction, disclosure, or distribution of
-* this software and related documentation outside the terms of the EULA
-* is strictly prohibited.
-*
-*/
+
 
 #ifndef SHR_QATEST_H
 #define SHR_QATEST_H
 
-// *********************************************************************
-// Generic utilities for NVIDIA GPU Computing SDK 
-// *********************************************************************
 
-// OS dependent includes
+
+
+
+
 #ifdef _WIN32
     #pragma message ("Note: including windows.h")
     #pragma message ("Note: including math.h")
     #pragma message ("Note: including assert.h")
     #pragma message ("Note: including time.h")
 
-// Headers needed for Windows
+
     #include <windows.h>
 	#include <time.h>
 #else
-    // Headers needed for Linux
+    
     #include <sys/stat.h>
     #include <sys/types.h>
     #include <sys/time.h>
@@ -56,7 +47,7 @@
 #endif
 
 
-// Standardized QA Start/Finish for CUDA SDK tests
+
 #define shrQAStart(a, b)      __shrQAStart(a, b)
 #define shrQAFinish(a, b, c)  __shrQAFinish(a, b, c)
 #define shrQAFinish2(a, b, c, d) __shrQAFinish2(a, b, c, d)
@@ -83,7 +74,7 @@ inline int findExeNameStart(const char *exec_name)
 inline int __shrQAStart(int argc, char **argv)
 {
     bool bQATest = false;
-    // First clear the output buffer
+    
     fflush(stdout);
     fflush(stdout);
 
@@ -98,7 +89,7 @@ inline int __shrQAStart(int argc, char **argv)
         }
     }
     
-    // We don't want to print the entire path, so we search for the first 
+    
     int exename_start = findExeNameStart(argv[0]);
     if (bQATest) {
         fprintf(stdout, "&&&& RUNNING %s", &(argv[0][exename_start]));
@@ -139,7 +130,7 @@ inline void __ExitInTime(int seconds)
 
 inline void __shrQAFinish(int argc, const char **argv, int iStatus)
 {
-    // By default QATest is disabled and NoPrompt is Enabled (times out at seconds passed into __ExitInTime() )
+    
     bool bQATest = false, bNoPrompt = true, bQuitInTime = true;
     const char *sStatus[] = { "FAILED", "PASSED", "WAIVED", NULL };
 	
@@ -152,8 +143,8 @@ inline void __shrQAFinish(int argc, const char **argv, int iStatus)
         if (!STRCASECMP(string_argv, "qatest")) {
            bQATest = true;
         }	
-        // For SDK individual samples that don't specify -noprompt or -prompt, 
-        // a 3 second delay will happen before exiting, giving a user time to view results
+        
+        
         if (!STRCASECMP(string_argv, "noprompt") || !STRCASECMP(string_argv, "help")) {
             bNoPrompt = true;
             bQuitInTime = false;
@@ -196,8 +187,8 @@ inline void __shrQAFinish2(bool bQATest, int argc, const char **argv, int iStatu
            string_start++;
 
         const char *string_argv = &argv[i][string_start];
-        // For SDK individual samples that don't specify -noprompt or -prompt, 
-        // a 3 second delay will happen before exiting, giving a user time to view results
+        
+        
         if (!STRCASECMP(string_argv, "noprompt") || !STRCASECMP(string_argv, "help")) {
             bQuitInTime = false;
         }

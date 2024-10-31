@@ -1,23 +1,14 @@
-/*
-* Copyright 1993-2010 NVIDIA Corporation.  All rights reserved.
-*
-* Please refer to the NVIDIA end user license agreement (EULA) associated
-* with this source code for terms and conditions that govern your use of
-* this software. Any use, reproduction, disclosure, or distribution of
-* this software and related documentation outside the terms of the EULA
-* is strictly prohibited.
-*
-*/
 
-//----------------------------------------------------------------------------
-// Scans each warp in parallel ("warp-scan"), one element per thread.
-// uses 2 numElements of shared memory per thread (64 = elements per warp)
-//----------------------------------------------------------------------------
+
+
+
+
+
 #define WARP_SIZE 32
 uint scanwarp(uint val, volatile __local uint* sData, int maxlevel)
 {
-    // The following is the same as 2 * RadixSort::WARP_SIZE * warpId + threadInWarp = 
-    // 64*(threadIdx.x >> 5) + (threadIdx.x & (RadixSort::WARP_SIZE - 1))
+    
+    
     int localId = get_local_id(0);
     int idx = 2 * localId - (localId & (WARP_SIZE - 1));
     sData[idx] = 0;
@@ -30,13 +21,13 @@ uint scanwarp(uint val, volatile __local uint* sData, int maxlevel)
     if (3 <= maxlevel) { sData[idx] += sData[idx - 8]; }
     if (4 <= maxlevel) { sData[idx] += sData[idx -16]; }
 
-    return sData[idx] - val;  // convert inclusive -> exclusive
+    return sData[idx] - val;  
 }
 
-//----------------------------------------------------------------------------
-// scan4 scans 4*RadixSort::CTA_SIZE numElements in a block (4 per thread), using 
-// a warp-scan algorithm
-//----------------------------------------------------------------------------
+
+
+
+
 uint4 scan4(uint4 idata, __local uint* ptr)
 {    
     
@@ -114,14 +105,14 @@ void radixSortBlockKeysOnly(uint4 *key, uint nbits, uint startbit, __local uint*
 		
 		r = rank4(lsb, sMem, numtrue);
 
-        // This arithmetic strides the ranks across 4 CTA_SIZE regions
+        
         sMem[(r.x & 3) * localSize + (r.x >> 2)] = (*key).x;
         sMem[(r.y & 3) * localSize + (r.y >> 2)] = (*key).y;
         sMem[(r.z & 3) * localSize + (r.z >> 2)] = (*key).z;
         sMem[(r.w & 3) * localSize + (r.w >> 2)] = (*key).w;
         barrier(CLK_LOCAL_MEM_FENCE);
 
-        // The above allows us to read without 4-way bank conflicts:
+        
         (*key).x = sMem[localId];
         (*key).y = sMem[localId +     localSize];
         (*key).z = sMem[localId + 2 * localSize];
@@ -152,25 +143,25 @@ __kernel void radixSortBlocksKeysOnly(__global uint4* keysIn,
 	keysOut[globalId] = key;
 }
 
-//----------------------------------------------------------------------------
-// Given an array with blocks sorted according to a 4-bit radix group, each 
-// block counts the number of keys that fall into each radix in the group, and 
-// finds the starting offset of each radix in the block.  It then writes the radix 
-// counts to the counters array, and the starting offsets to the blockOffsets array.
-//
-// Template parameters are used to generate efficient code for various special cases
-// For example, we have to handle arrays that are a multiple of the block size 
-// (fullBlocks) differently than arrays that are not. "loop" is used when persistent 
-// CTAs are used. 
-//
-// By persistent CTAs we mean that we launch only as many thread blocks as can 
-// be resident in the GPU and no more, rather than launching as many threads as
-// we have elements. Persistent CTAs loop over blocks of elements until all work
-// is complete.  This can be faster in some cases.  In our tests it is faster
-// for large sorts (and the threshold is higher on compute version 1.1 and earlier
-// GPUs than it is on compute version 1.2 GPUs.
-//                                
-//----------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 __kernel void findRadixOffsets(__global uint2* keys,
 							   __global uint* counters,
 							   __global uint* blockOffsets,
@@ -193,8 +184,8 @@ __kernel void findRadixOffsets(__global uint2* keys,
     sRadix1[2 * localId]     = (radix2.x >> startbit) & 0xF;
     sRadix1[2 * localId + 1] = (radix2.y >> startbit) & 0xF;
 
-    // Finds the position where the sRadix1 entries differ and stores start 
-    // index for each radix.
+    
+    
     if(localId < 16) 
     {
         sStartPointers[localId] = 0; 
@@ -217,7 +208,7 @@ __kernel void findRadixOffsets(__global uint2* keys,
     }
     barrier(CLK_LOCAL_MEM_FENCE);
 
-    // Compute the sizes of each block.
+    
     if((localId > 0) && (sRadix1[localId] != sRadix1[localId - 1]) ) 
     {
         sStartPointers[sRadix1[localId - 1]] = 
@@ -243,9 +234,9 @@ __kernel void findRadixOffsets(__global uint2* keys,
     }
 }
 
-// a naive scan routine that works only for array that
-// can fit into a single block, just for debugging purpose,
-// not used in the sort now
+
+
+
 __kernel void scanNaive(__global uint *g_odata, 
                         __global uint *g_idata, 
                         uint n,
@@ -257,7 +248,7 @@ __kernel void scanNaive(__global uint *g_odata,
     int pout = 0;
     int pin = 1;
 
-    // Cache the computational window in shared memory
+    
     temp[pout*n + localId] = (localId > 0) ? g_idata[localId-1] : 0;
 
     for (int offset = 1; offset < n; offset *= 2)
@@ -277,29 +268,29 @@ __kernel void scanNaive(__global uint *g_odata,
     g_odata[localId] = temp[pout*n+localId];
 }
 
-//----------------------------------------------------------------------------
-// reorderData shuffles data in the array globally after the radix offsets 
-// have been found. On compute version 1.1 and earlier GPUs, this code depends 
-// on RadixSort::CTA_SIZE being 16 * number of radices (i.e. 16 * 2^nbits).
-// 
-// On compute version 1.1 GPUs ("manualCoalesce=true") this function ensures
-// that all writes are coalesced using extra work in the kernel.  On later
-// GPUs coalescing rules have been relaxed, so this extra overhead hurts 
-// performance.  On these GPUs we set manualCoalesce=false and directly store
-// the results.
-//
-// Template parameters are used to generate efficient code for various special cases
-// For example, we have to handle arrays that are a multiple of the block size 
-// (fullBlocks) differently than arrays that are not.  "loop" is used when persistent 
-// CTAs are used. 
-//
-// By persistent CTAs we mean that we launch only as many thread blocks as can 
-// be resident in the GPU and no more, rather than launching as many threads as
-// we have elements. Persistent CTAs loop over blocks of elements until all work
-// is complete.  This can be faster in some cases.  In our tests it is faster
-// for large sorts (and the threshold is higher on compute version 1.1 and earlier
-// GPUs than it is on compute version 1.2 GPUs.
-//----------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 __kernel void reorderDataKeysOnly(__global uint  *outKeys, 
                                   __global uint2  *keys, 
                                   __global uint  *blockOffsets, 

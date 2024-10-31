@@ -1,13 +1,4 @@
-/*
- * Copyright 1993-2010 NVIDIA Corporation.  All rights reserved.
- *
- * Please refer to the NVIDIA end user license agreement (EULA) associated
- * with this source code for terms and conditions that govern your use of
- * this software. Any use, reproduction, disclosure, or distribution of
- * this software and related documentation outside the terms of the EULA
- * is strictly prohibited.
- *
- */
+
  
  #ifndef PARTICLESYSTEM_COMMON_H
 #define PARTICLESYSTEM_COMMON_H
@@ -17,13 +8,13 @@
 #include <oclUtils.h>
 #include "vector_types.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// CPU/GPU common types
-////////////////////////////////////////////////////////////////////////////////
+
+
+
 typedef unsigned int uint;
 typedef cl_mem memHandle_t;
 
-//Simulation parameters
+
 typedef struct{
     float3 colliderPos;
     float  colliderRadius;
@@ -47,9 +38,9 @@ typedef struct{
     float boundaryDamping;
 } simParams_t;
 
-////////////////////////////////////////////////////////////////////////////////
-// Sort of API-independent interface
-////////////////////////////////////////////////////////////////////////////////
+
+
+
 extern "C" void startupOpenCL(int argc, const char **argv);
 extern "C" void shutdownOpenCL(void);
 
