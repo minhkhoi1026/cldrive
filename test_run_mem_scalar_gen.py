@@ -37,7 +37,7 @@ fixed_values = {
 }
 
 class KernelScalarAnalyzer:
-    def __init__(self, kernel_path, dataset_name) -> None:
+    def __init__(self, kernel_path) -> None:
         self.kernel_path = kernel_path
         with open(kernel_path, "r", encoding="utf-8") as f:
             self.kernel_code = f.read()
@@ -46,7 +46,7 @@ class KernelScalarAnalyzer:
         self.valid_strategy = []
         self.valid_args_set = []
         self.error_args = []
-        self.extra_args = f"-I gpu-benmarks/{dataset_name}"
+        self.extra_args = f"-DSINGLE_PRECISION -DN_GP=16"
         
     def get_argument_list(self):
         kernels = list(get_kernel_info(CLDRIVE, self.kernel_path)[self.kernel_path].items())
@@ -166,25 +166,6 @@ class KernelScalarAnalyzer:
                 => append that strategy into kernel attribute
         return list of valid strategies for 1 kernel
         '''
-        # logger.info(self.argument_list)
-        # logger.info(self.scalar_argument_list)
-        # for strategy in itertools.product(strategy_test_values.keys(), repeat=len(self.scalar_argument_list)):
-        #     scalarId_type_dict = {scalar_id: strategy[i] for i, scalar_id in enumerate(self.scalar_argument_list)}
-            
-        #     print(strategy) 
-        #     strategy_check = []
-        #     for scalar_id in list(scalarId_type_dict.keys()) :
-        #         # test each scalar in 1 strategy
-        #         args_set_list = self.create_args_set(scalarId_type_dict, scalar_id)
-        #         strategy_check.append(self.check_single_scalar(args_set_list, 
-        #                                                 scalarId_type_dict[scalar_id], 
-        #                                                 scalar_id))
-        #     if all(strategy_check):
-        #         self.valid_strategy.append(strategy)
-        #         #scalar_value_sets = self.generate_value_sets_for_strategy(strategy)
-        #         #self.valid_args_set.append(scalar_value_sets)
-        # return self.valid_strategy
-    # ===================================
         with Pool(processes=NUM_PROCESS, initializer=set_cuda_visible) as pool:
             strategies = itertools.product(strategy_test_values.keys(), repeat=len(self.scalar_argument_list))
             valid_strategies = pool.map(self.process_strategy, strategies)
@@ -240,11 +221,11 @@ def set_cuda_visible():
     os.environ["CUDA_VISIBLE_DEVICES"] = ",".join(map(str, process_number))
 
 def process_single_kernel(args):
-    kernel_file, folder_path, dataset_name = args
-    kernel_path = os.path.join(folder_path, kernel_file)
+    kernel_file= args
     error_flag = None
+
     try : 
-        scalar_analyzer = KernelScalarAnalyzer(kernel_path, dataset_name)
+        scalar_analyzer = KernelScalarAnalyzer(kernel_file)
     except Exception as e:
         logger.error(f"Fail to run `{kernel_file}` when extracting arg list with BUILD error:\n{e}")
         error_flag = "BUILD"
@@ -263,89 +244,52 @@ def process_single_kernel(args):
     valid_args_set = scalar_analyzer.find_strategy() # [] or ""
     return (True, valid_args_set)  # valid kernel
 
-
-def process_kernels_in_folder(dataset_name, folder_path, success_file, error_file): 
-    # Load existing processed entries to avoid duplication
-    processed_success = set()
-    processed_error = set()
+def process_kernels(csv_file, json_file):
+    # Initialize JSON file if it doesn't exist
+    if not os.path.exists(json_file):
+        with open(json_file, 'w') as jf:
+            json.dump([], jf)
+    with open(json_file, 'r') as jf:
+        processed_kernels = json.load(jf) # Load existing JSON data
     
-    # Read success and error CSVs if they already have data
-    if os.path.exists(success_file):
-        with open(success_file, 'r') as success_csv:
-            reader = csv.reader(success_csv)
-            next(reader, None)  # Skip header
-            processed_success = {row[0] for row in reader}
-    
-    if os.path.exists(error_file):
-        with open(error_file, 'r') as error_csv:
-            reader = csv.reader(error_csv)
-            next(reader, None)  # Skip header
-            processed_error = {row[0] for row in reader}
-    
-    # Open CSV files in append mode and write headers if they are new
-    with open(success_file, 'a', newline='') as success_csv, open(error_file, 'a', newline='') as error_csv:
-        success_writer = csv.writer(success_csv)
-        error_writer = csv.writer(error_csv)
+    # Extract processed kernel paths to avoid duplicates
+    success_processed_paths = {entry['kernel_path'] for entry in processed_kernels if entry['validity']}
+    with open(csv_file, 'r') as cf:
+        reader = csv.reader(cf)
+        next(reader, None)  # Skip header if present
+        kernel_paths = [row[0] for row in reader]
 
-        # Write headers if the files are empty
-        if os.path.getsize(success_file) == 0:
-            success_writer.writerow(["kernel_path", "valid_args_set"])
-        if os.path.getsize(error_file) == 0:
-            error_writer.writerow(["kernel_path", "error"])
+    for kernel_path in tqdm(kernel_paths, desc="Processing Kernels"):
+        if kernel_path in success_processed_paths:
+            continue # Skip already processed kernels
+        args_set = process_single_kernel(kernel_path)  # Replace this function with actual processing logic
+        entry = {
+            "kernel_path": kernel_path,
+            "validity": args_set[0],            
+            "scalar_strategy_found": args_set[1], 
+            "execution": {                       
+                "scalars_type": [],
+                "values": [],
+                "runtime": 0
+            }
+        }
+        # update after each kernel
+        with open(json_file, 'r+') as jf:
+            processed_kernels = json.load(jf)
+            processed_kernels.append(entry)
+            jf.seek(0)
+            json.dump(processed_kernels, jf, indent=4)
 
-        # Process each kernel file
-        kernel_files = os.listdir(folder_path)
-        for kernel_file in tqdm(kernel_files, total=len(kernel_files), desc="Processing Kernels"):
-            if kernel_file in processed_success:
-                continue  # Skip already processed successful kernels
-            
-            logger.info(f"Processing {kernel_file}")
-            args_set = process_single_kernel((kernel_file, folder_path, dataset_name)) 
-
-            if args_set[0]:  # Processed successfully
-                valid_result = [kernel_file, args_set[1]]
-                
-                # Remove from error CSV if previously failed
-                if kernel_file in processed_error:
-                    processed_error.remove(kernel_file)  # Update in-memory record
-                    rewrite_csv_without_entry(error_file, kernel_file)
-                
-                success_writer.writerow(valid_result)
-                processed_success.add(kernel_file)
-            else:  # Failed to process
-                if kernel_file in processed_error:
-                    continue  # Skip if already recorded as failed
-                failed_result = [kernel_file, args_set[1]]
-                error_writer.writerow(failed_result)
-                processed_error.add(kernel_file)
-
-def rewrite_csv_without_entry(file_path, kernel_to_remove):
-    """Helper function to remove a specific entry from a CSV file."""
-    with open(file_path, 'r') as file:
-        rows = list(csv.reader(file))
-    with open(file_path, 'w', newline='') as file:
-        writer = csv.writer(file)
-        for row in rows:
-            if row[0] != kernel_to_remove:
-                writer.writerow(row)
-
-    
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Process OpenCL kernel files.")
-    
-    parser.add_argument('--input_folder', type=str, required=True, help='Path to the input folder containing kernel files')
+
+    parser = argparse.ArgumentParser(description="Process OpenCL kernel files from a CSV.")
+    parser.add_argument('--csv_file', type=str, required=True, help='Path to the CSV file containing kernel paths')
     args = parser.parse_args()
 
-    dataset_name = os.path.split(args.input_folder)[1]
+    dataset_name = os.path.splitext(os.path.basename(args.csv_file))[0]
     log_file_name = f"{dataset_name}_scalar_gen.log"
+    json_file = f"{dataset_name}_scalar_gen.json"
     logger.add(log_file_name, level="INFO")
     logger.add(sys.stderr, level="DEBUG")
 
-    valid_output_file = f"{dataset_name}_valid_kernels.csv"
-    failed_output_file = f"{dataset_name}_fail_kernels.csv"
-    
-    process_kernels_in_folder(dataset_name, args.input_folder, valid_output_file, failed_output_file)
-    #process_kernels_in_folder('gpu-benchmarks/nvidia_sdk/dataset-modified', 'nvidia_valid_results.csv', 'nvidia_failed_kernels.csv')
-    
-    
-
+    process_kernels(args.csv_file, json_file)
