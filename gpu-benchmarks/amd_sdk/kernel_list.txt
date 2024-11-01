@@ -1,0 +1,30 @@
+globalAtomics
+debugKernel
+binarySearch
+binarySearch_mulkeys
+binarySearch_mulkeysConcurrent
+binomial_options
+bitonicSort
+BufferBandwidth: read_kernel, write_kernel
+DeviceFission: Add, Sub
+DeviceFission11Ext: copy
+dwtHaar1D
+fastWalshTransform
+GaussianNoiseGL: BoxMuller
+helloworld
+Historgram: histogram256_vector, histogram256_scalar
+KernelLaunch: read_kernel, write_kernel
+KmeansAutoclustering: assignCentroid, computeSilhouettes
+Mandelbrot: mandelbrot_vector_float, mandelbrot_vector_double
+MemoryModel
+nbody_sim
+PrefixSum: global_prefixSum, group_prefixSum
+QuasiRandomSequence: QuasiRandomSequence_Scalar, QuasiRandomSequence_Vector
+RadixSort: histogram, permute, ScanArraysdim1
+RecursiveGaussian: RecursiveGaussian_kernel
+reduce
+ScanLargeArrays: blockAddition, ScanLargeArrays, prefixSum
+simpleConvolution
+StringSearch: StringSearchNaive, StringSearchLoadBalance
+TransferOverlap: readKernel, writeKernel
+
