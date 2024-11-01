@@ -16,7 +16,7 @@ This repository contains several test scripts used for preprocessing, generating
 - Purpose: Identifies scalar values in a dataset of `.cl` files.
   - **Input**: A csv from `test_preprocess.py` or any csv contain kernel path
   - **Output**: A JSON file structured as follows:
-    ```json
+  ```json
   { 
     "kernel_path": "...", 
     "validity": "...",
@@ -27,7 +27,7 @@ This repository contains several test scripts used for preprocessing, generating
       "runtime": 0
     }
   }
-    ```
+  ```
 
 #### `test_gen_scalar.py`
 - Purpose: Generates scalar values for each valid kernel.
