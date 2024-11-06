@@ -1,4 +1,4 @@
-//{"a":0,"n":3,"sums":1,"tmp":2}
+
 int hook(int argId, int id) {
 	int gID = get_global_id(0);
 	printf("%d,%d,%d\n", gID, argId, id);

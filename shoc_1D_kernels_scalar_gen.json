@@ -2,7 +2,7 @@
     {
         "kernel_path": "gpu-benchmarks/shoc/src/opencl/level1/md/md.cl",
         "validity": false,
-        "scalar_strategy_found": "BUILD",
+        "scalar_strategy_found": "MANY_SCALARS",
         "execution": {
             "scalars_type": [],
             "values": [],
@@ -11,348 +11,8 @@
     },
     {
         "kernel_path": "gpu-benchmarks/shoc/src/opencl/level1/scan/scan.cl",
-        "validity": false,
-        "scalar_strategy_found": "BUILD",
-        "execution": {
-            "scalars_type": [],
-            "values": [],
-            "runtime": 0
-        }
-    },
-    {
-        "kernel_path": "gpu-benchmarks/shoc/src/opencl/level1/bfs/bfs_iiit.cl",
-        "validity": false,
-        "scalar_strategy_found": "BUILD",
-        "execution": {
-            "scalars_type": [],
-            "values": [],
-            "runtime": 0
-        }
-    },
-    {
-        "kernel_path": "gpu-benchmarks/shoc/src/opencl/level1/bfs/bfs_uiuc_spill.cl",
-        "validity": false,
-        "scalar_strategy_found": "BUILD",
-        "execution": {
-            "scalars_type": [],
-            "values": [],
-            "runtime": 0
-        }
-    },
-    {
-        "kernel_path": "gpu-benchmarks/shoc/src/opencl/level1/md5hash/md5.cl",
-        "validity": false,
-        "scalar_strategy_found": "BUILD",
-        "execution": {
-            "scalars_type": [],
-            "values": [],
-            "runtime": 0
-        }
-    },
-    {
-        "kernel_path": "gpu-benchmarks/shoc/src/opencl/level1/sort/sort.cl",
-        "validity": false,
-        "scalar_strategy_found": "BUILD",
-        "execution": {
-            "scalars_type": [],
-            "values": [],
-            "runtime": 0
-        }
-    },
-    {
-        "kernel_path": "gpu-benchmarks/shoc/src/opencl/level1/fft/fft.cl",
-        "validity": false,
-        "scalar_strategy_found": "BUILD",
-        "execution": {
-            "scalars_type": [],
-            "values": [],
-            "runtime": 0
-        }
-    },
-    {
-        "kernel_path": "gpu-benchmarks/shoc/src/opencl/level1/spmv/spmv.cl",
-        "validity": false,
-        "scalar_strategy_found": "BUILD",
-        "execution": {
-            "scalars_type": [],
-            "values": [],
-            "runtime": 0
-        }
-    },
-    {
-        "kernel_path": "gpu-benchmarks/shoc/src/opencl/level1/reduction/reduction.cl",
-        "validity": false,
-        "scalar_strategy_found": "BUILD",
-        "execution": {
-            "scalars_type": [],
-            "values": [],
-            "runtime": 0
-        }
-    },
-    {
-        "kernel_path": "gpu-benchmarks/shoc/src/opencl/level2/s3d/rdwdot.cl",
-        "validity": false,
-        "scalar_strategy_found": "BUILD",
-        "execution": {
-            "scalars_type": [],
-            "values": [],
-            "runtime": 0
-        }
-    },
-    {
-        "kernel_path": "gpu-benchmarks/shoc/src/opencl/level2/s3d/rdwdot10.cl",
-        "validity": false,
-        "scalar_strategy_found": "BUILD",
-        "execution": {
-            "scalars_type": [],
-            "values": [],
-            "runtime": 0
-        }
-    },
-    {
-        "kernel_path": "gpu-benchmarks/shoc/src/opencl/level2/s3d/gr_base.cl",
-        "validity": false,
-        "scalar_strategy_found": "BUILD",
-        "execution": {
-            "scalars_type": [],
-            "values": [],
-            "runtime": 0
-        }
-    },
-    {
-        "kernel_path": "gpu-benchmarks/shoc/src/opencl/level2/s3d/rdwdot7.cl",
-        "validity": false,
-        "scalar_strategy_found": "BUILD",
-        "execution": {
-            "scalars_type": [],
-            "values": [],
-            "runtime": 0
-        }
-    },
-    {
-        "kernel_path": "gpu-benchmarks/shoc/src/opencl/level2/s3d/rdwdot6.cl",
-        "validity": false,
-        "scalar_strategy_found": "BUILD",
-        "execution": {
-            "scalars_type": [],
-            "values": [],
-            "runtime": 0
-        }
-    },
-    {
-        "kernel_path": "gpu-benchmarks/shoc/src/opencl/level2/s3d/rdwdot9.cl",
-        "validity": false,
-        "scalar_strategy_found": "BUILD",
-        "execution": {
-            "scalars_type": [],
-            "values": [],
-            "runtime": 0
-        }
-    },
-    {
-        "kernel_path": "gpu-benchmarks/shoc/src/opencl/level2/s3d/ratt10.cl",
-        "validity": false,
-        "scalar_strategy_found": "BUILD",
-        "execution": {
-            "scalars_type": [],
-            "values": [],
-            "runtime": 0
-        }
-    },
-    {
-        "kernel_path": "gpu-benchmarks/shoc/src/opencl/level2/s3d/rdsmh.cl",
-        "validity": false,
-        "scalar_strategy_found": "BUILD",
-        "execution": {
-            "scalars_type": [],
-            "values": [],
-            "runtime": 0
-        }
-    },
-    {
-        "kernel_path": "gpu-benchmarks/shoc/src/opencl/level2/s3d/ratt3.cl",
-        "validity": false,
-        "scalar_strategy_found": "BUILD",
-        "execution": {
-            "scalars_type": [],
-            "values": [],
-            "runtime": 0
-        }
-    },
-    {
-        "kernel_path": "gpu-benchmarks/shoc/src/opencl/level2/s3d/qssab.cl",
-        "validity": false,
-        "scalar_strategy_found": "BUILD",
-        "execution": {
-            "scalars_type": [],
-            "values": [],
-            "runtime": 0
-        }
-    },
-    {
-        "kernel_path": "gpu-benchmarks/shoc/src/opencl/level2/s3d/ratt6.cl",
-        "validity": false,
-        "scalar_strategy_found": "BUILD",
-        "execution": {
-            "scalars_type": [],
-            "values": [],
-            "runtime": 0
-        }
-    },
-    {
-        "kernel_path": "gpu-benchmarks/shoc/src/opencl/level2/s3d/rdwdot3.cl",
-        "validity": false,
-        "scalar_strategy_found": "BUILD",
-        "execution": {
-            "scalars_type": [],
-            "values": [],
-            "runtime": 0
-        }
-    },
-    {
-        "kernel_path": "gpu-benchmarks/shoc/src/opencl/level2/s3d/ratt8.cl",
-        "validity": false,
-        "scalar_strategy_found": "BUILD",
-        "execution": {
-            "scalars_type": [],
-            "values": [],
-            "runtime": 0
-        }
-    },
-    {
-        "kernel_path": "gpu-benchmarks/shoc/src/opencl/level2/s3d/ratx2.cl",
-        "validity": false,
-        "scalar_strategy_found": "BUILD",
-        "execution": {
-            "scalars_type": [],
-            "values": [],
-            "runtime": 0
-        }
-    },
-    {
-        "kernel_path": "gpu-benchmarks/shoc/src/opencl/level2/s3d/ratxb.cl",
-        "validity": false,
-        "scalar_strategy_found": "BUILD",
-        "execution": {
-            "scalars_type": [],
-            "values": [],
-            "runtime": 0
-        }
-    },
-    {
-        "kernel_path": "gpu-benchmarks/shoc/src/opencl/level2/s3d/ratt9.cl",
-        "validity": false,
-        "scalar_strategy_found": "BUILD",
-        "execution": {
-            "scalars_type": [],
-            "values": [],
-            "runtime": 0
-        }
-    },
-    {
-        "kernel_path": "gpu-benchmarks/shoc/src/opencl/level2/s3d/ratx4.cl",
-        "validity": false,
-        "scalar_strategy_found": "BUILD",
-        "execution": {
-            "scalars_type": [],
-            "values": [],
-            "runtime": 0
-        }
-    },
-    {
-        "kernel_path": "gpu-benchmarks/shoc/src/opencl/level2/s3d/ratt.cl",
-        "validity": false,
-        "scalar_strategy_found": "BUILD",
-        "execution": {
-            "scalars_type": [],
-            "values": [],
-            "runtime": 0
-        }
-    },
-    {
-        "kernel_path": "gpu-benchmarks/shoc/src/opencl/level2/s3d/qssa2.cl",
-        "validity": false,
-        "scalar_strategy_found": "BUILD",
-        "execution": {
-            "scalars_type": [],
-            "values": [],
-            "runtime": 0
-        }
-    },
-    {
-        "kernel_path": "gpu-benchmarks/shoc/src/opencl/level2/s3d/qssa.cl",
-        "validity": false,
-        "scalar_strategy_found": "BUILD",
-        "execution": {
-            "scalars_type": [],
-            "values": [],
-            "runtime": 0
-        }
-    },
-    {
-        "kernel_path": "gpu-benchmarks/shoc/src/opencl/level2/s3d/ratt2.cl",
-        "validity": false,
-        "scalar_strategy_found": "BUILD",
-        "execution": {
-            "scalars_type": [],
-            "values": [],
-            "runtime": 0
-        }
-    },
-    {
-        "kernel_path": "gpu-benchmarks/shoc/src/opencl/level2/s3d/ratt4.cl",
-        "validity": false,
-        "scalar_strategy_found": "BUILD",
-        "execution": {
-            "scalars_type": [],
-            "values": [],
-            "runtime": 0
-        }
-    },
-    {
-        "kernel_path": "gpu-benchmarks/shoc/src/opencl/level2/s3d/ratx.cl",
-        "validity": false,
-        "scalar_strategy_found": "BUILD",
-        "execution": {
-            "scalars_type": [],
-            "values": [],
-            "runtime": 0
-        }
-    },
-    {
-        "kernel_path": "gpu-benchmarks/shoc/src/opencl/level2/s3d/rdwdot2.cl",
-        "validity": false,
-        "scalar_strategy_found": "BUILD",
-        "execution": {
-            "scalars_type": [],
-            "values": [],
-            "runtime": 0
-        }
-    },
-    {
-        "kernel_path": "gpu-benchmarks/shoc/src/opencl/level2/s3d/rdwdot8.cl",
-        "validity": false,
-        "scalar_strategy_found": "BUILD",
-        "execution": {
-            "scalars_type": [],
-            "values": [],
-            "runtime": 0
-        }
-    },
-    {
-        "kernel_path": "gpu-benchmarks/shoc/src/opencl/level1/md/md.cl",
-        "validity": false,
-        "scalar_strategy_found": "BUILD",
-        "execution": {
-            "scalars_type": [],
-            "values": [],
-            "runtime": 0
-        }
-    },
-    {
-        "kernel_path": "gpu-benchmarks/shoc/src/opencl/level1/scan/scan.cl",
-        "validity": false,
-        "scalar_strategy_found": "BUILD",
+        "validity": true,
+        "scalar_strategy_found": [],
         "execution": {
             "scalars_type": [],
             "values": [],
@@ -402,7 +62,7 @@
     {
         "kernel_path": "gpu-benchmarks/shoc/src/opencl/level1/fft/fft.cl",
         "validity": false,
-        "scalar_strategy_found": "BUILD",
+        "scalar_strategy_found": "NO_SCALAR",
         "execution": {
             "scalars_type": [],
             "values": [],
@@ -411,8 +71,8 @@
     },
     {
         "kernel_path": "gpu-benchmarks/shoc/src/opencl/level1/spmv/spmv.cl",
-        "validity": false,
-        "scalar_strategy_found": "BUILD",
+        "validity": true,
+        "scalar_strategy_found": [],
         "execution": {
             "scalars_type": [],
             "values": [],
@@ -421,8 +81,8 @@
     },
     {
         "kernel_path": "gpu-benchmarks/shoc/src/opencl/level1/reduction/reduction.cl",
-        "validity": false,
-        "scalar_strategy_found": "BUILD",
+        "validity": true,
+        "scalar_strategy_found": [],
         "execution": {
             "scalars_type": [],
             "values": [],
@@ -431,8 +91,8 @@
     },
     {
         "kernel_path": "gpu-benchmarks/shoc/src/opencl/level2/s3d/rdwdot.cl",
-        "validity": false,
-        "scalar_strategy_found": "BUILD",
+        "validity": true,
+        "scalar_strategy_found": [],
         "execution": {
             "scalars_type": [],
             "values": [],
@@ -441,8 +101,8 @@
     },
     {
         "kernel_path": "gpu-benchmarks/shoc/src/opencl/level2/s3d/rdwdot10.cl",
-        "validity": false,
-        "scalar_strategy_found": "BUILD",
+        "validity": true,
+        "scalar_strategy_found": [],
         "execution": {
             "scalars_type": [],
             "values": [],
@@ -451,8 +111,8 @@
     },
     {
         "kernel_path": "gpu-benchmarks/shoc/src/opencl/level2/s3d/gr_base.cl",
-        "validity": false,
-        "scalar_strategy_found": "BUILD",
+        "validity": true,
+        "scalar_strategy_found": [],
         "execution": {
             "scalars_type": [],
             "values": [],
@@ -461,8 +121,8 @@
     },
     {
         "kernel_path": "gpu-benchmarks/shoc/src/opencl/level2/s3d/rdwdot7.cl",
-        "validity": false,
-        "scalar_strategy_found": "BUILD",
+        "validity": true,
+        "scalar_strategy_found": [],
         "execution": {
             "scalars_type": [],
             "values": [],
@@ -471,8 +131,8 @@
     },
     {
         "kernel_path": "gpu-benchmarks/shoc/src/opencl/level2/s3d/rdwdot6.cl",
-        "validity": false,
-        "scalar_strategy_found": "BUILD",
+        "validity": true,
+        "scalar_strategy_found": [],
         "execution": {
             "scalars_type": [],
             "values": [],
@@ -481,8 +141,8 @@
     },
     {
         "kernel_path": "gpu-benchmarks/shoc/src/opencl/level2/s3d/rdwdot9.cl",
-        "validity": false,
-        "scalar_strategy_found": "BUILD",
+        "validity": true,
+        "scalar_strategy_found": [],
         "execution": {
             "scalars_type": [],
             "values": [],
@@ -491,8 +151,8 @@
     },
     {
         "kernel_path": "gpu-benchmarks/shoc/src/opencl/level2/s3d/ratt10.cl",
-        "validity": false,
-        "scalar_strategy_found": "BUILD",
+        "validity": true,
+        "scalar_strategy_found": [],
         "execution": {
             "scalars_type": [],
             "values": [],
@@ -501,8 +161,8 @@
     },
     {
         "kernel_path": "gpu-benchmarks/shoc/src/opencl/level2/s3d/rdsmh.cl",
-        "validity": false,
-        "scalar_strategy_found": "BUILD",
+        "validity": true,
+        "scalar_strategy_found": [],
         "execution": {
             "scalars_type": [],
             "values": [],
@@ -511,8 +171,8 @@
     },
     {
         "kernel_path": "gpu-benchmarks/shoc/src/opencl/level2/s3d/ratt3.cl",
-        "validity": false,
-        "scalar_strategy_found": "BUILD",
+        "validity": true,
+        "scalar_strategy_found": [],
         "execution": {
             "scalars_type": [],
             "values": [],
@@ -522,7 +182,7 @@
     {
         "kernel_path": "gpu-benchmarks/shoc/src/opencl/level2/s3d/qssab.cl",
         "validity": false,
-        "scalar_strategy_found": "BUILD",
+        "scalar_strategy_found": "NO_SCALAR",
         "execution": {
             "scalars_type": [],
             "values": [],
@@ -531,8 +191,8 @@
     },
     {
         "kernel_path": "gpu-benchmarks/shoc/src/opencl/level2/s3d/ratt6.cl",
-        "validity": false,
-        "scalar_strategy_found": "BUILD",
+        "validity": true,
+        "scalar_strategy_found": [],
         "execution": {
             "scalars_type": [],
             "values": [],
@@ -541,8 +201,8 @@
     },
     {
         "kernel_path": "gpu-benchmarks/shoc/src/opencl/level2/s3d/rdwdot3.cl",
-        "validity": false,
-        "scalar_strategy_found": "BUILD",
+        "validity": true,
+        "scalar_strategy_found": [],
         "execution": {
             "scalars_type": [],
             "values": [],
@@ -551,8 +211,8 @@
     },
     {
         "kernel_path": "gpu-benchmarks/shoc/src/opencl/level2/s3d/ratt8.cl",
-        "validity": false,
-        "scalar_strategy_found": "BUILD",
+        "validity": true,
+        "scalar_strategy_found": [],
         "execution": {
             "scalars_type": [],
             "values": [],
@@ -562,7 +222,7 @@
     {
         "kernel_path": "gpu-benchmarks/shoc/src/opencl/level2/s3d/ratx2.cl",
         "validity": false,
-        "scalar_strategy_found": "BUILD",
+        "scalar_strategy_found": "NO_SCALAR",
         "execution": {
             "scalars_type": [],
             "values": [],
@@ -571,8 +231,8 @@
     },
     {
         "kernel_path": "gpu-benchmarks/shoc/src/opencl/level2/s3d/ratxb.cl",
-        "validity": false,
-        "scalar_strategy_found": "BUILD",
+        "validity": true,
+        "scalar_strategy_found": [],
         "execution": {
             "scalars_type": [],
             "values": [],
@@ -581,8 +241,8 @@
     },
     {
         "kernel_path": "gpu-benchmarks/shoc/src/opencl/level2/s3d/ratt9.cl",
-        "validity": false,
-        "scalar_strategy_found": "BUILD",
+        "validity": true,
+        "scalar_strategy_found": [],
         "execution": {
             "scalars_type": [],
             "values": [],
@@ -592,7 +252,7 @@
     {
         "kernel_path": "gpu-benchmarks/shoc/src/opencl/level2/s3d/ratx4.cl",
         "validity": false,
-        "scalar_strategy_found": "BUILD",
+        "scalar_strategy_found": "NO_SCALAR",
         "execution": {
             "scalars_type": [],
             "values": [],
@@ -601,8 +261,8 @@
     },
     {
         "kernel_path": "gpu-benchmarks/shoc/src/opencl/level2/s3d/ratt.cl",
-        "validity": false,
-        "scalar_strategy_found": "BUILD",
+        "validity": true,
+        "scalar_strategy_found": [],
         "execution": {
             "scalars_type": [],
             "values": [],
@@ -612,7 +272,7 @@
     {
         "kernel_path": "gpu-benchmarks/shoc/src/opencl/level2/s3d/qssa2.cl",
         "validity": false,
-        "scalar_strategy_found": "BUILD",
+        "scalar_strategy_found": "NO_SCALAR",
         "execution": {
             "scalars_type": [],
             "values": [],
@@ -622,7 +282,7 @@
     {
         "kernel_path": "gpu-benchmarks/shoc/src/opencl/level2/s3d/qssa.cl",
         "validity": false,
-        "scalar_strategy_found": "BUILD",
+        "scalar_strategy_found": "NO_SCALAR",
         "execution": {
             "scalars_type": [],
             "values": [],
@@ -631,8 +291,8 @@
     },
     {
         "kernel_path": "gpu-benchmarks/shoc/src/opencl/level2/s3d/ratt2.cl",
-        "validity": false,
-        "scalar_strategy_found": "BUILD",
+        "validity": true,
+        "scalar_strategy_found": [],
         "execution": {
             "scalars_type": [],
             "values": [],
@@ -641,8 +301,8 @@
     },
     {
         "kernel_path": "gpu-benchmarks/shoc/src/opencl/level2/s3d/ratt4.cl",
-        "validity": false,
-        "scalar_strategy_found": "BUILD",
+        "validity": true,
+        "scalar_strategy_found": [],
         "execution": {
             "scalars_type": [],
             "values": [],
@@ -651,8 +311,8 @@
     },
     {
         "kernel_path": "gpu-benchmarks/shoc/src/opencl/level2/s3d/ratx.cl",
-        "validity": false,
-        "scalar_strategy_found": "BUILD",
+        "validity": true,
+        "scalar_strategy_found": [],
         "execution": {
             "scalars_type": [],
             "values": [],
@@ -661,8 +321,8 @@
     },
     {
         "kernel_path": "gpu-benchmarks/shoc/src/opencl/level2/s3d/rdwdot2.cl",
-        "validity": false,
-        "scalar_strategy_found": "BUILD",
+        "validity": true,
+        "scalar_strategy_found": [],
         "execution": {
             "scalars_type": [],
             "values": [],
@@ -671,8 +331,8 @@
     },
     {
         "kernel_path": "gpu-benchmarks/shoc/src/opencl/level2/s3d/rdwdot8.cl",
-        "validity": false,
-        "scalar_strategy_found": "BUILD",
+        "validity": true,
+        "scalar_strategy_found": [],
         "execution": {
             "scalars_type": [],
             "values": [],

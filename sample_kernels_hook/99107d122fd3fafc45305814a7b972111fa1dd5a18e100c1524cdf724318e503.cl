@@ -1,4 +1,4 @@
-//{"bell_num":4,"col_align":3,"col_id":0,"data":1,"data_align":2,"result":6,"row_num":7,"vec":5}
+
 int hook(int argId, int id) {
 	int gID = get_global_id(0);
 	printf("%d,%d,%d\n", gID, argId, id);

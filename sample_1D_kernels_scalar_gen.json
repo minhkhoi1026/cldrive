@@ -1,0 +1,161 @@
+[
+    {
+        "kernel_path": "sample_kernels_hook/7ee9a1e2134c118931db0e450b749f33d22e83850cfbd05f479a4bfd04747afa.cl",
+        "validity": false,
+        "scalar_strategy_found": "NO_SCALAR",
+        "execution": {
+            "scalars_type": [],
+            "values": [],
+            "runtime": 0
+        }
+    },
+    {
+        "kernel_path": "sample_kernels_hook/d1b4a4dc7f5859a95e28e7f238b9fe733a851adaf728edc0475972a1be701999.cl",
+        "validity": false,
+        "scalar_strategy_found": "NO_SCALAR",
+        "execution": {
+            "scalars_type": [],
+            "values": [],
+            "runtime": 0
+        }
+    },
+    {
+        "kernel_path": "sample_kernels_hook/a7bf67d56b2de13bed3d31f687a29f793c2a5e483aea54a9cf59c78ec61a945a.cl",
+        "validity": false,
+        "scalar_strategy_found": "BUILD",
+        "execution": {
+            "scalars_type": [],
+            "values": [],
+            "runtime": 0
+        }
+    },
+    {
+        "kernel_path": "sample_kernels_hook/gra.cl",
+        "validity": true,
+        "scalar_strategy_found": [
+            [
+                "granularity",
+                "granularity"
+            ],
+            [
+                "bound-check",
+                "granularity"
+            ]
+        ],
+        "execution": {
+            "scalars_type": [],
+            "values": [],
+            "runtime": 0
+        }
+    },
+    {
+        "kernel_path": "sample_kernels_hook/ffc2889e46db0d32b5325861f3fc4d4f7275232072554b6e8d123deeb63ba42d.cl",
+        "validity": false,
+        "scalar_strategy_found": "MANY_SCALARS",
+        "execution": {
+            "scalars_type": [],
+            "values": [],
+            "runtime": 0
+        }
+    },
+    {
+        "kernel_path": "sample_kernels_hook/stride_more_mem_access.cl",
+        "validity": true,
+        "scalar_strategy_found": [
+            [
+                "os",
+                "granularity"
+            ]
+        ],
+        "execution": {
+            "scalars_type": [],
+            "values": [],
+            "runtime": 0
+        }
+    },
+    {
+        "kernel_path": "sample_kernels_hook/stride_conv1d.cl",
+        "validity": true,
+        "scalar_strategy_found": [
+            [
+                "os",
+                "stride"
+            ]
+        ],
+        "execution": {
+            "scalars_type": [],
+            "values": [],
+            "runtime": 0
+        }
+    },
+    {
+        "kernel_path": "sample_kernels_hook/2fdcdd96f7a2c600fac1630f781ea8c4e71685ab1528dd234e055657c5264e00.cl",
+        "validity": false,
+        "scalar_strategy_found": "BUILD",
+        "execution": {
+            "scalars_type": [],
+            "values": [],
+            "runtime": 0
+        }
+    },
+    {
+        "kernel_path": "sample_kernels_hook/4e0a1daf8364b65d49b912fef0dac0e8d478cfcdd4d7a7643e292836fd6b723a.cl",
+        "validity": false,
+        "scalar_strategy_found": "BUILD",
+        "execution": {
+            "scalars_type": [],
+            "values": [],
+            "runtime": 0
+        }
+    },
+    {
+        "kernel_path": "sample_kernels_hook/f33f9c2ada0449c97cf943fa4e453317f3a2dc453dd7d499f2ac5a5759447e20.cl",
+        "validity": true,
+        "scalar_strategy_found": [],
+        "execution": {
+            "scalars_type": [],
+            "values": [],
+            "runtime": 0
+        }
+    },
+    {
+        "kernel_path": "sample_kernels_hook/3de2c67435b120b706265d6185fc14d0f6312de7e58810929a4f59218af16449.cl",
+        "validity": true,
+        "scalar_strategy_found": [],
+        "execution": {
+            "scalars_type": [],
+            "values": [],
+            "runtime": 0
+        }
+    },
+    {
+        "kernel_path": "sample_kernels_hook/502985378466668e2a4d958a0ae4bec22507f510c82b163aecb1f0630b7e2dc7.cl",
+        "validity": false,
+        "scalar_strategy_found": "NO_SCALAR",
+        "execution": {
+            "scalars_type": [],
+            "values": [],
+            "runtime": 0
+        }
+    },
+    {
+        "kernel_path": "sample_kernels_hook/two_kernels.cl",
+        "validity": true,
+        "scalar_strategy_found": [],
+        "execution": {
+            "scalars_type": [],
+            "values": [],
+            "runtime": 0
+        }
+    },
+    {
+        "kernel_path": "sample_kernels_hook/99107d122fd3fafc45305814a7b972111fa1dd5a18e100c1524cdf724318e503.cl",
+        "validity": true,
+        "scalar_strategy_found": [],
+        "execution": {
+            "scalars_type": [],
+            "values": [],
+            "runtime": 0
+        }
+    }
+]

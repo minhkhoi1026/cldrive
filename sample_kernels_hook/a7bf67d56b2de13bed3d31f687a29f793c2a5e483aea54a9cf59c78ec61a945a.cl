@@ -1,4 +1,4 @@
-//{"<recovery-expr>(out)":4,"elems":2,"in":1,"out":0,"threads_per_group":3}
+
 int hook(int argId, int id) {
 	int gID = get_global_id(0);
 	printf("%d,%d,%d\n", gID, argId, id);

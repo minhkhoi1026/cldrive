@@ -10,9 +10,9 @@ kernel void summation(global float* in, global float* out, int N, int k, int c)
     
     float sum = 0.0f;
     
-    // process k elements sequentially
+    
     for (int i = 0; i < k; i++) {
-        // current element index of in array
+        
         int cId = id * k + i;
         
         if (cId < N) {            

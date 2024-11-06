@@ -19,7 +19,7 @@ This repository contains several test scripts used for preprocessing, generating
   ```json
   { 
     "kernel_path": "...", 
-    "validity": "...",
+    "validity": boolean, // run fail or not
     "scalar_strategy_found": [],
     "execution": {
       "scalars_type": [],

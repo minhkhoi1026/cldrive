@@ -1,4 +1,4 @@
-//{"alphaTable3":5,"alphaTable4":3,"colors":10,"covariance":11,"errors":17,"groupOffset":7,"image":1,"indices":18,"matrix":8,"permutations":0,"prods3":6,"prods4":4,"ranks":13,"result":2,"s_permutations":16,"sums":9,"temp":14,"values":12,"xrefs":15}
+
 int hook(int argId, int id) {
 	int gID = get_global_id(0);
 	printf("%d,%d,%d\n", gID, argId, id);

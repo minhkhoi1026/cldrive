@@ -1,4 +1,4 @@
-//{"Core_N":9,"Error_T":5,"FactorM":4,"core_index":2,"core_val":3,"index":0,"mult":10,"nnz":7,"order":6,"rank":8,"tmp2":11,"val":1}
+
 int hook(int argId, int id) {
 	int gID = get_global_id(0);
 	printf("%d,%d,%d\n", gID, argId, id);

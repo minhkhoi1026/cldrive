@@ -41,15 +41,15 @@ class KernelScalarAnalyzer:
         self.kernel_path = kernel_path
         with open(kernel_path, "r", encoding="utf-8") as f:
             self.kernel_code = f.read()
+        self.extra_args = f"-DSINGLE_PRECISION -DN_GP=16"
         self.argument_list = self.get_argument_list()
         self.scalar_argument_list = [arg["id"] for arg in self.argument_list if not arg["is_pointer"]]
         self.valid_strategy = []
         self.valid_args_set = []
         self.error_args = []
-        self.extra_args = f"-DSINGLE_PRECISION -DN_GP=16"
         
     def get_argument_list(self):
-        kernels = list(get_kernel_info(CLDRIVE, self.kernel_path)[self.kernel_path].items())
+        kernels = list(get_kernel_info(CLDRIVE, self.kernel_path, self.extra_args)[self.kernel_path].items())
         return kernels[0][1]
 
     def run_mem_access(self):
@@ -92,14 +92,14 @@ class KernelScalarAnalyzer:
     def run_kernel(self, global_size, local_size, args_set ):
         '''
         execute kernel by cldrive then read stdout 
-        extract needed information to identify scalar values !!!
+        extract needed information to identify scalar values 
         '''
         try : 
             run_instance = KernelRunInstance(kernel_code=self.kernel_code, gsize=global_size, lsize=local_size, args_values=args_set, timeout=TIMEOUT)
 
             stdout, stderr = run_instance.run_mem_access()
             if len(stdout) == 0:
-                logger.error(f"Run kernel with args_values={args_set} has no stdout, failed with stderr:\n{stderr}")
+                logger.error(f"Run kernel {self.kernel_path} with args_values={args_set} has no stdout, failed with stderr:\n{stderr}")
                 return False
 
             # DO anything here to extract information of each execution !!!!
@@ -109,30 +109,42 @@ class KernelScalarAnalyzer:
                 "num_element_per_thread" : [],
                 "stride_gap" : 1,
             }
-            stdout = "global_id,arg_id,id_access\n" + stdout
+            stdout = "global_id,arg_id,id_access\n" + stdout #only ID of pointer 
             df = pd.read_csv(io.StringIO(stdout))
 
             if all(df['id_access'] >= 0) == False :
-                logger.error(f"Run kernel with args_values={args_set} failed, overflowed index !!!!")
+                logger.info(f"Run kernel with args_values={args_set} lead to overflowed index !!!!")
                 return False
             
-            min_access_per_global = df.groupby('global_id')['id_access'].min().sort_values().reset_index()
-            if len(min_access_per_global) > 1 : 
-                min_access_per_global['diff'] = min_access_per_global['id_access'].diff().dropna()
-            else :
-                min_access_per_global['diff'] = 1
-            max_access_per_arg = df.groupby('arg_id')['id_access'].max().tolist()
+            #Testing ==================== 
+            stride_gap = []
+            max_id_access =[]
+            min_id_access = []
+            for arg_id in sorted(df['arg_id'].unique()):
+                df_arg = df[df['arg_id'] == arg_id]
+                min_id_access_per_thread = df_arg.groupby('global_id')['id_access'].min().sort_values().reset_index()
+                if len(min_id_access_per_thread) > 1 :
+                    min_id_access_per_thread['diff'] = min_id_access_per_thread['id_access'].diff().dropna()
+                else :
+                    min_id_access_per_thread['diff'] = 1
+                stride_gap.append(abs(min_id_access_per_thread['diff'].min()))
 
+                max_id_access_per_array = df_arg['id_access'].max()
+                max_id_access.append(max_id_access_per_array)
+                min_id_access_per_array = df_arg['id_access'].min()
+                min_id_access.append(min_id_access_per_array)
+
+            #Testing ====================>> OKE
             kernel_exe_infor.update({
-                "min_id_access": df['id_access'].min(),
-                "max_id_access": max_access_per_arg,
-                "stride_gap": abs(min_access_per_global['diff'].min()),
+                "min_id_access": min_id_access,
+                "max_id_access": max_id_access,
+                "stride_gap": stride_gap,
                 "num_element_per_thread": df.groupby(['global_id', 'arg_id']).size().max()
             })
             return kernel_exe_infor
 
         except Exception as e:
-            logger.error(f"Run kernel with args_values={args_set} error when process stdout : {e}")
+            logger.error(f"Fail to runn kernel with args_values={args_set} due to error when process stdout : {e}")
             return False
     
     def process_strategy(self, strategy):
@@ -148,9 +160,10 @@ class KernelScalarAnalyzer:
                                                         scalar_id)
             strategy_check.append(output_check)
             if not output_check :
-                logger.info(f"Fail execute scalar {scalar_id}, {scalarId_type_dict[scalar_id]} in {strategy} ")
+                logger.info(f"ArgID {scalar_id}, scalar type {scalarId_type_dict[scalar_id]} in {strategy} not valid")
 
         if all(strategy_check):
+            logger.info(f"Found valid strategy : {strategy}")
             return strategy  # Return the valid strategy
 
         return None  # Return None if strategy is not valid
@@ -170,6 +183,9 @@ class KernelScalarAnalyzer:
             strategies = itertools.product(strategy_test_values.keys(), repeat=len(self.scalar_argument_list))
             valid_strategies = pool.map(self.process_strategy, strategies)
 
+        # valid_strategies = []
+        # for strategy in itertools.product(strategy_test_values.keys(), repeat=len(self.scalar_argument_list)):
+        #     valid_strategies.append(self.process_strategy(strategy))
         self.valid_strategy = [strategy for strategy in valid_strategies if strategy is not None]
         return self.valid_strategy
 
@@ -189,14 +205,20 @@ class KernelScalarAnalyzer:
             if temp == False:
                 logger.info(f"Run kernel with args_values={args_values} failed, no stdout.")
                 return False  # if any scalar type run fails, strategy fail !!
-            logger.info(f"Execute {args_values} : {temp}")
+            if scalar_type == "granularity":
+                print(f"Execute {args_values} : {temp}")
             results_execute.append(temp)
         try:
             if scalar_type == "os":
-                return all(results_execute[i]['min_id_access'] < results_execute[i + 1]['min_id_access'] for i in range(len(results_execute) - 1))
-                
+                for array_id in range(len(results_execute[0]['min_id_access'])):
+                    if all(results_execute[i]['min_id_access'][array_id] < results_execute[i + 1]['min_id_access'][array_id] for i in range(len(results_execute) - 1)):
+                        return True
+                return False
             if scalar_type == "stride":
-                return all(results_execute[i]['stride_gap'] < results_execute[i + 1]['stride_gap'] for i in range(len(results_execute) - 1))
+                for array_id in range(len(results_execute[0]['stride_gap'])):
+                    if all(results_execute[i]['stride_gap'][array_id] < results_execute[i + 1]['stride_gap'][array_id] for i in range(len(results_execute) - 1)):
+                        return True
+                return False
 
             if scalar_type == "granularity":
                 return all(results_execute[i]['num_element_per_thread'] < results_execute[i + 1]['num_element_per_thread'] for i in range(len(results_execute) - 1))
@@ -205,7 +227,7 @@ class KernelScalarAnalyzer:
                 for i in range(len(results_execute[0]['max_id_access'])):  # loop for array arguments
                     if all(results_execute[j]['max_id_access'][i] <= args_set_list[j][scalar_id] for j in range(len(args_set_list))):
                         return True
-                return False
+                return False   
 
             if scalar_type == "not-relevant" :
                 return all(result == results_execute[0] for result in results_execute)
@@ -241,6 +263,7 @@ def process_single_kernel(args):
         error_flag = "MANY_SCALARS"
         return (False,error_flag)
 
+    logger.info(f"Start finding scalar type for kernel : {kernel_file}")
     valid_args_set = scalar_analyzer.find_strategy() # [] or ""
     return (True, valid_args_set)  # valid kernel
 
@@ -261,7 +284,7 @@ def process_kernels(csv_file, json_file):
 
     for kernel_path in tqdm(kernel_paths, desc="Processing Kernels"):
         if kernel_path in success_processed_paths:
-            continue # Skip already processed kernels
+            continue # Skip already success-processed kernels
         args_set = process_single_kernel(kernel_path)  # Replace this function with actual processing logic
         entry = {
             "kernel_path": kernel_path,
@@ -287,8 +310,8 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     dataset_name = os.path.splitext(os.path.basename(args.csv_file))[0]
-    log_file_name = f"{dataset_name}_scalar_gen.log"
-    json_file = f"{dataset_name}_scalar_gen.json"
+    log_file_name = f"find_scalar_results/{dataset_name}_scalar_gen.log"
+    json_file = f"find_scalar_results/{dataset_name}_scalar_gen.json"
     logger.add(log_file_name, level="INFO")
     logger.add(sys.stderr, level="DEBUG")
 

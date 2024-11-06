@@ -1,4 +1,4 @@
-//{"FLAG":2,"P":0,"RHS":1,"imax":3,"jmax":4,"rdx2":5,"rdy2":6,"res_result":7,"scratch":8}
+
 int hook(int argId, int id) {
 	int gID = get_global_id(0);
 	printf("%d,%d,%d\n", gID, argId, id);

@@ -1,4 +1,4 @@
-//{"Gauss76Wt":16,"Gauss76Z":15,"Nkuhn_length":8,"Nlength":7,"Nq":3,"Nradius":9,"axis_ratio":12,"background":11,"cutoff":6,"loops":5,"loops_g":4,"qx":0,"qy":1,"result":2,"scale":10,"sld":13,"solvent_sld":14}
+
 int hook(int argId, int id) {
 	int gID = get_global_id(0);
 	printf("%d,%d,%d\n", gID, argId, id);

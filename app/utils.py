@@ -25,10 +25,11 @@ def getOpenCLPlatforms(cldrive_exe) -> None:
     )
     return CL_PLATFORMS
 
-def get_kernel_info(cldrive_exe, kernel_path):
-    cmd = f"{cldrive_exe} --srcs={kernel_path} --kernelinfo"
+def get_kernel_info(cldrive_exe, kernel_path, cl_build_opt):
+    cmd = f"{cldrive_exe} --srcs={kernel_path} --kernelinfo --cl_build_opt={cl_build_opt}"
     proc = subprocess.Popen(
-        cmd.split(),
+        #cmd.split(), #DANK_FIX,
+        [f"{cldrive_exe}", f"--srcs={kernel_path}", f"--kernelinfo", f"--cl_build_opt={cl_build_opt}"],
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
         universal_newlines=True,
@@ -86,3 +87,4 @@ def detect_kernel_dimensions(kernel_code):
     if result == "":
         result = "1D"
     return result
+
