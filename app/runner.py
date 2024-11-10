@@ -69,8 +69,10 @@ def RunCLDrive(
                 # if verbose_cldrive:
                 #     #print(cmd)
                 #     print(src)
+                parse_cmd = cmd.split() + [f"--cl_build_opt={extra_args}"]
                 proc = subprocess.Popen(
-                    cmd.split(),
+                    #cmd.split(),
+                    parse_cmd,
                     stdout=subprocess.PIPE,
                     stderr=subprocess.PIPE,
                     universal_newlines=True,
@@ -79,14 +81,12 @@ def RunCLDrive(
         else:
             f.write(src)
             f.flush()
-            cmd = "{} {} {} --srcs={} {} --num_runs={} --gsize={} --lsize_x={} --envs={} --output_format={}".format(
+            cmd = "{} {} {} --srcs={} --num_runs={} --gsize={} --lsize_x={} --envs={} --output_format={}".format(
                 "timeout -s9 {}".format(timeout) if timeout > 0 else "",
                 cldrive_exe,
                 "--args_values=" + ','.join(map(str,args_values)) if args_values is not None else "", # pass args values if any, otherwise run default configure (all equal gsize)
                 f.name,
-                "--cl_build_opt={}".format(",".join(extra_args))
-                if len(extra_args) > 0
-                else "",
+                # "--cl_build_opt={}".format(",".join(extra_args)) if len(extra_args) > 0 else "",
                 num_runs,
                 gsize,
                 lsize,
@@ -97,8 +97,10 @@ def RunCLDrive(
             #if verbose_cldrive:
                 #print(cmd)
                 #print(src)
+            parse_cmd = cmd.split() + [f"--cl_build_opt={extra_args}"]
             proc = subprocess.Popen(
-                cmd.split(),
+                #cmd.split()
+                parse_cmd,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
                 universal_newlines=True,
@@ -113,13 +115,14 @@ def RunCLDrive(
     return stdout, stderr
 
 class KernelRunInstance:
-    def __init__(self, kernel_code, gsize, lsize, args_values=None,
+    def __init__(self, kernel_code, gsize, lsize, args_values=None, cl_build_opt=None,
                  cldrive_exe=CLDRIVE, device=getOpenCLPlatforms(CLDRIVE)[0],
                  timeout=TIMEOUT) -> None:
         self.kernel_code = kernel_code
         self.gsize = gsize
         self.lsize = lsize
         self.args_info = args_values
+        self.cl_build_opt = cl_build_opt
         self.cldrive_exe = cldrive_exe
         self.device = device
         self.timeout = timeout
@@ -132,6 +135,7 @@ class KernelRunInstance:
             lsize=self.lsize,
             gsize=self.gsize,
             args_values=self.args_info,
+            extra_args = self.cl_build_opt,
             cl_platform=self.device,
             timeout=self.timeout,
             output_format="null",
@@ -146,6 +150,7 @@ class KernelRunInstance:
             num_runs=1,
             lsize=self.lsize,
             gsize=self.gsize,
+            extra_args = self.cl_build_opt,
             args_values=self.args_info,
             cl_platform=self.device,
             timeout=self.timeout,
@@ -162,6 +167,7 @@ class KernelRunInstance:
             num_runs=nrun,
             lsize=self.lsize,
             gsize=self.gsize,
+            extra_args = self.cl_build_opt,
             args_values=self.args_info,
             cl_platform=self.device,
             timeout=self.timeout,

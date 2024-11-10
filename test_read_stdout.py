@@ -74,7 +74,7 @@ class KernelScalarAnalyzer:
             }
             stdout = "global_id,arg_id,id_access\n" + stdout #only ID of pointer 
             df = pd.read_csv(io.StringIO(stdout))
-
+            # print(df[df['global_id'] == 0])
             if all(df['id_access'] >= 0) == False :
                 logger.error(f"Run kernel with args_values={args_set} failed, overflowed index !!!!")
                 return False
@@ -85,6 +85,7 @@ class KernelScalarAnalyzer:
             min_id_access = []
             for arg_id in sorted(df['arg_id'].unique()):
                 df_arg = df[df['arg_id'] == arg_id]
+                
                 min_id_access_per_thread = df_arg.groupby('global_id')['id_access'].min().sort_values().reset_index()
                 if len(min_id_access_per_thread) > 1 :
                     min_id_access_per_thread['diff'] = min_id_access_per_thread['id_access'].diff().dropna()
@@ -107,7 +108,8 @@ class KernelScalarAnalyzer:
                 "min_id_access": min_id_access,
                 "max_id_access": max_id_access,
                 "stride_gap": stride_gap,
-                "num_element_per_thread": df.groupby(['global_id', 'arg_id']).size().max()
+                #"num_element_per_thread": df.groupby(['global_id', 'arg_id']).size().max()
+                "num_element_per_thread": len(df[df['global_id'] == 0])
             })
             return kernel_exe_infor
 
@@ -120,8 +122,11 @@ if __name__ == "__main__":
     # python .py... --kernel_path "path/to/kernel.cl" --gsize 2048 --lsize 64 --args_values 10000000 10000000 1 1000000000
     kernel_path = "sample_kernels_hook/stride_more_mem_access.cl"
     scalar_analyzer = KernelScalarAnalyzer(kernel_path)
-    args = [int(1e7),int(1e7), 1, 10 ]
-    print(scalar_analyzer.run_kernel(1024,32,args))
+    args = [int(1e7),int(1e7), 1, 1 ]
+    global_size = 64
+    local_size = 32
+    print(f"global size, local size : [{global_size}, {local_size}], with input {args}")
+    print(scalar_analyzer.run_kernel(global_size,local_size,args))
 
 
 

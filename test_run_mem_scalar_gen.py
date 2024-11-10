@@ -7,15 +7,17 @@ import io
 import sys
 import argparse
 import csv
-from app.runner import KernelRunInstance, RunCLDrive   
+from app.runner import KernelRunInstance
 from app.utils import get_kernel_info
 from multiprocessing import Pool
 from tqdm import tqdm
 from loguru import logger
 
-NUM_PROCESS = 20
+GLOBAL_SIZE = 64
+LOCAL_SIZE = 32
+NUM_PROCESS = 8
 N_RUN = 5
-MAX_ARR_SIZE = int(1e7)
+MAX_ARR_SIZE = int(1e4)
 CLDRIVE = "bazel-bin/gpu/cldrive/cldrive"
 TIMEOUT = 60
 
@@ -41,7 +43,8 @@ class KernelScalarAnalyzer:
         self.kernel_path = kernel_path
         with open(kernel_path, "r", encoding="utf-8") as f:
             self.kernel_code = f.read()
-        self.extra_args = f"-DSINGLE_PRECISION -DN_GP=16"
+        #self.extra_args = "-DSINGLE_PRECISION -DN_GP=16"
+        self.extra_args = "-DMAX_CLUSTERS=16 -DMUL_ADD=fma"
         self.argument_list = self.get_argument_list()
         self.scalar_argument_list = [arg["id"] for arg in self.argument_list if not arg["is_pointer"]]
         self.valid_strategy = []
@@ -52,25 +55,10 @@ class KernelScalarAnalyzer:
         kernels = list(get_kernel_info(CLDRIVE, self.kernel_path, self.extra_args)[self.kernel_path].items())
         return kernels[0][1]
 
-    def run_mem_access(self):
-        stdout, stderr = RunCLDrive(
-            cldrive_exe=CLDRIVE,
-            src=self.kernel_code,
-            num_runs=1,
-            lsize=self.lsize,
-            gsize=self.gsize,
-            args_values=self.args_info,
-            extra_args=self.extra_args,
-            cl_platform=getOpenCLPlatforms(CLDRIVE)[0],
-            timeout=TIMEOUT,
-            output_format="null",
-        )
-        return stdout, stderr
-
     def create_args_set(self, scalarId_type_dict,scalar_id):
         '''
         output format : [[...,scalar_value1,...],[...,scalar_value2,...],...]
-        => easy to parse into run_mem_access
+        => easy to parse into run_mem_access()
         '''
         args_set = [] # format : [...,[scalar_value1,scalar_value2,...],...]
         for argument in self.argument_list:
@@ -95,7 +83,9 @@ class KernelScalarAnalyzer:
         extract needed information to identify scalar values 
         '''
         try : 
-            run_instance = KernelRunInstance(kernel_code=self.kernel_code, gsize=global_size, lsize=local_size, args_values=args_set, timeout=TIMEOUT)
+            run_instance = KernelRunInstance(kernel_code=self.kernel_code, 
+                                            gsize=global_size, lsize=local_size, 
+                                            args_values=args_set, cl_build_opt = self.extra_args ,timeout=TIMEOUT)
 
             stdout, stderr = run_instance.run_mem_access()
             if len(stdout) == 0:
@@ -144,7 +134,7 @@ class KernelScalarAnalyzer:
             return kernel_exe_infor
 
         except Exception as e:
-            logger.error(f"Fail to runn kernel with args_values={args_set} due to error when process stdout : {e}")
+            logger.error(f"Fail to run kernel with args_values={args_set} due to error when process stdout : {e}")
             return False
     
     def process_strategy(self, strategy):
@@ -201,7 +191,7 @@ class KernelScalarAnalyzer:
         
         for args_values in args_set_list:
             # run kernel for ... times
-            temp = self.run_kernel(global_size=1024, local_size=32, args_set=args_values)
+            temp = self.run_kernel(global_size=GLOBAL_SIZE, local_size=LOCAL_SIZE, args_set=args_values)
             if temp == False:
                 logger.info(f"Run kernel with args_values={args_values} failed, no stdout.")
                 return False  # if any scalar type run fails, strategy fail !!
@@ -275,8 +265,14 @@ def process_kernels(csv_file, json_file):
     with open(json_file, 'r') as jf:
         processed_kernels = json.load(jf) # Load existing JSON data
     
-    # Extract processed kernel paths to avoid duplicates
+    # success kernel => no_need to process again
     success_processed_paths = {entry['kernel_path'] for entry in processed_kernels if entry['validity']}
+    
+    # Save the filtered JSON data back to the file
+    processed_kernels = [entry for entry in processed_kernels if entry['kernel_path'] in success_processed_paths]
+    with open(json_file, 'w') as jf:
+        json.dump(processed_kernels, jf, indent=4)
+
     with open(csv_file, 'r') as cf:
         reader = csv.reader(cf)
         next(reader, None)  # Skip header if present

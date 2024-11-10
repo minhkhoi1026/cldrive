@@ -1,0 +1,384 @@
+[
+    {
+        "kernel_path": "gpu-benchmarks-modified/shoc/bfs_iiit.cl",
+        "validity": true,
+        "scalar_strategy_found": [],
+        "execution": {
+            "scalars_type": [],
+            "values": [],
+            "runtime": 0
+        }
+    },
+    {
+        "kernel_path": "gpu-benchmarks-modified/shoc/reduction.cl",
+        "validity": true,
+        "scalar_strategy_found": [],
+        "execution": {
+            "scalars_type": [],
+            "values": [],
+            "runtime": 0
+        }
+    },
+    {
+        "kernel_path": "gpu-benchmarks-modified/shoc/rdwdot.cl",
+        "validity": true,
+        "scalar_strategy_found": [],
+        "execution": {
+            "scalars_type": [],
+            "values": [],
+            "runtime": 0
+        }
+    },
+    {
+        "kernel_path": "gpu-benchmarks-modified/shoc/rdwdot10.cl",
+        "validity": true,
+        "scalar_strategy_found": [],
+        "execution": {
+            "scalars_type": [],
+            "values": [],
+            "runtime": 0
+        }
+    },
+    {
+        "kernel_path": "gpu-benchmarks-modified/shoc/gr_base.cl",
+        "validity": true,
+        "scalar_strategy_found": [
+            [
+                "not-relevant",
+                "not-relevant"
+            ]
+        ],
+        "execution": {
+            "scalars_type": [],
+            "values": [],
+            "runtime": 0
+        }
+    },
+    {
+        "kernel_path": "gpu-benchmarks-modified/shoc/rdwdot7.cl",
+        "validity": true,
+        "scalar_strategy_found": [],
+        "execution": {
+            "scalars_type": [],
+            "values": [],
+            "runtime": 0
+        }
+    },
+    {
+        "kernel_path": "gpu-benchmarks-modified/shoc/rdwdot6.cl",
+        "validity": true,
+        "scalar_strategy_found": [],
+        "execution": {
+            "scalars_type": [],
+            "values": [],
+            "runtime": 0
+        }
+    },
+    {
+        "kernel_path": "gpu-benchmarks-modified/shoc/rdwdot9.cl",
+        "validity": true,
+        "scalar_strategy_found": [],
+        "execution": {
+            "scalars_type": [],
+            "values": [],
+            "runtime": 0
+        }
+    },
+    {
+        "kernel_path": "gpu-benchmarks-modified/shoc/sort.cl",
+        "validity": true,
+        "scalar_strategy_found": [],
+        "execution": {
+            "scalars_type": [],
+            "values": [],
+            "runtime": 0
+        }
+    },
+    {
+        "kernel_path": "gpu-benchmarks-modified/shoc/ratt10.cl",
+        "validity": true,
+        "scalar_strategy_found": [
+            [
+                "not-relevant"
+            ]
+        ],
+        "execution": {
+            "scalars_type": [],
+            "values": [],
+            "runtime": 0
+        }
+    },
+    {
+        "kernel_path": "gpu-benchmarks-modified/shoc/rdsmh.cl",
+        "validity": true,
+        "scalar_strategy_found": [
+            [
+                "not-relevant"
+            ]
+        ],
+        "execution": {
+            "scalars_type": [],
+            "values": [],
+            "runtime": 0
+        }
+    },
+    {
+        "kernel_path": "gpu-benchmarks-modified/shoc/ratt3.cl",
+        "validity": true,
+        "scalar_strategy_found": [
+            [
+                "not-relevant"
+            ]
+        ],
+        "execution": {
+            "scalars_type": [],
+            "values": [],
+            "runtime": 0
+        }
+    },
+    {
+        "kernel_path": "gpu-benchmarks-modified/shoc/qssab.cl",
+        "validity": false,
+        "scalar_strategy_found": "NO_SCALAR",
+        "execution": {
+            "scalars_type": [],
+            "values": [],
+            "runtime": 0
+        }
+    },
+    {
+        "kernel_path": "gpu-benchmarks-modified/shoc/fft.cl",
+        "validity": false,
+        "scalar_strategy_found": "BUILD",
+        "execution": {
+            "scalars_type": [],
+            "values": [],
+            "runtime": 0
+        }
+    },
+    {
+        "kernel_path": "gpu-benchmarks-modified/shoc/ratt6.cl",
+        "validity": true,
+        "scalar_strategy_found": [
+            [
+                "not-relevant"
+            ]
+        ],
+        "execution": {
+            "scalars_type": [],
+            "values": [],
+            "runtime": 0
+        }
+    },
+    {
+        "kernel_path": "gpu-benchmarks-modified/shoc/rdwdot3.cl",
+        "validity": true,
+        "scalar_strategy_found": [],
+        "execution": {
+            "scalars_type": [],
+            "values": [],
+            "runtime": 0
+        }
+    },
+    {
+        "kernel_path": "gpu-benchmarks-modified/shoc/ratt8.cl",
+        "validity": true,
+        "scalar_strategy_found": [
+            [
+                "not-relevant"
+            ]
+        ],
+        "execution": {
+            "scalars_type": [],
+            "values": [],
+            "runtime": 0
+        }
+    },
+    {
+        "kernel_path": "gpu-benchmarks-modified/shoc/ratx2.cl",
+        "validity": false,
+        "scalar_strategy_found": "NO_SCALAR",
+        "execution": {
+            "scalars_type": [],
+            "values": [],
+            "runtime": 0
+        }
+    },
+    {
+        "kernel_path": "gpu-benchmarks-modified/shoc/bfs_uiuc_spill.cl",
+        "validity": false,
+        "scalar_strategy_found": "BUILD",
+        "execution": {
+            "scalars_type": [],
+            "values": [],
+            "runtime": 0
+        }
+    },
+    {
+        "kernel_path": "gpu-benchmarks-modified/shoc/ratxb.cl",
+        "validity": true,
+        "scalar_strategy_found": [
+            [
+                "not-relevant"
+            ]
+        ],
+        "execution": {
+            "scalars_type": [],
+            "values": [],
+            "runtime": 0
+        }
+    },
+    {
+        "kernel_path": "gpu-benchmarks-modified/shoc/ratt9.cl",
+        "validity": true,
+        "scalar_strategy_found": [
+            [
+                "not-relevant"
+            ]
+        ],
+        "execution": {
+            "scalars_type": [],
+            "values": [],
+            "runtime": 0
+        }
+    },
+    {
+        "kernel_path": "gpu-benchmarks-modified/shoc/ratx4.cl",
+        "validity": false,
+        "scalar_strategy_found": "NO_SCALAR",
+        "execution": {
+            "scalars_type": [],
+            "values": [],
+            "runtime": 0
+        }
+    },
+    {
+        "kernel_path": "gpu-benchmarks-modified/shoc/md.cl",
+        "validity": false,
+        "scalar_strategy_found": "MANY_SCALARS",
+        "execution": {
+            "scalars_type": [],
+            "values": [],
+            "runtime": 0
+        }
+    },
+    {
+        "kernel_path": "gpu-benchmarks-modified/shoc/ratt.cl",
+        "validity": true,
+        "scalar_strategy_found": [
+            [
+                "not-relevant"
+            ]
+        ],
+        "execution": {
+            "scalars_type": [],
+            "values": [],
+            "runtime": 0
+        }
+    },
+    {
+        "kernel_path": "gpu-benchmarks-modified/shoc/qssa2.cl",
+        "validity": false,
+        "scalar_strategy_found": "NO_SCALAR",
+        "execution": {
+            "scalars_type": [],
+            "values": [],
+            "runtime": 0
+        }
+    },
+    {
+        "kernel_path": "gpu-benchmarks-modified/shoc/qssa.cl",
+        "validity": false,
+        "scalar_strategy_found": "NO_SCALAR",
+        "execution": {
+            "scalars_type": [],
+            "values": [],
+            "runtime": 0
+        }
+    },
+    {
+        "kernel_path": "gpu-benchmarks-modified/shoc/md5.cl",
+        "validity": false,
+        "scalar_strategy_found": "MANY_SCALARS",
+        "execution": {
+            "scalars_type": [],
+            "values": [],
+            "runtime": 0
+        }
+    },
+    {
+        "kernel_path": "gpu-benchmarks-modified/shoc/ratt2.cl",
+        "validity": true,
+        "scalar_strategy_found": [
+            [
+                "not-relevant"
+            ]
+        ],
+        "execution": {
+            "scalars_type": [],
+            "values": [],
+            "runtime": 0
+        }
+    },
+    {
+        "kernel_path": "gpu-benchmarks-modified/shoc/spmv.cl",
+        "validity": true,
+        "scalar_strategy_found": [
+            [
+                "stride"
+            ],
+            [
+                "bound-check"
+            ]
+        ],
+        "execution": {
+            "scalars_type": [],
+            "values": [],
+            "runtime": 0
+        }
+    },
+    {
+        "kernel_path": "gpu-benchmarks-modified/shoc/ratx.cl",
+        "validity": true,
+        "scalar_strategy_found": [
+            [
+                "not-relevant"
+            ]
+        ],
+        "execution": {
+            "scalars_type": [],
+            "values": [],
+            "runtime": 0
+        }
+    },
+    {
+        "kernel_path": "gpu-benchmarks-modified/shoc/rdwdot2.cl",
+        "validity": true,
+        "scalar_strategy_found": [],
+        "execution": {
+            "scalars_type": [],
+            "values": [],
+            "runtime": 0
+        }
+    },
+    {
+        "kernel_path": "gpu-benchmarks-modified/shoc/scan.cl",
+        "validity": true,
+        "scalar_strategy_found": [],
+        "execution": {
+            "scalars_type": [],
+            "values": [],
+            "runtime": 0
+        }
+    },
+    {
+        "kernel_path": "gpu-benchmarks-modified/shoc/rdwdot8.cl",
+        "validity": true,
+        "scalar_strategy_found": [],
+        "execution": {
+            "scalars_type": [],
+            "values": [],
+            "runtime": 0
+        }
+    }
+]

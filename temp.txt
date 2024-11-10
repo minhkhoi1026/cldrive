@@ -1,6 +1,48 @@
-5.0
-1.0
-   arg_id  max_id_access  min_id_access
-0       0           5315              5
-1       1             64              1
-{'max_id_access': [5315, 64], 'min_id_access': 1, 'num_element_per_thread': 1507, 'stride_gap': 1.0}
+global size, local size : [1024, 32], with input [10000, 10000, 1, 1]
+{'max_id_access': [1123, 1024], 'min_id_access': [80, 1], 'num_element_per_thread': 57, 'stride_gap': [0.0, 1.0]}
+global size, local size : [1024, 32], with input [10000, 10000, 1, 1]
+{'max_id_access': [1123, 1024], 'min_id_access': [1, 1], 'num_element_per_thread': 95, 'stride_gap': [0.0, 1.0]}
+global size, local size : [1024, 32], with input [10000, 10000, 1, 1]
+{'max_id_access': [1123, 1024], 'min_id_access': [77, 1], 'num_element_per_thread': 53, 'stride_gap': [0.0, 1.0]}
+global size, local size : [1024, 32], with input [10000, 10000, 1, 1]
+{'max_id_access': [1123, 1024], 'min_id_access': [72, 1], 'num_element_per_thread': 58, 'stride_gap': [0.0, 1.0]}
+global size, local size : [1024, 32], with input [10000, 10000, 1, 1]
+{'max_id_access': [1123, 1024], 'min_id_access': [79, 1], 'num_element_per_thread': 50, 'stride_gap': [0.0, 1.0]}
+
+
+global size, local size : [64, 32], with input [10000, 10000, 1, 1]
+{'max_id_access': [163, 64], 'min_id_access': [1, 1], 'num_element_per_thread': 303, 'stride_gap': [1.0, 1.0]}
+global size, local size : [64, 32], with input [10000, 10000, 1, 1]
+{'max_id_access': [163, 64], 'min_id_access': [1, 1], 'num_element_per_thread': 303, 'stride_gap': [1.0, 1.0]}
+global size, local size : [64, 32], with input [10000, 10000, 1, 1]
+{'max_id_access': [163, 64], 'min_id_access': [1, 1], 'num_element_per_thread': 303, 'stride_gap': [1.0, 1.0]}
+global size, local size : [64, 32], with input [10000, 10000, 1, 1]
+{'max_id_access': [163, 64], 'min_id_access': [1, 1], 'num_element_per_thread': 303, 'stride_gap': [1.0, 1.0]}
+global size, local size : [64, 32], with input [10000, 10000, 1, 1]
+{'max_id_access': [163, 64], 'min_id_access': [1, 1], 'num_element_per_thread': 303, 'stride_gap': [1.0, 1.0]}
+global size, local size : [64, 32], with input [10000, 10000, 1, 1]
+{'max_id_access': [163, 64], 'min_id_access': [1, 1], 'num_element_per_thread': 303, 'stride_gap': [1.0, 1.0]}
+
+
+global size, local size : [1024, 32], with input [10000000, 10000000, 1, 1]
+{'max_id_access': [1123, 1024], 'min_id_access': [1, 1], 'num_element_per_thread': 114, 'stride_gap': [1.0, 1.0]}
+global size, local size : [1024, 32], with input [10000000, 10000000, 1, 1]
+{'max_id_access': [1123, 1024], 'min_id_access': [20, 1], 'num_element_per_thread': 68, 'stride_gap': [0.0, 1.0]}
+global size, local size : [1024, 32], with input [10000000, 10000000, 1, 1]
+{'max_id_access': [1123, 1024], 'min_id_access': [1, 1], 'num_element_per_thread': 95, 'stride_gap': [1.0, 1.0]}
+global size, local size : [1024, 32], with input [10000000, 10000000, 1, 1]
+{'max_id_access': [1123, 1024], 'min_id_access': [1, 1], 'num_element_per_thread': 92, 'stride_gap': [1.0, 1.0]}
+global size, local size : [1024, 32], with input [10000000, 10000000, 1, 1]
+{'max_id_access': [1123, 1024], 'min_id_access': [1, 1], 'num_element_per_thread': 81, 'stride_gap': [0.0, 1.0]}
+
+
+global size, local size : [64, 32], with input [10000000, 10000000, 1, 1]
+{'max_id_access': [163, 64], 'min_id_access': [1, 1], 'num_element_per_thread': 303, 'stride_gap': [1.0, 1.0]}
+global size, local size : [64, 32], with input [10000000, 10000000, 1, 1]
+{'max_id_access': [163, 64], 'min_id_access': [1, 1], 'num_element_per_thread': 303, 'stride_gap': [1.0, 1.0]}
+global size, local size : [64, 32], with input [10000000, 10000000, 1, 1]
+{'max_id_access': [163, 64], 'min_id_access': [1, 1], 'num_element_per_thread': 303, 'stride_gap': [1.0, 1.0]}
+global size, local size : [64, 32], with input [10000000, 10000000, 1, 1]
+{'max_id_access': [163, 64], 'min_id_access': [1, 1], 'num_element_per_thread': 303, 'stride_gap': [1.0, 1.0]}
+global size, local size : [64, 32], with input [10000000, 10000000, 1, 1]
+{'max_id_access': [163, 64], 'min_id_access': [1, 1], 'num_element_per_thread': 303, 'stride_gap': [1.0, 1.0]}
